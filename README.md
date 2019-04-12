@@ -1,5 +1,5 @@
 
-# What is webview-test?
+# What is sample-webview?
 This project is a sample for developing android applications using webview.
 
 
