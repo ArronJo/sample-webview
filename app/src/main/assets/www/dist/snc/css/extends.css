@@ -1,0 +1,13 @@
+/**!
+ * Cascading Style Sheet
+ */
+@charset "utf-8";
+
+.hidden { display:none !important; }
+
+.center { text-align:center; }
+
+.mT20 { margin-top:20px; }
+.mT50 { margin-top:50px; }
+
+.word-break { word-break:break-all; white-space:normal; }

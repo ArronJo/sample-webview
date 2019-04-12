@@ -1,0 +1,28 @@
+/**!
+ * Cascading Style Sheet
+ */
+@charset "utf-8";
+
+@import "../../dist/snc/css/reset.css";
+@import "../../dist/snc/css/components.css";
+@import "../../dist/snc/css/extends.css";
+@import "../../dist/snc/css/anim.css";
+
+.identity { background-color:#001935; color:#fefefe; }
+
+.l-header-container { margin-top:calc(100% - 70%); }
+.l-header {}
+.l-header h1,h2,h3,h4,h5,h6 { color:#fff; text-align:center; }
+.l-header h1 { font-size:3.5em; }
+
+.l-content-container { margin-top:150px; }
+.l-content {}
+.l-content h1,h2,h3,h4,h5,h6 { color:#fff; text-align:center; }
+
+.l-footer-container { margin-top:150px; }
+.l-footer {}
+.l-footer h1 { color:#fff; font-size:1em; text-align:center; }
+.l-footer { color:#989da3; padding:15px 10px 20px 10px; }
+.l-footer { text-align:center; }
+.l-footer { width:calc(100% - 10%); margin:0 auto; }
+.l-footer > p { margin-bottom:8px; font-size:0.8em; }

@@ -1,0 +1,26 @@
+/**!
+ * Cascading Style Sheet
+ */
+@charset "utf-8";
+
+.anim-progress-layer {
+    position: fixed;
+    left: 50%; top: 50%;
+    z-index: 99999;
+    /* width: 60px; height: 60px; margin: -55px 0 0 -40px; */
+    width: 70px; height: 70px; margin: -55px 0 0 -40px;
+    /* width: 100px; height: 100px; margin: -65px 0 0 -56px; */
+    border: 7px solid #f3f3f3;
+    border-top: 7px solid #3498db;
+    border-radius: 50%;
+    -webkit-animation: spin 1.5s linear infinite;
+    animation: spin 1.5s linear infinite;
+}
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}

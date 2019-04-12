@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SAMPLE WEBVIEW</string>
+
+    <string name="one_more_press_back_button">Please the Back button once more shut down.</string>
+</resources>

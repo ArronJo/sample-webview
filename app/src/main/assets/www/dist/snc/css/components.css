@@ -1,0 +1,30 @@
+/**!
+ * Cascading Style Sheet
+ */
+@charset "utf-8";
+
+.btn {
+    display:inline-block;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    box-sizing:border-box;
+    cursor:pointer;
+    padding:5px 7px;
+    border-width:.5px;
+    border-radius:2px;
+    font-size:14px;
+    font-weight:700;
+    line-height:1.4;
+    text-decoration:none;
+    border-color:rgba(0,0,0,.2);
+    background-color:hsla(0,0%,100%,.9);
+    color:#001935 !important;
+}
+.btn:focus { background-color:hsla(0,0%,100%,.8); }
+.btn:active { background-color:hsla(0,0%,100%,.8); }
+
+.btn-primary { border:.5px solid rgba(0,0,0,.2); background-color:#00b8ff; color:#fff }
+.btn-primary:focus { border-color:rgba(0,0,0,.2); background-color:#00b1f5; color:hsla(0,0%,100%,.9) }
+.btn-primary:active { border-color:rgba(0,0,0,.2); background-color:#00a9eb; color:hsla(0,0%,100%,.8) }

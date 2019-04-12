@@ -1,0 +1,20 @@
+/**!
+ * Cascading Style Sheet
+ */
+@charset "utf-8";
+
+/*@import "../../vendor/css/reset.css";*/
+@import "../../vendor/css/normalize.css";
+
+a:link,
+a:visited,
+a:active,
+a:hover	{ text-decoration: none; color:#989da3; }
+
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+input[type="file"],
+button {
+	outline: none !important;
+}

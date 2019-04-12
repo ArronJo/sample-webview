@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <meta name="theme-color" content="#001935">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no, address=no, email=no">
+
+    <title>Sample Page</title>
+
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORwOKGgo=">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORwOKGgo=">
+    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORwOKGgo=">
+
+    <link rel="stylesheet" href="./sample.css">
+
+    <!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+    <script src="../../dist/vendor/js/jquery-3.3.1.min.js"></script>
+    <script async src="../../dist/snc/js/nativeBridge.js"></script>
+    <script async src="../../dist/snc/js/progress.js"></script>
+    <script async src="./sample.js"></script>
+
+    <noscript>Your browser does not support JavaScript!</noscript>
+</head>
+<body class="identity word-break">
+
+    <div class="l-header-container">
+        <div class="l-header">
+            <h1 class="">Welcome</h1>
+        </div>
+    </div>
+
+    <div class="l-content-container">
+        <div class="l-content">
+            <h2 class="">Content</h2>
+            <div class="center mT50">
+                <div class="center mT20">
+                    <input id="call-android-methods-recommended" type="button" class="btn" value="Recommended: Call Android methods"><br><br>
+                    <input id="call-android-methods-not-recommended" type="button" class="btn" value="Not recommended: Call Android methods"><br><br>
+                    <input id="native-take-a-picture" type="button" class="btn" value="take a picture">
+                </div>
+                
+                <div class="center mT20">
+                    <a id="google-maps" class="btn" href="http://www.google.com/maps">Google Maps</a>
+                </div>
+                
+                <div class="center mT20">
+                    <input id="file-chooser" class="btn" type="file" accept="image/*" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="l-footer-container">
+        <div class="l-footer">
+            <p>Copyright (c) 2018 Aaron Jo. All right reserved.</p>
+            <p><a href="mailto:mcharima5@gmail.com">mcharima5@gmail.com</a></p>
+            <p><a href="intent://scan/#Intent;scheme=snc;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.snc.test.webview2;end"> Install WebViewTest Application </a><br></p>
+        </div>
+    </div>
+
+</body>
+</html>
