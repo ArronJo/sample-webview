@@ -3,7 +3,7 @@
 This project is a sample for developing android applications using webview.
 
 
-# FEATURES
+# SUPPORT FEATURES
 1. File Chooser
 ```code
 <input type="file" accept="image/*" />
