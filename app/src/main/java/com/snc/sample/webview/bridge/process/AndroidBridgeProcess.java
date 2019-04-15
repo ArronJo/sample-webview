@@ -79,6 +79,7 @@ public class AndroidBridgeProcess {
         }
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
+        // check permission
         TedPermission.with(webview.getContext())
                 .setPermissionListener(new PermissionListener() {
                     @Override

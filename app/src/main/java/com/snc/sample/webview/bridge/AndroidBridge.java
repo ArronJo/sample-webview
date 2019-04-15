@@ -67,6 +67,8 @@ public class AndroidBridge {
 
     private JSONObject parse(String urlString) throws IOException {
         Uri uri = Uri.parse(urlString);
+        Logger.v(TAG, "callNativeMethod: parse() : uri = " + uri);
+        Logger.v(TAG, "callNativeMethod: parse() : uri.getEncodedQuery() = " + uri.getEncodedQuery());
 
         if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
             throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
@@ -76,7 +78,7 @@ public class AndroidBridge {
         }
 
         try {
-            return new JSONObject(URLDecoder.decode(uri.getQuery(), "utf-8"));
+            return new JSONObject(uri.getEncodedQuery());   // uri.getQuery() vs uri.getEncodedQuery()
         } catch (Exception e) {
             throw new IOException("\"" + uri.getQuery() + "\" is not JSONObject.");
         }
@@ -84,10 +86,10 @@ public class AndroidBridge {
 
     private boolean executeProcess(final WebView webview, final JSONObject jsonObject) {
         final String command = JSONHelper.getString(jsonObject, "command", "");
-        final JSONObject args = JSONHelper.getJSONObject(jsonObject, "args", new JSONObject());
+        final String args = JSONHelper.getString(jsonObject, "args", "{}");
         final String callback = JSONHelper.getString(jsonObject, "callback", "");
 
-        Logger.i(TAG, "executeProcess() :  command = " + command + ",  args = " + args + ",  callback = " + callback);
+        Logger.i(TAG, "callNativeMethod: executeProcess() :  command = " + command + ",  args = " + args + ",  callback = " + callback);
 
         final AndroidBridgeProcess process = new AndroidBridgeProcess();
         final Method method = ReflectHelper.getMethod(process, command);
@@ -97,7 +99,9 @@ public class AndroidBridge {
         }
 
         try {
-            ReflectHelper.invoke(process, method, webview, args, callback);
+            JSONObject argsObj = new JSONObject(URLDecoder.decode(args, "utf-8"));
+            Logger.v(TAG, "argsObj = " + argsObj);
+            ReflectHelper.invoke(process, method, webview, argsObj, callback);
             return true;
         } catch (Exception e) {
             if (webview.getContext() instanceof Activity) {

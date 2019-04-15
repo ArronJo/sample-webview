@@ -22,16 +22,16 @@ $(document).ready(function() {
 
     $('#call-android-methods-recommended').on('click', function () {
         showProgress();
-        callNative("apiRecommended", {}, "callbackNativeResponse");
+        callNative("apiRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
     });
 
     $('#call-android-methods-not-recommended').on('click', function () {
         showProgress();
-        callNative("apiNotRecommended", {}, "callbackNativeResponse");
+        callNative("apiNotRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
     });
 
     $('#native-take-a-picture').on('click', function () {
-        callNative("apiTakePicture", {}, "callbackTakePicture");
+        callNative("apiTakePicture", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackTakePicture");
    });
 
 });

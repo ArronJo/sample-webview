@@ -6,7 +6,7 @@
 function callNative(command, args, callback) {
     let jsonObject = {
         command: command,
-        args: args,
+        args: encodeURIComponent(JSON.stringify(args)),
         callback: callback
     };
 
