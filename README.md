@@ -7,9 +7,12 @@ This project is a sample for developing android applications using webview.
 1. File Chooser
 ```code
 <input type="file" accept="image/*" />
+<input type="file" accept="audio/*" />
+<input type="file" accept="video/*" />
+<input type="file" accept="*/*" />
 ```
 
-2. GeoLocation
+2. Geolocation
 ```code
 <script>
 navigator.geolocation.watchPosition(function(Position) {
