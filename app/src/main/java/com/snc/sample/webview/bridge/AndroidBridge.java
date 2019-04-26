@@ -3,6 +3,7 @@ package com.snc.sample.webview.bridge;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Base64;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
@@ -49,11 +50,11 @@ public class AndroidBridge {
 
     //++ [START] call Web --> Native
 
-    // ex) "native://callNative?{command:\"apiSample\",args{max:1,min:1},callback:\"callbackNativeResponse\"}"
+    // ex) "native://callNative?" + btoa(encodeURIComponent(JSON.stringify({ command:\"apiSample\", args{max:1,min:1}, callback:\"callbackNativeResponse\" })))
     @SuppressWarnings("unused")
     @JavascriptInterface
     public boolean callNativeMethod(String urlString) {
-        Logger.i(TAG, "callNativeMethod: " + urlString);
+        //Logger.i(TAG, "callNativeMethod: " + urlString);
         try {
             return executeProcess(this.webView, parse(urlString));
         } catch (Exception e) {
@@ -68,7 +69,7 @@ public class AndroidBridge {
     private JSONObject parse(String urlString) throws IOException {
         Uri uri = Uri.parse(urlString);
         Logger.v(TAG, "callNativeMethod: parse() : uri = " + uri);
-        Logger.v(TAG, "callNativeMethod: parse() : uri.getEncodedQuery() = " + uri.getEncodedQuery());
+        //Logger.v(TAG, "callNativeMethod: parse() : uri.getEncodedQuery() = " + uri.getEncodedQuery());
 
         if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
             throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
@@ -77,16 +78,19 @@ public class AndroidBridge {
             throw new IOException("\"" + uri.getHost() + "\" host is not supported.");
         }
 
+        String query = uri.getEncodedQuery();
         try {
-            return new JSONObject(uri.getEncodedQuery());   // uri.getQuery() vs uri.getEncodedQuery()
+            query = new String(Base64.decode(query, Base64.DEFAULT));
+            query = URLDecoder.decode(query, "utf-8");
+            return new JSONObject(query);
         } catch (Exception e) {
-            throw new IOException("\"" + uri.getQuery() + "\" is not JSONObject.");
+            throw new IOException("\"" + query + "\" is not JSONObject.");
         }
     }
 
     private boolean executeProcess(final WebView webview, final JSONObject jsonObject) {
         final String command = JSONHelper.getString(jsonObject, "command", "");
-        final String args = JSONHelper.getString(jsonObject, "args", "{}");
+        final JSONObject args = JSONHelper.getJSONObject(jsonObject, "args", new JSONObject());
         final String callback = JSONHelper.getString(jsonObject, "callback", "");
 
         Logger.i(TAG, "callNativeMethod: executeProcess() :  command = " + command + ",  args = " + args + ",  callback = " + callback);
@@ -99,14 +103,10 @@ public class AndroidBridge {
         }
 
         try {
-            JSONObject argsObj = new JSONObject(URLDecoder.decode(args, "utf-8"));
-            Logger.v(TAG, "argsObj = " + argsObj);
-            ReflectHelper.invoke(process, method, webview, argsObj, callback);
+            ReflectHelper.invoke(process, method, webview, args, callback);
             return true;
         } catch (Exception e) {
-            if (webview.getContext() instanceof Activity) {
-                DialogHelper.alert((Activity) webview.getContext(), e.getMessage());
-            }
+            DialogHelper.alert((Activity) webview.getContext(), e.getMessage());
             Logger.e(TAG, e);
         }
         return false;
@@ -119,7 +119,8 @@ public class AndroidBridge {
 
     public static void callJSFunction(final WebView webView, String functionName, String... params) {
         final StringBuilder buff = new StringBuilder();
-        buff.append("try {");
+        buff.append("try { ");
+        // function name
         buff.append("  ").append(functionName).append("(");
         // parameters
         for (int i = 0; i < params.length; i++) {
@@ -133,9 +134,9 @@ public class AndroidBridge {
                 buff.append(", ");
             }
         }
-        buff.append(")");
-        buff.append("} catch(e) {");
-        buff.append("  console.error(e.message);");
+        buff.append("); ");
+        buff.append("} catch(e) { ");
+        buff.append("  console.error(e.message); ");
         buff.append("}");
 
         // Run On UIThread

@@ -34,3 +34,38 @@ dependencies {
     // runtime permission library
     implementation 'gun0912.ted:tedpermission:2.2.1'
 }
+
+android.applicationVariants.all { variant ->
+    variant.assembleProvider.configure {
+        doLast {
+            println "\n\n"
+            println "###########################################"
+            println "#                                         #"
+            println "#       ######    ##     #     ######     #"
+            println "#      #          #  #   #    #           #"
+            println "#      #######    #   #  #    #           #"
+            println "#            #    #    # #    #           #"
+            println "#      ######     #     ##     ######     #"
+            println "#                                         #"
+            println "#      Copyright (c) 2016 Aaron Jo.       #"
+            println "#                                         #"
+            println "#          mcharima5@gmail.com            #"
+            println "#                                         #"
+            println "###########################################"
+            println "\n\n"
+
+            variant.outputs.all { output ->
+                println "============================================================"
+                println "project id: $variant.applicationId"
+                println "project version : $variant.versionName"
+                println "project revision : $variant.versionCode"
+                println "build name: ${variant.name}"
+                println "build type: ${variant.buildType.name}"
+                println "output dir : " + variant.packageApplicationProvider.get().outputDirectory
+                println "output file : $output.outputFileName"
+                println "============================================================"
+                println "\n"
+            }
+        }
+    }
+}
