@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.webkit.WebView;
 
 import com.gun0912.tedpermission.PermissionListener;
@@ -32,13 +33,14 @@ import java.util.List;
 public class AndroidBridgeProcess {
     private static final String TAG = AndroidBridgeProcess.class.getSimpleName();
 
+    // async process...good
     public static void apiRecommended(final WebView webview, final JSONObject args, final String callback) {
         Logger.d(TAG, "apiRecommended(): args[" + args + "], callback[" + callback + "]");
 
-        // async
         new Thread(new Runnable() {
             @Override
             public void run() {
+                String result = "success";
                 // test code...
                 try {
                     Thread.sleep(1000);
@@ -48,16 +50,18 @@ public class AndroidBridgeProcess {
                 //--
 
                 // send result
-                AndroidBridge.callJSFunction(webview, callback, "success");
+                AndroidBridge.callJSFunction(webview, callback, result);
             }
         }).start();
     }
 
+    // sync process...bad
     public static void apiNotRecommended(final WebView webview, final JSONObject args, final String callback) {
         Logger.d(TAG, "apiNotRecommended(): args[" + args + "], callback[" + callback + "]");
 
         // sync
         // test code...
+        String result = "success";
         try {
             Thread.sleep(1000);
         } catch (Exception e) {
@@ -66,7 +70,7 @@ public class AndroidBridgeProcess {
         //--
 
         // send result
-        AndroidBridge.callJSFunction(webview, callback, "success");
+        AndroidBridge.callJSFunction(webview, callback, result);
     }
 
     public static void apiTakePicture(final WebView webview, final JSONObject args, final String callback) {
@@ -85,14 +89,14 @@ public class AndroidBridgeProcess {
                     @Override
                     public void onPermissionGranted() {
                         try {
-                            AndroidBridge.setCallbackJSFunctionName(RequestCode.REQUEST_CODE_TAKE_A_PICTURE, callback);
+                            AndroidBridge.setCallbackJSFunctionName(RequestCode.REQUEST_TAKE_A_PICTURE, callback);
                             File file = FileUtil.createCameraFile("jpg");
                             Uri output = UriUtil.fromFile(webview.getContext(), file);
                             if (!FileUtil.delete(file)) {
                                 Logger.e(TAG, "delete failed...");
                             }
                             AndroidBridge.setExtraOutput(output);
-                            IntentUtil.imageCaptureWithExtraOutput(webview.getContext(), RequestCode.REQUEST_CODE_TAKE_A_PICTURE, output);
+                            IntentUtil.imageCaptureWithExtraOutput(webview.getContext(), RequestCode.REQUEST_TAKE_A_PICTURE, output);
                         } catch (Exception e) {
                             if (webview.getContext() instanceof Activity) {
                                 DialogHelper.alert((Activity) webview.getContext(), e.getMessage());

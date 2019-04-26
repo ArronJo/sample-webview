@@ -59,14 +59,15 @@ public class WebViewHelper {
 
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface", "AddJavascriptInterface"})
     private static void setup(WebView webView) {
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setGeolocationEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDisplayZoomControls(false);
-        webView.getSettings().setAppCacheEnabled(false);
+        WebSettings settings = webView.getSettings();
 
+        settings.setJavaScriptEnabled(true);
+        settings.setGeolocationEnabled(true);
+        settings.setUseWideViewPort(true);
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setAppCacheEnabled(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }

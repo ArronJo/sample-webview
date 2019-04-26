@@ -61,7 +61,11 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] File Chooser]
     private ValueCallback<Uri> filePathCallbackNormal;
     private ValueCallback<Uri[]> filePathCallbackLollipop;
-    private Uri mediaURI;
+
+    private final int IMAGE = 0;
+    private final int AUDIO = 1;
+    private final int VIDEO = 2;
+    private Uri[] mediaURIs;
 
     // For Android < 3.0
     @SuppressWarnings("unused")
@@ -127,12 +131,12 @@ public class CSWebChromeClient extends WebChromeClient {
 
                         filePathCallbackLollipop = filePathCallback;
 
+
                         try {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 openIntentChooser(fileChooserParams.getAcceptTypes());
-                            }
-                            else {
-                                openIntentChooser("*/*");
+                            } else  {
+                                openIntentChooser("");
                             }
                         } catch (Exception e) {
                             DialogHelper.alert((Activity) context, e.getMessage());
@@ -151,72 +155,97 @@ public class CSWebChromeClient extends WebChromeClient {
     }
 
     private void openIntentChooser(String[] acceptTypes) {
-        String remake = "";
+        String acceptType = "";
 
-        for (String acceptType : acceptTypes) {
-            if (StringUtil.isEmpty(acceptType) || (!acceptType.startsWith("image/") && !acceptType.startsWith("audio/") && !acceptType.startsWith("video/"))) {
+        for (String type : acceptTypes) {
+            if (StringUtil.isEmpty(type)) {
+                continue;
+            }
+            if (!type.startsWith("image/") && !type.startsWith("audio/") && !type.startsWith("video/") && !type.startsWith("application/")) {
                 continue;
             }
 
-            if (StringUtil.isEmpty(remake)) {
-                remake += acceptType;
+            if (StringUtil.isEmpty(acceptType)) {
+                acceptType += type;
             } else {
-                remake += "," + acceptType;
+                acceptType += "," + type;
             }
         }
 
-        openIntentChooser(remake);
+        openIntentChooser(acceptType);
     }
 
     private void openIntentChooser(String acceptType) {
+        String type = acceptType;
+
+        if (type.isEmpty() || "*/*".equalsIgnoreCase(acceptType)) {
+            type = "image/*|audio/*|video/*";
+        }
+
         try {
-            mediaURI = null;
+            mediaURIs = new Uri[3];
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Camera");
-                if (!FileUtil.mkdirs(dir)) {
-                    Logger.e(TAG, PREFIX + "mkdirs() failed !!!!! " + dir);
+
+                List<Intent> intentList = new ArrayList<>();
+
+                String fileName = DateTimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss");
+
+                if (type.contains("image/")) {
+                    mediaURIs[IMAGE] = Uri.fromFile(new File(getExternalDir("image"), fileName + ".jpg"));
+
+                    final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[IMAGE]);
+                    intentList.add(intent);
                 }
+                if (type.contains("audio/")) {
+                    mediaURIs[AUDIO] = Uri.fromFile(new File(getExternalDir("audio"), fileName + ".m4a"));
 
-                String action = "";
-                String ext = "";
-                if (acceptType.startsWith("image")) {
-                    action = MediaStore.ACTION_IMAGE_CAPTURE;
-                    ext = "jpg";
-                } else if (acceptType.startsWith("video")) {
-                    action = MediaStore.ACTION_VIDEO_CAPTURE;
-                    ext = "mp4";
-                } else if (acceptType.startsWith("audio")) {
-                    action = MediaStore.Audio.Media.RECORD_SOUND_ACTION;
-                    ext = "mp3";
+                    final Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[AUDIO]);
+                    intentList.add(intent);
                 }
+                if (type.contains("video/")) {
+                    mediaURIs[VIDEO] =  Uri.fromFile(new File(getExternalDir("video"), fileName + ".mp4"));
 
-                mediaURI =  Uri.fromFile(new File(dir + File.separator + DateTimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmssSSS") + "." + ext));
-
-                final Intent mediaIntent = new Intent(action);
-                mediaIntent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURI);
+                    final Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[VIDEO]);
+                    intentList.add(intent);
+                }
 
                 // Intent Chooser
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType(acceptType);
+                intent.setType("*/*");
 
                 Intent chooserIntent = Intent.createChooser(intent, "Chooser");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Parcelable[] { mediaIntent });
-                ((Activity) context).startActivityForResult(chooserIntent, RequestCode.REQUEST_CODE_FILE_CHOOSER_LOLLIPOP);
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[] { }));
+                ((Activity) context).startActivityForResult(chooserIntent, RequestCode.REQUEST_FILE_CHOOSER_LOLLIPOP);
 
             } else {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType(acceptType);
+                intent.setType("*/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                ((Activity) context).startActivityForResult(Intent.createChooser(intent, "File Chooser"), RequestCode.REQUEST_CODE_FILE_CHOOSER_NORMAL);
+                ((Activity) context).startActivityForResult(Intent.createChooser(intent, "File Chooser"), RequestCode.REQUEST_FILE_CHOOSER_NORMAL);
             }
 
         } catch (Exception e) {
             Logger.e(TAG, e);
             DialogHelper.alert((Activity) context, e.getMessage());
         }
+    }
+
+    private File getExternalDir(String type) {
+        File dir = null;
+
+        if ("image".equalsIgnoreCase(type) || "video".equalsIgnoreCase(type)) {
+            dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        }
+        else if ("audio".equalsIgnoreCase(type)) {
+            dir = new File(Environment.getExternalStorageDirectory(), "Voice Recorder");
+        }
+        return dir;
     }
 
     public void onActivityResultFileChooserNormal(int requestCode, int resultCode, Intent data) {
@@ -242,24 +271,31 @@ public class CSWebChromeClient extends WebChromeClient {
         }
 
         try {
-            if (null == data) {
+            if (null != data) {
+                filePathCallbackLollipop.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+            } else {
                 List<Uri> results = new ArrayList<>();
-                if (null != mediaURI && new File(mediaURI.getPath()).exists()) {
-                    results.add(mediaURI);
-                }
-                if (results.size() > 0) {
-                    filePathCallbackLollipop.onReceiveValue(results.toArray(new Uri[]{}));
-                    return;
-                }
-            }
 
-            filePathCallbackLollipop.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                if (null != mediaURIs) {
+                    if (null != mediaURIs[IMAGE] && new File(mediaURIs[IMAGE].getPath()).exists()) {
+                        results.add(mediaURIs[IMAGE]);
+                    }
+                    if (null != mediaURIs[AUDIO] && new File(mediaURIs[AUDIO].getPath()).exists()) {
+                        results.add(mediaURIs[AUDIO]);
+                    }
+                    if (null != mediaURIs[VIDEO] && new File(mediaURIs[VIDEO].getPath()).exists()) {
+                        results.add(mediaURIs[VIDEO]);
+                    }
+                }
+
+                filePathCallbackLollipop.onReceiveValue(results.toArray(new Uri[]{}));
+            }
 
         } catch (Exception e) {
             Logger.e(TAG, e);
         } finally {
             filePathCallbackLollipop = null;
-            mediaURI = null;
+            mediaURIs = null;
         }
     }
     //-- [[E N D] File Chooser]

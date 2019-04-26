@@ -130,21 +130,17 @@ public class WebViewActivity extends BaseActivity {
                     "\n]");
         }
 
-        if (RequestCode.REQUEST_CODE_FILE_CHOOSER_NORMAL == requestCode) {
-            Logger.i(TAG, "onActivityResult(): REQUEST_CODE_FILE_CHOOSER_NORMAL");
-            if (Activity.RESULT_OK == resultCode) {
-                this.webChromeClient.onActivityResultFileChooserNormal(requestCode, resultCode, data);
-            }
-        } else if (RequestCode.REQUEST_CODE_FILE_CHOOSER_LOLLIPOP == requestCode) {
-            Logger.i(TAG, "onActivityResult(): REQUEST_CODE_FILE_CHOOSER_LOLLIPOP");
-            if (Activity.RESULT_OK == resultCode) {
-                this.webChromeClient.onActivityResultFileChooserLollipop(requestCode, resultCode, data);
-            }
-        } else if (RequestCode.REQUEST_CODE_TAKE_A_PICTURE == requestCode) {
-            Logger.i(TAG, "onActivityResult(): REQUEST_CODE_TAKE_A_PICTURE");
-            if (Activity.RESULT_OK == resultCode) {
-                this.webChromeClient.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
-            }
+        if (RequestCode.REQUEST_FILE_CHOOSER_NORMAL == requestCode) {
+            Logger.i(TAG, "onActivityResult(): REQUEST_FILE_CHOOSER_NORMAL");
+            this.webChromeClient.onActivityResultFileChooserNormal(requestCode, resultCode, data);
+        }
+        else if (RequestCode.REQUEST_FILE_CHOOSER_LOLLIPOP == requestCode) {
+            Logger.i(TAG, "onActivityResult(): REQUEST_FILE_CHOOSER_LOLLIPOP");
+            this.webChromeClient.onActivityResultFileChooserLollipop(requestCode, resultCode, data);
+        }
+        else if (RequestCode.REQUEST_TAKE_A_PICTURE == requestCode) {
+            Logger.i(TAG, "onActivityResult(): REQUEST_TAKE_A_PICTURE");
+            this.webChromeClient.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
