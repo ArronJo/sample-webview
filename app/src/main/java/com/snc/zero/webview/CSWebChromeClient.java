@@ -33,7 +33,6 @@ import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.util.DateTimeUtil;
-import com.snc.zero.util.FileUtil;
 import com.snc.zero.util.StringUtil;
 
 import java.io.File;
@@ -385,6 +384,7 @@ public class CSWebChromeClient extends WebChromeClient {
     public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
         Logger.i(TAG, PREFIX + "onJsAlert(): url[" + view.getUrl() + "], message[" + message + "], JsResult[" + result + "]");
 
+        //++
         // custom dialog
         String title = StringUtil.nvl(Uri.parse(url).getLastPathSegment(), "");
         DialogHelper.alert((Activity) context, title, message, android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -394,9 +394,10 @@ public class CSWebChromeClient extends WebChromeClient {
             }
         });
         return true;
-
+        //||
         // default dialog
         //return super.onJsAlert(view, url, message, result);
+        //--
     }
     //-- [[E N D] Javascript Alert]
 
@@ -404,8 +405,9 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Web Console Log]
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        Logger.i(TAG, PREFIX + "onConsoleMessage(): " + consoleMessage.message());
-        return super.onConsoleMessage(consoleMessage);
+        Logger.i(TAG, PREFIX + "[" + consoleMessage.messageLevel() + ":CONSOLE] \"" + consoleMessage.message() + "\", source: " + consoleMessage.sourceId() + " (" + consoleMessage.lineNumber() + ")");
+        return true;    // remove chromium log
+        //return super.onConsoleMessage(consoleMessage);
     }
     //-- [[E N D] Web Console Log]
 

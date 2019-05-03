@@ -46,7 +46,7 @@ function callbackNativeResponse(data) {
     alert(data);
 }
 
-callNative("apiSample", {}, "callbackNativeResponse");
+callNative("apiSample", { num:10, str:"string", bool:true }, "callbackNativeResponse");
 </script>
 ```
 
