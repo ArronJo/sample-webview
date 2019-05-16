@@ -16,8 +16,7 @@ import java.util.Locale;
  */
 public class FileUtil {
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean mkdirs(File dir) {
+    private static boolean mkdirs(File dir) {
         if (null != dir) {
             if (dir.exists()) {
                 return true;
@@ -27,7 +26,6 @@ public class FileUtil {
         return false;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean delete(File file) {
         if (null != file && file.exists()) {
             return file.delete();

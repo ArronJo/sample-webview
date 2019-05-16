@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.webkit.WebView;
 
 import com.gun0912.tedpermission.PermissionListener;

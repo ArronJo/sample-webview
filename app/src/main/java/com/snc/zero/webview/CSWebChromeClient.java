@@ -303,12 +303,15 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Take a picture]
     public void onActivityResultTakePicture(WebView webview, int requestCode, int resultCode, Intent data) {
         Logger.i(TAG, PREFIX + "onActivityResultTakePicture(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+        if (Activity.RESULT_OK != resultCode) {
+            return;
+        }
+
         if (null != AndroidBridge.getExtraOutput(false)) {
             Logger.i(TAG, "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
             Uri uri = AndroidBridge.getExtraOutput(true);
             AndroidBridge.executeJSFunction(webview, requestCode, uri.toString());
-        }
-        else if (null != data) {
+        } else if (null != data) {
             Logger.i(TAG, "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
             String params = null;
             if ("inline-data".equals(data.getAction())) {
@@ -319,8 +322,7 @@ public class CSWebChromeClient extends WebChromeClient {
                         params = bitmap.toString();
                     }
                 }
-            }
-            else if (null != data.getData()) {
+            } else if (null != data.getData()) {
                 Uri uri = data.getData();
                 params = StringUtil.nvl(uri, "");
             }
