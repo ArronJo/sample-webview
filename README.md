@@ -21,7 +21,16 @@ navigator.geolocation.watchPosition(function(Position) {
 </script>
 ```
 
-3. Native Interface
+3. Full-screen video playback
+```code
+<video width="100%" height="100%" controls>
+    <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
+    <source src="https://www.w3schools.com/html/movie.ogg" type="video/ogg">
+    Your browser does not support the video tag.
+</video>
+```
+
+4. Native Interface
 ```code
 <script>
 function callNative(command, args, callback) {
