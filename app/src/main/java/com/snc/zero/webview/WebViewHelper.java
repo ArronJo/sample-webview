@@ -68,8 +68,14 @@ public class WebViewHelper {
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
         settings.setAppCacheEnabled(false);
+        settings.setAllowFileAccess(false);
+        settings.setAllowContentAccess(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            settings.setAllowFileAccessFromFileURLs(false);
+            settings.setAllowUniversalAccessFromFileURLs(false);
         }
     }
 

@@ -101,6 +101,10 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_BACK == keyCode) {
+            if (this.webChromeClient.isVideoPlayingInFullscreen()) {
+                return super.onKeyDown(keyCode, event);
+            }
+
             // go back
             if (this.webview.canGoBack()) {
                 this.webview.goBack();

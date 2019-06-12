@@ -456,6 +456,10 @@ public class CSWebChromeClient extends WebChromeClient {
     private ViewGroup mFullscreenContainer;
     private CustomViewCallback mCustomViewCallback;
 
+    public boolean isVideoPlayingInFullscreen() {
+        return null != mFullscreenContainer;
+    }
+
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
         Logger.i(TAG, PREFIX + "onShowCustomView(): view[" + view + "], callback[" + callback + "]");
@@ -469,7 +473,7 @@ public class CSWebChromeClient extends WebChromeClient {
             mFullscreenContainer.setBackgroundResource(android.R.color.black);
             mFullscreenContainer.setVisibility(View.GONE);
 
-            ViewGroup decor = (ViewGroup) ((Activity) this.context).getWindow().getDecorView();
+            ViewGroup decor =  ((Activity) this.context).getWindow().getDecorView().findViewById(android.R.id.content);
             decor.addView(mFullscreenContainer, ViewGroup.LayoutParams.MATCH_PARENT);
         }
 
@@ -479,13 +483,12 @@ public class CSWebChromeClient extends WebChromeClient {
 
         // video view
         if (view instanceof FrameLayout) {
-            View focusedChild = ((FrameLayout) view).getFocusedChild();
-
             mFullscreenContainer.addView(view, new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT));
             mFullscreenContainer.setVisibility(View.VISIBLE);
 
+            View focusedChild = ((FrameLayout) view).getFocusedChild();
             Logger.i(TAG, PREFIX + "onShowCustomView() - focusedChild = " + focusedChild.getClass().getName());
         }
 
@@ -497,7 +500,7 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, PREFIX + "onHideCustomView()");
         super.onHideCustomView();
 
-        ViewGroup decor = (ViewGroup) ((Activity) this.context).getWindow().getDecorView();
+        ViewGroup decor =  ((Activity) this.context).getWindow().getDecorView().findViewById(android.R.id.content);
         if (null != mFullscreenContainer) {
             decor.removeView(mFullscreenContainer);
         }
@@ -506,6 +509,7 @@ public class CSWebChromeClient extends WebChromeClient {
             mCustomViewCallback.onCustomViewHidden();
         }
 
+        mCustomViewCallback = null;
         mFullscreenContainer = null;
     }
     //-- [[E N D] Video Player (for fullscreen]
