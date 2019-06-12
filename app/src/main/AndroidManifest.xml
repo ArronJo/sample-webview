@@ -35,7 +35,9 @@
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
 
         <!-- Activity -->
-        <activity android:name=".activity.WebViewActivity">
+        <activity
+            android:name="com.snc.sample.webview.activity.WebViewActivity"
+            android:configChanges="keyboardHidden|orientation|screenLayout|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -23,6 +23,7 @@ import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.gun0912.tedpermission.PermissionListener;
@@ -145,7 +146,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "onPermissionDenied..." + deniedPermissions.toString());
+                        Logger.e(TAG, PREFIX + "onPermissionDenied..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions.toArray(new String[] {}))
@@ -308,11 +309,11 @@ public class CSWebChromeClient extends WebChromeClient {
         }
 
         if (null != AndroidBridge.getExtraOutput(false)) {
-            Logger.i(TAG, "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
+            Logger.i(TAG, PREFIX + "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
             Uri uri = AndroidBridge.getExtraOutput(true);
             AndroidBridge.executeJSFunction(webview, requestCode, uri.toString());
         } else if (null != data) {
-            Logger.i(TAG, "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
+            Logger.i(TAG, PREFIX + "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
             String params = null;
             if ("inline-data".equals(data.getAction())) {
                 Bundle extras = data.getExtras();
@@ -449,5 +450,64 @@ public class CSWebChromeClient extends WebChromeClient {
         return v;
     }
     //-- [[E N D] ProgressBar]
+
+
+    //++ [[START] Video Player (for fullscreen]
+    private ViewGroup mFullscreenContainer;
+    private CustomViewCallback mCustomViewCallback;
+
+    @Override
+    public void onShowCustomView(View view, CustomViewCallback callback) {
+        Logger.i(TAG, PREFIX + "onShowCustomView(): view[" + view + "], callback[" + callback + "]");
+
+        // background
+        if (null == mFullscreenContainer) {
+            mFullscreenContainer = new FrameLayout(view.getContext());
+            mFullscreenContainer.setLayoutParams(new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT));
+            mFullscreenContainer.setBackgroundResource(android.R.color.black);
+            mFullscreenContainer.setVisibility(View.GONE);
+
+            ViewGroup decor = (ViewGroup) ((Activity) this.context).getWindow().getDecorView();
+            decor.addView(mFullscreenContainer, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+
+        mCustomViewCallback = callback;
+
+        Logger.i(TAG, PREFIX + "onShowCustomView() - view = " + view.getClass().getName());
+
+        // video view
+        if (view instanceof FrameLayout) {
+            View focusedChild = ((FrameLayout) view).getFocusedChild();
+
+            mFullscreenContainer.addView(view, new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            mFullscreenContainer.setVisibility(View.VISIBLE);
+
+            Logger.i(TAG, PREFIX + "onShowCustomView() - focusedChild = " + focusedChild.getClass().getName());
+        }
+
+        super.onShowCustomView(view, callback);
+    }
+
+    @Override
+    public void onHideCustomView() {
+        Logger.i(TAG, PREFIX + "onHideCustomView()");
+        super.onHideCustomView();
+
+        ViewGroup decor = (ViewGroup) ((Activity) this.context).getWindow().getDecorView();
+        if (null != mFullscreenContainer) {
+            decor.removeView(mFullscreenContainer);
+        }
+
+        if (null != mCustomViewCallback) {
+            mCustomViewCallback.onCustomViewHidden();
+        }
+
+        mFullscreenContainer = null;
+    }
+    //-- [[E N D] Video Player (for fullscreen]
 
 }

@@ -27,10 +27,10 @@ public class FileUtil {
     }
 
     public static boolean delete(File file) {
-        if (null != file && file.exists()) {
-            return file.delete();
+        if (null == file || !file.exists()) {
+            return false;
         }
-        return false;
+        return file.delete();
     }
 
     public static File createCameraFile(String extension) throws IOException {
