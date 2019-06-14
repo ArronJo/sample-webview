@@ -91,9 +91,7 @@ public class WebViewActivity extends BaseActivity {
         this.webview.addJavascriptInterface(new AndroidBridge(webview), "AndroidBridge");
 
         // load url
-        //WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
-        //WebViewHelper.loadUrl(this.webview, "http://www.naver.com");
-        WebViewHelper.loadUrl(this.webview, "http://www.daum.net");
+        WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
     }
 
     @Override
