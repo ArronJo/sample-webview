@@ -62,6 +62,9 @@ public class WebViewActivity extends BaseActivity {
         // add webview
         this.webview = WebViewHelper.addWebView(getContext(), contentView);
 
+        // options
+        //this.webview.getSettings().setSupportMultipleWindows(true);
+
         // add user-agent
         try {
             String ua = this.webview.getSettings().getUserAgentString();
@@ -73,7 +76,7 @@ public class WebViewActivity extends BaseActivity {
             ua += "." + PackageUtil.getPackageVersionCode(this);
             this.webview.getSettings().setUserAgentString(ua);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Logger.e(TAG, e);
         }
 
         // set webViewClient
@@ -88,7 +91,9 @@ public class WebViewActivity extends BaseActivity {
         this.webview.addJavascriptInterface(new AndroidBridge(webview), "AndroidBridge");
 
         // load url
-        WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, "http://www.naver.com");
+        WebViewHelper.loadUrl(this.webview, "http://www.daum.net");
     }
 
     @Override
@@ -101,10 +106,24 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_BACK == keyCode) {
+            Logger.i(TAG, "onActivityResult(): WebView isVideoPlayingInFullscreen = " + this.webChromeClient.isVideoPlayingInFullscreen());
             if (this.webChromeClient.isVideoPlayingInFullscreen()) {
-                return super.onKeyDown(keyCode, event);
+                return false;
             }
 
+            // multiple windows go back
+            if (null != this.webChromeClient.getNewWebView()) {
+                Logger.i(TAG, "onActivityResult(): NewWebView canGoBack = " + this.webChromeClient.getNewWebView().canGoBack());
+                if (this.webChromeClient.getNewWebView().canGoBack()) {
+                    this.webChromeClient.getNewWebView().goBack();
+                    return true;
+                } else {
+                    this.webChromeClient.closeNewWebView();
+                }
+                return true;
+            }
+
+            Logger.i(TAG, "onActivityResult(): WebView canGoBack = " + this.webview.canGoBack());
             // go back
             if (this.webview.canGoBack()) {
                 this.webview.goBack();

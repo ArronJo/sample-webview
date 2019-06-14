@@ -63,7 +63,7 @@
         <div class="l-content">
             <h2 class="">Video</h2>
             <div class="center mT50">
-                <video width="100%" height="100%" controls>
+                <video id="video" width="100%" height="100%" controls>
                     <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
                     <source src="https://www.w3schools.com/html/movie.ogg" type="video/ogg">
                     Your browser does not support the video tag.
@@ -79,6 +79,24 @@
             <p><a href="intent://scan/#Intent;scheme=snc;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.snc.test.webview2;end"> Install WebViewTest Application </a><br></p>
         </div>
     </div>
+
+    <script>
+    (function() {
+        window.onerror = function (err) {
+            //console.log(arguments);
+            console.log(err);
+            for (var i=0; i < arguments.length; i++) {
+                console.log("[" + i + "] : " + arguments[i]);
+            }
+        };
+
+        var ro = new ResizeObserver(function (entries) {
+            entries[0].target.classList.add('big');
+        });
+
+        ro.observe(window.video);
+    })();
+    </script>
 
 </body>
 </html>

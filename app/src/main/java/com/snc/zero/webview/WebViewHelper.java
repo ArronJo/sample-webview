@@ -34,7 +34,6 @@ public class WebViewHelper {
     public static WebView addWebView(Context context, ViewGroup parentView) {
         WebView webView = newWebView(context);
         parentView.addView(webView);
-        setup(webView);
         return webView;
     }
 
@@ -54,6 +53,10 @@ public class WebViewHelper {
         webView.setLayoutParams(params);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setBackgroundResource(R.color.colorPrimaryDark);
+
+        // setup
+        setup(webView);
+
         return webView;
     }
 

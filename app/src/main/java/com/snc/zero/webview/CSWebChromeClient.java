@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.View;
@@ -422,22 +423,22 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, PREFIX + "onProgressChanged(): " + progress + "%,  url[" + view.getUrl() + "]");
 
         if (progress < 100) {
-            View v = findProgressBar(view);
+            View v = findProgressBarInTopArea(view);
             if (null != v) {
                 ((ProgressBar) v).setProgress(progress);
                 v.setVisibility(View.VISIBLE);
             }
         }
         else {
-            View v = findProgressBar(view);
+            View v = findProgressBarInTopArea(view);
             if (null != v) {
                 v.setVisibility(View.GONE);
             }
         }
     }
 
-    // find progressbar widget
-    private View findProgressBar(View view) {
+    // Find the progress bar widget in the top area.
+    private View findProgressBarInTopArea(View view) {
         ViewParent parent = view.getParent();
         View v = null;
         while (null != parent) {
@@ -453,44 +454,39 @@ public class CSWebChromeClient extends WebChromeClient {
 
 
     //++ [[START] Video Player (for fullscreen]
-    private ViewGroup mFullscreenContainer;
-    private CustomViewCallback mCustomViewCallback;
+    private ViewGroup fullscreenContainer;
+    private CustomViewCallback customViewCallback;
 
     public boolean isVideoPlayingInFullscreen() {
-        return null != mFullscreenContainer;
+        return null != fullscreenContainer;
     }
 
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
-        Logger.i(TAG, PREFIX + "onShowCustomView(): view[" + view + "], callback[" + callback + "]");
+        Logger.i(TAG, PREFIX + "onShowCustomView() - view[" + view + "], callback[" + callback + "]");
 
         // background
-        if (null == mFullscreenContainer) {
-            mFullscreenContainer = new FrameLayout(view.getContext());
-            mFullscreenContainer.setLayoutParams(new FrameLayout.LayoutParams(
+        if (null == fullscreenContainer) {
+            fullscreenContainer = new FrameLayout(view.getContext());
+            fullscreenContainer.setLayoutParams(new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.MATCH_PARENT));
-            mFullscreenContainer.setBackgroundResource(android.R.color.black);
-            mFullscreenContainer.setVisibility(View.GONE);
+            fullscreenContainer.setBackgroundResource(android.R.color.black);
+            fullscreenContainer.setVisibility(View.GONE);
 
-            ViewGroup decor =  ((Activity) this.context).getWindow().getDecorView().findViewById(android.R.id.content);
-            decor.addView(mFullscreenContainer, ViewGroup.LayoutParams.MATCH_PARENT);
+            ViewGroup decor = ((Activity) this.context).getWindow().getDecorView().findViewById(android.R.id.content);
+            decor.addView(fullscreenContainer, -1);
         }
 
-        mCustomViewCallback = callback;
+        customViewCallback = callback;
 
-        Logger.i(TAG, PREFIX + "onShowCustomView() - view = " + view.getClass().getName());
+        Logger.i(TAG, PREFIX + "onShowCustomView() - view class name = " + view.getClass().getName());
 
-        // video view
-        if (view instanceof FrameLayout) {
-            mFullscreenContainer.addView(view, new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            mFullscreenContainer.setVisibility(View.VISIBLE);
-
-            View focusedChild = ((FrameLayout) view).getFocusedChild();
-            Logger.i(TAG, PREFIX + "onShowCustomView() - focusedChild = " + focusedChild.getClass().getName());
-        }
+        // add video view
+        fullscreenContainer.addView(view, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        fullscreenContainer.setVisibility(View.VISIBLE);
 
         super.onShowCustomView(view, callback);
     }
@@ -500,18 +496,70 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, PREFIX + "onHideCustomView()");
         super.onHideCustomView();
 
-        ViewGroup decor =  ((Activity) this.context).getWindow().getDecorView().findViewById(android.R.id.content);
-        if (null != mFullscreenContainer) {
-            decor.removeView(mFullscreenContainer);
+        if (null != fullscreenContainer) {
+            ViewGroup decor = ((Activity) this.context).getWindow().getDecorView().findViewById(android.R.id.content);
+            decor.removeView(fullscreenContainer);
         }
 
-        if (null != mCustomViewCallback) {
-            mCustomViewCallback.onCustomViewHidden();
+        if (null != customViewCallback) {
+            customViewCallback.onCustomViewHidden();
         }
 
-        mCustomViewCallback = null;
-        mFullscreenContainer = null;
+        customViewCallback = null;
+        fullscreenContainer = null;
     }
     //-- [[E N D] Video Player (for fullscreen]
+
+
+    //++ [[START] Support Multiple Windows]
+    private WebView newWebView;
+    private int scrollX;
+    private int scrollY;
+
+    public WebView getNewWebView() {
+        return newWebView;
+    }
+
+    public void closeNewWebView() {
+        WebView webView = ((WebView) newWebView.getParent());
+        webView.removeView(newWebView);
+        newWebView.destroy();
+        newWebView = null;
+
+        webView.scrollTo(scrollX, scrollY);
+    }
+
+    @Override
+    public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+        Logger.i(TAG, PREFIX + "onCreateWindow():  view[" + view + "]  isDialog[" + isDialog + "]  isUserGesture[" + isUserGesture + "]  resultMsg[" + resultMsg + "]");
+
+        this.newWebView = WebViewHelper.addWebView(view.getContext(), view);
+        view.bringChildToFront(this.newWebView);
+
+        CSWebChromeClient webChromeClient = new CSWebChromeClient(view.getContext());
+        this.newWebView.setWebChromeClient(webChromeClient);
+
+        CSWebViewClient webviewClient = new CSWebViewClient();
+        this.newWebView.setWebViewClient(webviewClient);
+
+        scrollX = view.getScrollX();
+        scrollY = view.getScrollY();
+        view.scrollTo(0, 0);
+
+        WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+        transport.setWebView(this.newWebView);
+        resultMsg.sendToTarget();
+
+        return true;
+        //return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+    }
+
+    @Override
+    public void onCloseWindow(WebView window) {
+        super.onCloseWindow(window);
+        this.newWebView = null;
+        Logger.i(TAG, PREFIX + "onCloseWindow()");
+    }
+    //-- [[E N D] Support Multiple Windows]
 
 }
