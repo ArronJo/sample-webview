@@ -150,6 +150,7 @@ public class WebViewActivity extends BaseActivity {
                     "\n]");
         }
 
+        //++ [[START] File Chooser]
         if (RequestCode.REQUEST_FILE_CHOOSER_NORMAL == requestCode) {
             Logger.i(TAG, "onActivityResult(): REQUEST_FILE_CHOOSER_NORMAL");
             this.webChromeClient.onActivityResultFileChooserNormal(requestCode, resultCode, data);
@@ -158,6 +159,7 @@ public class WebViewActivity extends BaseActivity {
             Logger.i(TAG, "onActivityResult(): REQUEST_FILE_CHOOSER_LOLLIPOP");
             this.webChromeClient.onActivityResultFileChooserLollipop(requestCode, resultCode, data);
         }
+        //-- [[E N D] File Chooser]
         else if (RequestCode.REQUEST_TAKE_A_PICTURE == requestCode) {
             Logger.i(TAG, "onActivityResult(): REQUEST_TAKE_A_PICTURE");
             this.webChromeClient.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
