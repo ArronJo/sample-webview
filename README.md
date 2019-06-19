@@ -3,7 +3,15 @@
 This project is a sample for developing android applications using webview.
 
 
-# SUPPORT FEATURES
+# Release Note
+|    Date    |      Comment      |
+|------------|-------------------|
+| 2019-06-14 | Added support for multiple Windows features. |
+| 2019-06-12 | Added Full-screen video playback on the web. |
+| 2019-04-12 | The first commit. |
+
+
+# Support Features
 1. File Chooser
 ```code
 <input type="file" accept="image/*" />
