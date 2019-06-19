@@ -76,7 +76,7 @@ public class CSWebChromeClient extends WebChromeClient {
         openFileChooser(uploadMsg, "");
     }
 
-    // Code Inspect Warning 때문에 public --> private 로 바꾸었다.
+    // Code Inspect Warning: public -> private
     // For Android 3.0+
     private void openFileChooser(final ValueCallback<Uri> uploadMsg, final String acceptType) {
         Logger.i(TAG, PREFIX + "openFileChooser()  For Android 3.0+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]");
