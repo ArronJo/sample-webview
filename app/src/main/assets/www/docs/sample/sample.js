@@ -15,6 +15,27 @@ function callbackTakePicture(data) {
     console.log("callbackTakePicture(): data = " + data);
 }
 
+// request permission
+function requirePermission (device) {
+    var audioSource = "";
+    var videoSource = "";
+
+    var constraints = {};
+
+    if ("microphone" == device) {
+        constraints.audio = {deviceId: audioSource ? {exact: audioSource} : undefined};
+    } else if ("camera" == device) {
+        constraints.video = {deviceId: videoSource ? {exact: videoSource} : undefined};
+    }
+
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(function next(error) {
+        console.log('then...');
+    })
+    .catch(function handleError(error) {
+        console.error('Error: ', error);
+    });
+}
 
 // ready
 $(document).ready(function() {
@@ -32,6 +53,14 @@ $(document).ready(function() {
 
     $('#native-take-a-picture').on('click', function () {
         callNative("apiTakePicture", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackTakePicture");
-   });
+    });
+
+    $('#req-microphone').on('click', function () {
+        requirePermission("microphone");
+    });
+
+    $('#req-camera').on('click', function () {
+        requirePermission("camera");
+    });
 
 });

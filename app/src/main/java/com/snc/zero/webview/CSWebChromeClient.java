@@ -335,10 +335,65 @@ public class CSWebChromeClient extends WebChromeClient {
     //-- [[E N D] Take a picture]
 
 
-    //++ [[START] Geolocation]
+    //++ [[START] Geolocation, Record Audio]
     @Override
-    public void onPermissionRequest(PermissionRequest request) {
+    public void onPermissionRequest(final PermissionRequest request) {
         Logger.i(TAG, PREFIX + "onPermissionRequest: request[" + request + "]");
+
+        // RECORD AUDIO, RECORD VIDEO
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final Uri origin = request.getOrigin();
+
+            for (String permission : request.getResources()) {
+                switch (permission) {
+                    case PermissionRequest.RESOURCE_AUDIO_CAPTURE: {
+                        TedPermission.with(this.context)
+                                .setPermissionListener(new PermissionListener() {
+                                    @Override
+                                    public void onPermissionGranted() {
+                                        Logger.i(TAG, PREFIX + "onPermissionGranted() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        request.grant(request.getResources());
+                                    }
+
+                                    @Override
+                                    public void onPermissionDenied(List<String> deniedPermissions) {
+                                        Logger.i(TAG, PREFIX + "onPermissionDenied() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        request.deny();
+                                    }
+                                })
+                                .setPermissions(new String[] {
+                                        // Dangerous Permission
+                                        Manifest.permission.RECORD_AUDIO
+                                })
+                                .check();
+                        return;
+                    }
+
+                    case PermissionRequest.RESOURCE_VIDEO_CAPTURE: {
+                        TedPermission.with(this.context)
+                                .setPermissionListener(new PermissionListener() {
+                                    @Override
+                                    public void onPermissionGranted() {
+                                        Logger.i(TAG, PREFIX + "onPermissionGranted() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        request.grant(request.getResources());
+                                    }
+
+                                    @Override
+                                    public void onPermissionDenied(List<String> deniedPermissions) {
+                                        Logger.i(TAG, PREFIX + "onPermissionDenied() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        request.deny();
+                                    }
+                                })
+                                .setPermissions(new String[] {
+                                        // Dangerous Permission
+                                        Manifest.permission.CAMERA
+                                })
+                                .check();
+                        return;
+                    }
+                }
+            }
+        }
         super.onPermissionRequest(request);
     }
 
@@ -347,7 +402,10 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, PREFIX + "onPermissionRequestCanceled: request[" + request + "]");
         super.onPermissionRequestCanceled(request);
     }
+    //-- [[E N D] Geolocation, Record Audio]
 
+
+    //++ [[START] Geolocation]
     @Override
     public void onGeolocationPermissionsHidePrompt() {
         Logger.i(TAG, PREFIX + "onGeolocationPermissionsHidePrompt");
