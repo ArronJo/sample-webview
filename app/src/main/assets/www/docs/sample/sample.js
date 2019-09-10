@@ -2,10 +2,15 @@
  * Page Javascript
  */
 
+/////////////////////////////////////////////////
+// Global
+/////////////////////////////////////////////////
+
 // response (Native --> Web)
 function callbackNativeResponse(data) {
+    Progress.hide();
+
     alert(data);
-    hideProgress();
     console.log("callbackNativeResponse(): data = " + data);
 }
 
@@ -15,52 +20,87 @@ function callbackTakePicture(data) {
     console.log("callbackTakePicture(): data = " + data);
 }
 
-// request permission
-function requirePermission (device) {
-    var audioSource = "";
-    var videoSource = "";
 
-    var constraints = {};
+/////////////////////////////////////////////////
+// Error
+/////////////////////////////////////////////////
+(function() {
+    window.onerror = function (err) {
+        console.log(err);
+        for (var i=0; i < arguments.length; i++) {
+            console.log("[" + i + "] : " + arguments[i]);
+        }
+    };
+})();
 
-    if ("microphone" == device) {
-        constraints.audio = {deviceId: audioSource ? {exact: audioSource} : undefined};
-    } else if ("camera" == device) {
-        constraints.video = {deviceId: videoSource ? {exact: videoSource} : undefined};
+
+/////////////////////////////////////////////////
+// Document Ready
+/////////////////////////////////////////////////
+(function() {
+    function DOMContentLoaded () {
+        console.log('document.ready ...');
+
+        document.querySelector('#call-android-methods-recommended').addEventListener('click', function (e) {
+            Progress.show();
+
+            let args = {
+                a: "A",
+                b: 1,
+                c: false,
+                d: {
+                    d1:"d1",
+                    d2:2
+                }
+            };
+            NativeBridge.call("apiRecommended", args, "callbackNativeResponse");
+        });
+
+        document.querySelector('#call-android-methods-not-recommended').addEventListener('click', function (e) {
+            Progress.show();
+
+            let args = {
+                a: "A",
+                b: 1,
+                c: false,
+                d: {
+                    d1:"d1",
+                    d2:2
+                }
+            };
+            NativeBridge.call("apiNotRecommended", args, "callbackNativeResponse");
+        });
+
+        document.querySelector('#native-take-a-picture').addEventListener('click', function (e) {
+            let args = {
+                a: "A",
+                b: 1,
+                c: false,
+                d: {
+                    d1:"d1",
+                    d2:2
+                }
+            };
+            NativeBridge.call("apiTakePicture", args, "callbackTakePicture");
+        });
+
+        document.querySelector('#req-microphone').addEventListener('click', function (e) {
+            Permission.request("microphone");
+        });
+
+        document.querySelector('#req-camera').addEventListener('click', function (e) {
+            Permission.request("camera");
+        });
     }
 
-    navigator.mediaDevices.getUserMedia(constraints)
-    .then(function next(error) {
-        console.log('then...');
-    })
-    .catch(function handleError(error) {
-        console.error('Error: ', error);
-    });
-}
+	if ( document.readyState !== 'loading' ) {
+		console.log( 'document is already ready, just execute code here' );
+		DOMContentLoaded();
+	} else {
+		document.addEventListener('DOMContentLoaded', function () {
+			console.log( 'document was not ready, place code here' );
+			DOMContentLoaded();
+		});
+	}
 
-// ready
-$(document).ready(function() {
-    console.info('document.ready ...');
-
-    $('#call-android-methods-recommended').on('click', function () {
-        showProgress();
-        callNative("apiRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
-    });
-
-    $('#call-android-methods-not-recommended').on('click', function () {
-        showProgress();
-        callNative("apiNotRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
-    });
-
-    $('#native-take-a-picture').on('click', function () {
-        callNative("apiTakePicture", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackTakePicture");
-    });
-
-    $('#req-microphone').on('click', function () {
-        requirePermission("microphone");
-    });
-
-    $('#req-camera').on('click', function () {
-        requirePermission("camera");
-    });
-
-});
+})();

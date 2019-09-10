@@ -3,10 +3,16 @@
  */
 @charset "utf-8";
 
-@import "../../dist/snc/css/reset.css";
-@import "../../dist/snc/css/components.css";
-@import "../../dist/snc/css/extends.css";
-@import "../../dist/snc/css/anim.css";
+@import "../../dist/vendor/css/reset.css";
+/*@import "../../dist/vendor/css/normalize.css";*/
+@import "../../common/css/components.css";
+@import "../../common/css/extends.css";
+@import "../../common/css/anim.css";
+
+a { color: #989da3; text-decoration: none }
+a:hover,
+a:focus,
+a:active { color: #989da3; text-decoration: none; }
 
 .identity { background-color:#001935; color:#fefefe; }
 
