@@ -31,13 +31,12 @@ public class CSDownloadListener implements DownloadListener {
     }
 
     @Override
-    public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+    public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
         String fileName = getFilenameFromDownloadContent(url, contentDisposition);
         if (null == fileName) {
             return;
         }
         DownloadAsyncTask task = new DownloadAsyncTask(this.activity);
-        //DownloadAsyncTask2 task = new DownloadAsyncTask2(this.activity);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url, fileName, "1");
     }
 

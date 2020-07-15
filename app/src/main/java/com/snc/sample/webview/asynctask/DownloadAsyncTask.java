@@ -64,7 +64,7 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
         }
 
         try {
-            return downloadIt2(params);
+            return downloadIt(params);
         } catch (Exception e) {
             Log.e(TAG, Log.getStackTraceString(e));
         }
@@ -142,11 +142,11 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
         return false;
     }
 
-    private String downloadIt2(String... params) throws IOException {
+    private String downloadIt(String... params) throws IOException {
         String url = params[0];
         String fileName = params[1];
 
-        Log.i(TAG, "[WEBVIEW] downloadIt2..." + url);
+        Log.i(TAG, "[WEBVIEW] downloadIt..." + url);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://your.api.url/")   // Base URL required.
                 .build();
@@ -179,14 +179,12 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
         InputStream input = null;
         OutputStream output = null;
         try {
-            long lengthOfFile = body.contentLength();
-            Logger.d(TAG, "Length of file: " + lengthOfFile);
-
             input = body.byteStream();
             String targetFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-            File file = new File(targetFolder, fileName );
+            File file = new File(targetFolder, fileName);
             output = new FileOutputStream(file);
 
+            long lengthOfFile = body.contentLength();
             byte[] data = new byte[1024];
             long total = 0;
             int count;
@@ -195,7 +193,6 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
                 int p = (int) ((total * 100) / lengthOfFile);
                 publishProgress("progress", Integer.toString(p));
                 output.write(data, 0, count);
-                Logger.e(TAG, "output write = " + total);
             }
 
             output.flush();
