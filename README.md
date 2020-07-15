@@ -6,6 +6,7 @@ This project is a sample for developing android applications using webview.
 # Release Note
 |    Date    |      Comment      |
 |------------|-------------------|
+| 2020-07-15 | Added file download function in webview. (setDownloadListener()) |
 | 2019-08-02 | Added support for the "audio / video recording" feature. |
 | 2019-06-14 | Added support for the "multiple windows" features. |
 | 2019-06-12 | Added Full-screen video playback on the web. |

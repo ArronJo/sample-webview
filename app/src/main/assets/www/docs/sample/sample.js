@@ -2,6 +2,10 @@
  * Page Javascript
  */
 
+/////////////////////////////////////////////////
+// Global
+/////////////////////////////////////////////////
+
 // response (Native --> Web)
 function callbackNativeResponse(data) {
     alert(data);
@@ -37,7 +41,30 @@ function requirePermission (device) {
     });
 }
 
-// ready
+
+/////////////////////////////////////////////////
+// Immediately
+/////////////////////////////////////////////////
+(function() {
+    window.onerror = function (err) {
+        //console.log(arguments);
+        console.log(err);
+        for (var i=0; i < arguments.length; i++) {
+            console.log("[" + i + "] : " + arguments[i]);
+        }
+    };
+
+    var ro = new ResizeObserver(function (entries) {
+        entries[0].target.classList.add('big');
+    });
+
+    ro.observe(window.video);
+})();
+
+
+/////////////////////////////////////////////////
+// Document Ready
+/////////////////////////////////////////////////
 $(document).ready(function() {
     console.info('document.ready ...');
 

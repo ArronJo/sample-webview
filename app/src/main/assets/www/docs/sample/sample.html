@@ -28,6 +28,7 @@
     <noscript>Your browser does not support JavaScript!</noscript>
 </head>
 <body class="identity word-break">
+<div class="wrap">
 
     <div class="l-header-container">
         <div class="l-header">
@@ -91,23 +92,6 @@
         </div>
     </div>
 
-    <script>
-    (function() {
-        window.onerror = function (err) {
-            //console.log(arguments);
-            console.log(err);
-            for (var i=0; i < arguments.length; i++) {
-                console.log("[" + i + "] : " + arguments[i]);
-            }
-        };
-
-        var ro = new ResizeObserver(function (entries) {
-            entries[0].target.classList.add('big');
-        });
-
-        ro.observe(window.video);
-    })();
-    </script>
-
+</div>
 </body>
 </html>

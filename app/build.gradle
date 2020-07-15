@@ -19,6 +19,9 @@ android {
 
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -33,6 +36,15 @@ dependencies {
 
     // runtime permission library
     implementation 'gun0912.ted:tedpermission:2.2.1'
+
+
+    //++ retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+    //--
 }
 
 android.applicationVariants.all { variant ->

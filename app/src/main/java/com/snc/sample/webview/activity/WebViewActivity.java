@@ -1,6 +1,7 @@
 package com.snc.sample.webview.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import com.snc.sample.webview.BuildConfig;
 import com.snc.sample.webview.R;
 import com.snc.sample.webview.bridge.AndroidBridge;
+import com.snc.sample.webview.download.CSDownloadListener;
 import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.activity.BaseActivity;
 import com.snc.zero.dialog.DialogHelper;
@@ -33,6 +35,7 @@ import com.snc.zero.webview.WebViewHelper;
 public class WebViewActivity extends BaseActivity {
     private static final String TAG = WebViewActivity.class.getSimpleName();
 
+    private Activity activity;
     private WebView webview;
     private CSWebChromeClient webChromeClient;
 
@@ -40,6 +43,8 @@ public class WebViewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.activity = this;
 
         init();
 
@@ -90,8 +95,12 @@ public class WebViewActivity extends BaseActivity {
         // add interface
         this.webview.addJavascriptInterface(new AndroidBridge(webview), "AndroidBridge");
 
+        // add download listener
+        this.webview.setDownloadListener(new CSDownloadListener(this.activity));
+
         // load url
-        WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 
     @Override

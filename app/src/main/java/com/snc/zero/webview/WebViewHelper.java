@@ -51,8 +51,8 @@ public class WebViewHelper {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         webView.setLayoutParams(params);
-        webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setBackgroundResource(R.color.colorPrimaryDark);
+        //webView.setBackgroundColor(Color.TRANSPARENT);
+        //webView.setBackgroundResource(android.R.color.white);
 
         // setup
         setup(webView);
