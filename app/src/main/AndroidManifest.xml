@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- RECORD AUDIO -->
+    <!-- The tablet device may not be supported when the permission is applied. -->
     <uses-permission android:name="android.permission.MICROPHONE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />

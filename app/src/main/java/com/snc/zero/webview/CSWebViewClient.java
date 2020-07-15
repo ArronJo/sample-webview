@@ -37,8 +37,7 @@ public class CSWebViewClient extends WebViewClient {
             view.loadUrl(url);
             return true;
         }
-        intentProcessing(view, url);
-        return true;
+        return intentProcessing(view, url);
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -58,25 +57,28 @@ public class CSWebViewClient extends WebViewClient {
         return true;
     }
 
-    private void intentProcessing(WebView view, String urlString) {
+    private boolean intentProcessing(WebView view, String urlString) {
         String url = Uri.decode(urlString);
 
         if (url.startsWith("intent:")) {
             try {
                 IntentUtil.intentScheme(view.getContext(), url);
+                return true;
             } catch (URISyntaxException e) {
                 Logger.e(TAG, e);
             } catch (ActivityNotFoundException e) {
                 Logger.e(TAG, e);
             }
-            return;
         }
 
         try {
             IntentUtil.view(view.getContext(), Uri.parse(url));
+            return true;
         } catch (ActivityNotFoundException e) {
             Logger.e(TAG, e);
         }
+
+        return false;
     }
 
     @Override

@@ -19,10 +19,9 @@
 
     <link rel="stylesheet" href="./sample.css">
 
-    <!--<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
-    <script src="../../dist/vendor/js/jquery-3.3.1.min.js"></script>
-    <script async src="../../dist/snc/js/nativeBridge.js"></script>
-    <script async src="../../dist/snc/js/progress.js"></script>
+    <script async src="../../common/js/nativeBridge.js"></script>
+    <script async src="../../common/js/permission.js"></script>
+    <script async src="../../common/js/progress.js"></script>
     <script async src="./sample.js"></script>
 
     <noscript>Your browser does not support JavaScript!</noscript>
@@ -41,9 +40,9 @@
             <h2 class="">Content</h2>
             <div class="center mT50">
                 <div class="center mT20">
-                    <input id="call-android-methods-recommended" type="button" class="btn" value="Recommended: Call Android methods"><br><br>
-                    <input id="call-android-methods-not-recommended" type="button" class="btn" value="Not recommended: Call Android methods"><br><br>
-                    <input id="native-take-a-picture" type="button" class="btn" value="take a picture">
+                    <input type="button" id="call-android-methods-recommended" class="btn" value="Recommended: Call Android methods"><br><br>
+                    <input type="button" id="call-android-methods-not-recommended" class="btn" value="Not recommended: Call Android methods"><br><br>
+                    <input type="button" id="native-take-a-picture" class="btn" value="take a picture">
                 </div>
                 
                 <div class="center mT20">
@@ -51,10 +50,10 @@
                 </div>
                 
                 <div class="center mT20">
-                    <label for="file-chooser-image">accept="image/*"</label><br><input id="file-chooser-image" class="btn mT5" type="file" accept="image/*" /><br>
-                    <label for="file-chooser-audio">accept="audio/*"</label><br><input id="file-chooser-audio" class="btn mT5" type="file" accept="audio/*" /><br>
-                    <label for="file-chooser-video">accept="video/*"</label><br><input id="file-chooser-video" class="btn mT5" type="file" accept="video/*" /><br>
-                    <label for="file-chooser-any">accept="*/*"</label><br><input id="file-chooser-any" class="btn mT5" type="file" accept="*/*" /><br>
+                    <label for="file-chooser-image">accept="image/*"</label><br><input type="file" id="file-chooser-image" class="btn mT5" accept="image/*" /><br>
+                    <label for="file-chooser-audio">accept="audio/*"</label><br><input type="file" id="file-chooser-audio" class="btn mT5" accept="audio/*" /><br>
+                    <label for="file-chooser-video">accept="video/*"</label><br><input type="file" id="file-chooser-video" class="btn mT5" accept="video/*" /><br>
+                    <label for="file-chooser-any">accept="*/*"</label><br><input type="file" id="file-chooser-any" class="btn mT5" accept="*/*" /><br>
                 </div>
             </div>
         </div>
