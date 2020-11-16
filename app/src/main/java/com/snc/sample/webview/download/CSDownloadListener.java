@@ -2,7 +2,6 @@ package com.snc.sample.webview.download;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.webkit.DownloadListener;
 
@@ -24,7 +23,7 @@ import java.util.Set;
 public class CSDownloadListener implements DownloadListener {
     private static final String TAG = CSDownloadListener.class.getSimpleName();
 
-    private Activity activity;
+    private final Activity activity;
 
     public CSDownloadListener(Activity activity) {
         this.activity = activity;
@@ -37,7 +36,7 @@ public class CSDownloadListener implements DownloadListener {
             return;
         }
         DownloadAsyncTask task = new DownloadAsyncTask(this.activity);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url, fileName, "1");
+        task.execute(url, fileName, "1");
     }
 
     private String getFilenameFromDownloadContent(String urlString, String contentDisposition) {

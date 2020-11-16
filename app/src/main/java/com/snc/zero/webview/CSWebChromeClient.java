@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -50,7 +49,6 @@ import java.util.List;
  */
 public class CSWebChromeClient extends WebChromeClient {
     private static final String TAG = CSWebChromeClient.class.getSimpleName();
-    private static final String PREFIX = "[WEBVIEW] ";
 
     private final Context context;
 
@@ -69,17 +67,15 @@ public class CSWebChromeClient extends WebChromeClient {
     private Uri[] mediaURIs;
 
     // For Android < 3.0
-    @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-        Logger.i(TAG, PREFIX + "openFileChooser()  For Android < 3.0  \n:: uploadMsg[" + uploadMsg + "]");
+        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android < 3.0  \n:: uploadMsg[" + uploadMsg + "]");
 
         openFileChooser(uploadMsg, "");
     }
 
-    // Code Inspect Warning: public -> private
     // For Android 3.0+
-    private void openFileChooser(final ValueCallback<Uri> uploadMsg, final String acceptType) {
-        Logger.i(TAG, PREFIX + "openFileChooser()  For Android 3.0+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]");
+    public void openFileChooser(final ValueCallback<Uri> uploadMsg, final String acceptType) {
+        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 3.0+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]");
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
@@ -91,6 +87,7 @@ public class CSWebChromeClient extends WebChromeClient {
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
+                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
                         filePathCallbackNormal = uploadMsg;
 
                         openIntentChooser(acceptType);
@@ -98,7 +95,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "onPermissionDenied..." + deniedPermissions.toString());
+                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions.toArray(new String[] {}))
@@ -106,16 +103,15 @@ public class CSWebChromeClient extends WebChromeClient {
     }
 
     // For Android 4.1+
-    @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        Logger.i(TAG, PREFIX + "openFileChooser()  For Android 4.1+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]  capture[" + capture + "]");
+        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 4.1+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]  capture[" + capture + "]");
 
         openFileChooser(uploadMsg, acceptType);
     }
 
     // For Android 5.0+
     public boolean onShowFileChooser(final WebView webView, final ValueCallback<Uri[]> filePathCallback, final WebChromeClient.FileChooserParams fileChooserParams) {
-        Logger.i(TAG, PREFIX + "openFileChooser()  For Android 5.0+ \n:: filePathCallback[" + filePathCallback + "]  fileChooserParams[" + fileChooserParams + "]");
+        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 5.0+ \n:: filePathCallback[" + filePathCallback + "]  fileChooserParams[" + fileChooserParams + "]");
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
@@ -127,12 +123,12 @@ public class CSWebChromeClient extends WebChromeClient {
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
+                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
                         if (null != filePathCallbackLollipop) {
                             filePathCallbackLollipop.onReceiveValue(null);
                         }
 
                         filePathCallbackLollipop = filePathCallback;
-
 
                         try {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -148,7 +144,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, PREFIX + "onPermissionDenied..." + deniedPermissions.toString());
+                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions.toArray(new String[] {}))
@@ -251,10 +247,10 @@ public class CSWebChromeClient extends WebChromeClient {
     }
 
     public void onActivityResultFileChooserNormal(int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, PREFIX + "onActivityResultFileChooserNormal(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+        Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserNormal(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
 
         if (null == filePathCallbackNormal) {
-            Logger.i(TAG, PREFIX + "onActivityResultNormal(): filePathCallbackNormal is null !!!");
+            Logger.i(TAG, "[WEBVIEW] onActivityResultNormal(): filePathCallbackNormal is null !!!");
             return;
         }
 
@@ -265,10 +261,10 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResultFileChooserLollipop(int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, PREFIX + "onActivityResultFileChooserLollipop(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+        Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserLollipop(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
 
         if (null == filePathCallbackLollipop) {
-            Logger.i(TAG, PREFIX + "onActivityResultLollipop(): filePathCallbackLollipop is null !!!");
+            Logger.i(TAG, "[WEBVIEW] onActivityResultLollipop(): filePathCallbackLollipop is null !!!");
             return;
         }
 
@@ -305,17 +301,17 @@ public class CSWebChromeClient extends WebChromeClient {
 
     //++ [[START] Take a picture]
     public void onActivityResultTakePicture(WebView webview, int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, PREFIX + "onActivityResultTakePicture(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+        Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
         if (Activity.RESULT_OK != resultCode) {
             return;
         }
 
         if (null != AndroidBridge.getExtraOutput(false)) {
-            Logger.i(TAG, PREFIX + "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
+            Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
             Uri uri = AndroidBridge.getExtraOutput(true);
             AndroidBridge.executeJSFunction(webview, requestCode, uri.toString());
         } else if (null != data) {
-            Logger.i(TAG, PREFIX + "onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
+            Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
             String params = null;
             if ("inline-data".equals(data.getAction())) {
                 Bundle extras = data.getExtras();
@@ -338,7 +334,7 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Geolocation, Record Audio]
     @Override
     public void onPermissionRequest(final PermissionRequest request) {
-        Logger.i(TAG, PREFIX + "onPermissionRequest: request[" + request + "]");
+        Logger.i(TAG, "[WEBVIEW] onPermissionRequest: request[" + request + "]");
 
         // RECORD AUDIO, RECORD VIDEO
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -351,13 +347,13 @@ public class CSWebChromeClient extends WebChromeClient {
                                 .setPermissionListener(new PermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
-                                        Logger.i(TAG, PREFIX + "onPermissionGranted() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.grant(request.getResources());
                                     }
 
                                     @Override
                                     public void onPermissionDenied(List<String> deniedPermissions) {
-                                        Logger.i(TAG, PREFIX + "onPermissionDenied() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.deny();
                                     }
                                 })
@@ -374,13 +370,13 @@ public class CSWebChromeClient extends WebChromeClient {
                                 .setPermissionListener(new PermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
-                                        Logger.i(TAG, PREFIX + "onPermissionGranted() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.grant(request.getResources());
                                     }
 
                                     @Override
                                     public void onPermissionDenied(List<String> deniedPermissions) {
-                                        Logger.i(TAG, PREFIX + "onPermissionDenied() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.deny();
                                     }
                                 })
@@ -399,7 +395,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public void onPermissionRequestCanceled(PermissionRequest request) {
-        Logger.i(TAG, PREFIX + "onPermissionRequestCanceled: request[" + request + "]");
+        Logger.i(TAG, "[WEBVIEW] onPermissionRequestCanceled: request[" + request + "]");
         super.onPermissionRequestCanceled(request);
     }
     //-- [[E N D] Geolocation, Record Audio]
@@ -408,25 +404,25 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Geolocation]
     @Override
     public void onGeolocationPermissionsHidePrompt() {
-        Logger.i(TAG, PREFIX + "onGeolocationPermissionsHidePrompt");
+        Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsHidePrompt");
         super.onGeolocationPermissionsHidePrompt();
     }
 
     @Override
     public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
-        Logger.i(TAG, PREFIX + "onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
+        Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
 
         TedPermission.with(this.context)
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Logger.i(TAG, PREFIX + "onGeolocationPermissionsShowPrompt : onPermissionGranted : origin[" + origin + "] callback[" + callback + "]");
+                        Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionGranted() : origin[" + origin + "] callback[" + callback + "]");
                         callback.invoke(origin, true, false);
                     }
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, PREFIX + "onGeolocationPermissionsShowPrompt : onPermissionDenied : origin[" + origin + "] callback[" + callback + "]");
+                        Logger.e(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionDenied() : origin[" + origin + "] callback[" + callback + "]");
                         callback.invoke(origin, false, false);
                     }
                 })
@@ -445,17 +441,12 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Javascript Alert]
     @Override
     public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-        Logger.i(TAG, PREFIX + "onJsAlert(): url[" + view.getUrl() + "], message[" + message + "], JsResult[" + result + "]");
+        Logger.i(TAG, "[WEBVIEW] onJsAlert(): url[" + view.getUrl() + "], message[" + message + "], JsResult[" + result + "]");
 
         //++
         // custom dialog
         String title = StringUtil.nvl(Uri.parse(url).getLastPathSegment(), "");
-        DialogHelper.alert((Activity) context, title, message, android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                result.confirm();
-            }
-        });
+        DialogHelper.alert((Activity) context, title, message, android.R.string.ok, (dialog, which) -> result.confirm());
         return true;
         //||
         // default dialog
@@ -468,7 +459,7 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Web Console Log]
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        Logger.i(TAG, PREFIX + "[" + consoleMessage.messageLevel() + ":CONSOLE] \"" + consoleMessage.message() + "\", source: " + consoleMessage.sourceId() + " (" + consoleMessage.lineNumber() + ")");
+        Logger.i(TAG, "[WEBVIEW] " + consoleMessage.messageLevel() + ":CONSOLE] \"" + consoleMessage.message() + "\", source: " + consoleMessage.sourceId() + " (" + consoleMessage.lineNumber() + ")");
         return true;    // remove chromium log
         //return super.onConsoleMessage(consoleMessage);
     }
@@ -479,19 +470,17 @@ public class CSWebChromeClient extends WebChromeClient {
     @Override
     public void onProgressChanged(WebView view, int progress) {
         super.onProgressChanged(view, progress);
-        Logger.i(TAG, PREFIX + "onProgressChanged(): " + progress + "%,  url[" + view.getUrl() + "]");
+        Logger.i(TAG, "[WEBVIEW] onProgressChanged(): " + progress + "%,  url[" + view.getUrl() + "]");
 
-        if (progress < 100) {
-            View v = findProgressBarInTopArea(view);
+        View v = findProgressBarInTopArea(view);
+        if (progress >= 100) {
+            if (null != v) {
+                v.setVisibility(View.GONE);
+            }
+        } else {
             if (null != v) {
                 ((ProgressBar) v).setProgress(progress);
                 v.setVisibility(View.VISIBLE);
-            }
-        }
-        else {
-            View v = findProgressBarInTopArea(view);
-            if (null != v) {
-                v.setVisibility(View.GONE);
             }
         }
     }
@@ -522,7 +511,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
-        Logger.i(TAG, PREFIX + "onShowCustomView() - view[" + view + "], callback[" + callback + "]");
+        Logger.i(TAG, "[WEBVIEW] onShowCustomView() - view[" + view + "], callback[" + callback + "]");
 
         // background
         if (null == fullscreenContainer) {
@@ -539,7 +528,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
         customViewCallback = callback;
 
-        Logger.i(TAG, PREFIX + "onShowCustomView() - view class name = " + view.getClass().getName());
+        Logger.i(TAG, "[WEBVIEW] onShowCustomView() - view class name = " + view.getClass().getName());
 
         // add video view
         fullscreenContainer.addView(view, new ViewGroup.LayoutParams(
@@ -552,7 +541,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public void onHideCustomView() {
-        Logger.i(TAG, PREFIX + "onHideCustomView()");
+        Logger.i(TAG, "[WEBVIEW] onHideCustomView()");
         super.onHideCustomView();
 
         if (null != fullscreenContainer) {
@@ -590,7 +579,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-        Logger.i(TAG, PREFIX + "onCreateWindow():  view[" + view + "]  isDialog[" + isDialog + "]  isUserGesture[" + isUserGesture + "]  resultMsg[" + resultMsg + "]");
+        Logger.i(TAG, "[WEBVIEW] onCreateWindow():  view[" + view + "]  isDialog[" + isDialog + "]  isUserGesture[" + isUserGesture + "]  resultMsg[" + resultMsg + "]");
 
         this.newWebView = WebViewHelper.addWebView(view.getContext(), view);
         view.bringChildToFront(this.newWebView);
@@ -617,7 +606,7 @@ public class CSWebChromeClient extends WebChromeClient {
     public void onCloseWindow(WebView window) {
         super.onCloseWindow(window);
         this.newWebView = null;
-        Logger.i(TAG, PREFIX + "onCloseWindow()");
+        Logger.i(TAG, "[WEBVIEW] onCloseWindow()");
     }
     //-- [[E N D] Support Multiple Windows]
 

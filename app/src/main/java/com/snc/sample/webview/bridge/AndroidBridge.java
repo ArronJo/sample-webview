@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Base64;
 import android.webkit.JavascriptInterface;
-import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.process.AndroidBridgeProcess;
@@ -51,10 +50,9 @@ public class AndroidBridge {
     //++ [START] call Web --> Native
 
     // ex) "native://callNative?" + btoa(encodeURIComponent(JSON.stringify({ command:\"apiSample\", args{max:1,min:1}, callback:\"callbackNativeResponse\" })))
-    @SuppressWarnings("unused")
     @JavascriptInterface
     public boolean callNativeMethod(String urlString) {
-        //Logger.i(TAG, "callNativeMethod: " + urlString);
+        //Logger.i(TAG, "[WEBVIEW] callNativeMethod: " + urlString);
         try {
             return executeProcess(this.webView, parse(urlString));
         } catch (Exception e) {
@@ -68,8 +66,7 @@ public class AndroidBridge {
 
     private JSONObject parse(String urlString) throws IOException {
         Uri uri = Uri.parse(urlString);
-        Logger.v(TAG, "callNativeMethod: parse() : uri = " + uri);
-        //Logger.v(TAG, "callNativeMethod: parse() : uri.getEncodedQuery() = " + uri.getEncodedQuery());
+        Logger.i(TAG, "[WEBVIEW] callNativeMethod: parse() : uri = " + uri);
 
         if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
             throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
@@ -93,12 +90,12 @@ public class AndroidBridge {
         final JSONObject args = JSONHelper.getJSONObject(jsonObject, "args", new JSONObject());
         final String callback = JSONHelper.getString(jsonObject, "callback", "");
 
-        Logger.i(TAG, "callNativeMethod: executeProcess() :  command = " + command + ",  args = " + args + ",  callback = " + callback);
+        Logger.i(TAG, "[WEBVIEW] callNativeMethod: executeProcess() :  command = " + command + ",  args = " + args + ",  callback = " + callback);
 
-        final AndroidBridgeProcess process = new AndroidBridgeProcess();
+        final AndroidBridgeProcess process = AndroidBridgeProcess.getInstance();
         final Method method = ReflectHelper.getMethod(process, command);
         if (null == method) {
-            Logger.e(TAG, "method is null");
+            Logger.e(TAG, "[WEBVIEW] method is null");
             return false;
         }
 
@@ -140,12 +137,7 @@ public class AndroidBridge {
         buff.append("}");
 
         // Run On UIThread
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                evaluateJavascript(webView, buff.toString());
-            }
-        });
+        webView.post(() -> evaluateJavascript(webView, buff.toString()));
     }
 
     private static void evaluateJavascript(final WebView webView, final String javascriptString) {
@@ -159,12 +151,7 @@ public class AndroidBridge {
 
         // Android 4.4 (KitKat, 19) or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.evaluateJavascript(jsString, new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                    Logger.i(TAG, "onReceiveValue: " + value);
-                }
-            });
+            webView.evaluateJavascript(jsString, value -> Logger.i(TAG, "[WEBVIEW] onReceiveValue: " + value));
         }
         // Android 4.3 or lower (Jelly Bean, 18)
         else {
@@ -180,7 +167,7 @@ public class AndroidBridge {
     public static void executeJSFunction(WebView webView, int requestCode, String data) {
         String callbackJSFunction = getCallbackJSFunctionName(requestCode);
         if (null == callbackJSFunction || callbackJSFunction.isEmpty()) {
-            Logger.e(TAG, "Error: The executeJSFunction information is unknown.");
+            Logger.e(TAG, "[WEBVIEW] Error: The executeJSFunction information is unknown.");
             return;
         }
         AndroidBridge.callJSFunction(webView, callbackJSFunction, data);

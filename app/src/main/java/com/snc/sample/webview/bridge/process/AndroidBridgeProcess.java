@@ -28,35 +28,41 @@ import java.util.List;
  * @author mcharima5@gmail.com
  * @since 2018
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("InstantiationOfUtilityClass")
 public class AndroidBridgeProcess {
     private static final String TAG = AndroidBridgeProcess.class.getSimpleName();
 
+    private static final AndroidBridgeProcess mInstance = new AndroidBridgeProcess();
+    public static AndroidBridgeProcess getInstance() {
+        return mInstance;
+    }
+
+    private AndroidBridgeProcess() {
+
+    }
+
     // async process...good
     public static void apiRecommended(final WebView webview, final JSONObject args, final String callback) {
-        Logger.d(TAG, "apiRecommended(): args[" + args + "], callback[" + callback + "]");
+        Logger.i(TAG, "[WEBVIEW] apiRecommended(): args[" + args + "], callback[" + callback + "]");
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String result = "success";
-                // test code...
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    Logger.e(TAG, e);
-                }
-                //--
-
-                // send result
-                AndroidBridge.callJSFunction(webview, callback, result);
+        new Thread(() -> {
+            String result = "success";
+            // test code...
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                Logger.e(TAG, e);
             }
+            //--
+
+            // send result
+            AndroidBridge.callJSFunction(webview, callback, result);
         }).start();
     }
 
     // sync process...bad
     public static void apiNotRecommended(final WebView webview, final JSONObject args, final String callback) {
-        Logger.d(TAG, "apiNotRecommended(): args[" + args + "], callback[" + callback + "]");
+        Logger.i(TAG, "[WEBVIEW] apiNotRecommended(): args[" + args + "], callback[" + callback + "]");
 
         // sync
         // test code...
@@ -73,7 +79,7 @@ public class AndroidBridgeProcess {
     }
 
     public static void apiTakePicture(final WebView webview, final JSONObject args, final String callback) {
-        Logger.d(TAG, "apiTakePicture(): args[" + args + "], callback[" + callback + "]");
+        Logger.i(TAG, "[WEBVIEW] apiTakePicture(): args[" + args + "], callback[" + callback + "]");
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
@@ -87,12 +93,13 @@ public class AndroidBridgeProcess {
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
+                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
                         try {
                             AndroidBridge.setCallbackJSFunctionName(RequestCode.REQUEST_TAKE_A_PICTURE, callback);
                             File file = FileUtil.createCameraFile("jpg");
                             Uri output = UriUtil.fromFile(webview.getContext(), file);
                             if (!FileUtil.delete(file)) {
-                                Logger.e(TAG, "delete failed...");
+                                Logger.e(TAG, "[WEBVIEW] delete failed...");
                             }
                             AndroidBridge.setExtraOutput(output);
                             IntentUtil.imageCaptureWithExtraOutput(webview.getContext(), RequestCode.REQUEST_TAKE_A_PICTURE, output);
@@ -106,7 +113,7 @@ public class AndroidBridgeProcess {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "onPermissionDenied..." + deniedPermissions.toString());
+                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions.toArray(new String[] {}))

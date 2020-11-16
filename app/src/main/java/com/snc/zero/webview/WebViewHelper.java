@@ -3,7 +3,6 @@ package com.snc.zero.webview;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -11,7 +10,6 @@ import android.webkit.WebView;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.snc.sample.webview.R;
 import com.snc.zero.log.Logger;
 
 import java.util.ArrayList;
@@ -74,7 +72,7 @@ public class WebViewHelper {
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             settings.setAllowFileAccessFromFileURLs(true);
@@ -97,12 +95,13 @@ public class WebViewHelper {
                     .setPermissionListener(new PermissionListener() {
                         @Override
                         public void onPermissionGranted() {
+                            Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
                             webView.loadUrl(uriString, extraHeaders);
                         }
 
                         @Override
                         public void onPermissionDenied(List<String> deniedPermissions) {
-                            Logger.e(TAG, "onPermissionDenied..." + deniedPermissions.toString());
+                            Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                         }
                     })
                     .setPermissions(permissions.toArray(new String[] {}))

@@ -3,9 +3,7 @@ package com.snc.sample.webview.asynctask;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.gun0912.tedpermission.PermissionListener;
@@ -27,20 +25,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
- * AsyncTask
+ * Download AsyncTask
  *
  * @author mcharima5@gmail.com
  * @since 2020
  */
-public class DownloadAsyncTask extends AsyncTask<String, String, String> {
+public class DownloadAsyncTask extends ThreadTask<String, String, String> {
     private static final String TAG = DownloadAsyncTask.class.getSimpleName();
 
     private static final String CODE_SUCCESS = "SUCCESS";
     private static final String CODE_FAILED = null;
 
     @SuppressLint("StaticFieldLeak")
-    private Activity activity;
-    private DownloadAsyncTask task;
+    private final Activity activity;
+    private final DownloadAsyncTask task;
 
     public DownloadAsyncTask(Activity activity) {
         this.activity = activity;
@@ -49,88 +47,76 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPreExecute() {
-        Log.i(TAG, "[WEBVIEW] onPreExecute");
+        Logger.i(TAG, "[WEBVIEW] onPreExecute");
         Toast.makeText(this.activity, "downloading...", Toast.LENGTH_SHORT).show();
         super.onPreExecute();
     }
 
     @Override
     protected String doInBackground(String... params) {
-        Log.i(TAG, "[WEBVIEW] doInBackground");
-        // 권한 체크
+        Logger.i(TAG, "[WEBVIEW] doInBackground");
+
         if (!checkPermission(this.activity, params)) {
-            this.task.cancel(true);
+            this.task.cancel();
             return null;
         }
 
         try {
             return downloadIt(params);
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
+            Logger.e(TAG, e);
         }
         return null;
     }
 
     @Override
     protected void onProgressUpdate(final String... progress) {
-        Log.i(TAG, "[WEBVIEW] onProgressUpdate..." + progress[1]);
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //TODO::
-            }
+        Logger.i(TAG, "[WEBVIEW] onProgressUpdate..." + progress[1]);
+        activity.runOnUiThread(() -> {
+            //TODO::
         });
     }
 
     @Override
     protected void onPostExecute(String result) {
-        Log.i(TAG, "[WEBVIEW] onPostExecute..." + result);
+        Logger.i(TAG, "[WEBVIEW] onPostExecute..." + result);
 
         if (CODE_SUCCESS.equals(result)) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(activity, "downloaded", Toast.LENGTH_SHORT).show();
-                }
-            });
+            activity.runOnUiThread(() -> Toast.makeText(activity, "downloaded", Toast.LENGTH_SHORT).show());
         }
 
         super.onPostExecute(result);
     }
 
     private boolean checkPermission(final Activity activity, final String... params) {
-        Log.i(TAG, "[WEBVIEW] checkPermission");
-        // 권한 체크
+        Logger.i(TAG, "[WEBVIEW] checkPermission");
+
         if (TedPermission.isGranted(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Log.i(TAG, "[WEBVIEW] permission granted...");
+            Logger.i(TAG, "[WEBVIEW] permission granted");
             return true;
         }
 
-        // 권한 요청
         TedPermission.with(activity)
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Log.i(TAG, "[WEBVIEW] onPermissionGranted...");
+                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
 
-                        // 기존 Task 중단
-                        task.cancel(true);
+                        task.cancel();
 
-                        // 새 다운로드 Task 실행
                         try {
                             DownloadAsyncTask task = new DownloadAsyncTask(activity);
-                            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params[0], params[1], "1");
+                            task.execute(params[0], params[1], "1");
                         } catch (Exception e) {
-                            Log.e(TAG, Log.getStackTraceString(e));
+                            Logger.e(TAG, e);
                         }
                     }
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Log.i(TAG, "[WEBVIEW] onPermissionDenied..." + deniedPermissions.toString());
+                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
 
-                        // 기존 Task 중단
-                        task.cancel(true);
+                        task.cancel();
                     }
                 })
                 .setPermissions(new String[]{
@@ -146,7 +132,7 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
         String url = params[0];
         String fileName = params[1];
 
-        Log.i(TAG, "[WEBVIEW] downloadIt..." + url);
+        Logger.i(TAG, "[WEBVIEW] downloadIt..." + url);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://your.api.url/")   // Base URL required.
                 .build();
@@ -154,12 +140,8 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
         DynamicUrlService service = retrofit.create(DynamicUrlService.class);
         Call<ResponseBody> call = service.get(url);
         Response<ResponseBody> response = call.execute();
-        if (null == response) {
-            Log.i(TAG, "onResponse() = response is null.");
-            return null;
-        }
 
-        Log.i(TAG, "onResponse() = response code is " + response.code());
+        Logger.i(TAG, "[WEBVIEW] onResponse() = response code is " + response.code());
 
         ResponseBody body;
         if (response.code() < 400) {
@@ -167,7 +149,7 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
         } else {
             body = response.errorBody();
         }
-        Log.i(TAG, "onResponse() = " + response + " \n\n ");
+        Logger.i(TAG, "[WEBVIEW] onResponse() = " + response + " \n\n ");
 
         if (writeFile(body, fileName)) {
             return CODE_SUCCESS;
@@ -196,6 +178,7 @@ public class DownloadAsyncTask extends AsyncTask<String, String, String> {
             }
 
             output.flush();
+            return true;
 
         } catch (Exception e) {
             Logger.e(TAG, e);

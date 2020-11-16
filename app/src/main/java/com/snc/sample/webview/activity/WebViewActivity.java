@@ -70,7 +70,7 @@ public class WebViewActivity extends BaseActivity {
         // options
         //this.webview.getSettings().setSupportMultipleWindows(true);
 
-        // add user-agent
+        // set user-agent
         try {
             String ua = this.webview.getSettings().getUserAgentString();
             if (!ua.endsWith(" ")) {
@@ -113,14 +113,14 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_BACK == keyCode) {
-            Logger.i(TAG, "onActivityResult(): WebView isVideoPlayingInFullscreen = " + this.webChromeClient.isVideoPlayingInFullscreen());
+            Logger.i(TAG, "[ACTIVITY] onActivityResult(): WebView isVideoPlayingInFullscreen = " + this.webChromeClient.isVideoPlayingInFullscreen());
             if (this.webChromeClient.isVideoPlayingInFullscreen()) {
                 return false;
             }
 
             // multiple windows go back
             if (null != this.webChromeClient.getNewWebView()) {
-                Logger.i(TAG, "onActivityResult(): NewWebView canGoBack = " + this.webChromeClient.getNewWebView().canGoBack());
+                Logger.i(TAG, "[ACTIVITY] onActivityResult(): NewWebView canGoBack = " + this.webChromeClient.getNewWebView().canGoBack());
                 if (this.webChromeClient.getNewWebView().canGoBack()) {
                     this.webChromeClient.getNewWebView().goBack();
                     return true;
@@ -130,7 +130,7 @@ public class WebViewActivity extends BaseActivity {
                 return true;
             }
 
-            Logger.i(TAG, "onActivityResult(): WebView canGoBack = " + this.webview.canGoBack());
+            Logger.i(TAG, "[ACTIVITY] onActivityResult(): WebView canGoBack = " + this.webview.canGoBack());
             // go back
             if (this.webview.canGoBack()) {
                 this.webview.goBack();
@@ -148,9 +148,9 @@ public class WebViewActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (null == data) {
-            Logger.i(TAG, "onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[null]");
+            Logger.i(TAG, "[ACTIVITY] onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[null]");
         } else {
-            Logger.i(TAG, "onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[" +
+            Logger.i(TAG, "[ACTIVITY] onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[" +
                     "\n  action = " + data.getAction() +
                     "\n  scheme = " + data.getScheme() +
                     "\n  data = " + data.getData() +
@@ -161,18 +161,21 @@ public class WebViewActivity extends BaseActivity {
 
         //++ [[START] File Chooser]
         if (RequestCode.REQUEST_FILE_CHOOSER_NORMAL == requestCode) {
-            Logger.i(TAG, "onActivityResult(): REQUEST_FILE_CHOOSER_NORMAL");
+            Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_NORMAL");
             this.webChromeClient.onActivityResultFileChooserNormal(requestCode, resultCode, data);
         }
         else if (RequestCode.REQUEST_FILE_CHOOSER_LOLLIPOP == requestCode) {
-            Logger.i(TAG, "onActivityResult(): REQUEST_FILE_CHOOSER_LOLLIPOP");
+            Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_LOLLIPOP");
             this.webChromeClient.onActivityResultFileChooserLollipop(requestCode, resultCode, data);
         }
         //-- [[E N D] File Chooser]
+
+        //++ [[START] Take a picture]
         else if (RequestCode.REQUEST_TAKE_A_PICTURE == requestCode) {
-            Logger.i(TAG, "onActivityResult(): REQUEST_TAKE_A_PICTURE");
+            Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_TAKE_A_PICTURE");
             this.webChromeClient.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
         }
+        //++ [[E N D] Take a picture]
 
         super.onActivityResult(requestCode, resultCode, data);
     }

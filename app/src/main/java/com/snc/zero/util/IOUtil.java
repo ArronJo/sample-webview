@@ -41,14 +41,4 @@ public class IOUtil {
         }
     }
 
-    public static void closeQuietly(Closeable out) {
-        try {
-            if (null != out) {
-                out.close();
-            }
-        } catch (Exception e) {
-            Logger.e(TAG, e);
-        }
-    }
-
 }

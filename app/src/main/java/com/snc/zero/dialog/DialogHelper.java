@@ -3,7 +3,7 @@ package com.snc.zero.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
 
 import com.snc.zero.log.Logger;
 
@@ -17,11 +17,8 @@ public class DialogHelper {
 
 	public static void alert(Activity activity, String message) {
 		alert(activity, "", message, android.R.string.ok,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
+				(dialog, which) -> {
 
-					}
 				});
 	}
 

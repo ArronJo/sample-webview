@@ -1,7 +1,7 @@
 package com.snc.zero.activity;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Abstract base activity
