@@ -9,7 +9,7 @@
 // response (Native --> Web)
 function callbackNativeResponse(data) {
     alert(data);
-    hideProgress();
+    Progress.hide();
     console.log("callbackNativeResponse(): data = " + data);
 }
 
@@ -69,25 +69,25 @@ $(document).ready(function() {
     console.info('document.ready ...');
 
     $('#call-android-methods-recommended').on('click', function () {
-        showProgress();
-        callNative("apiRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
+        Progress.show();
+        NativeBridge.call("apiRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
     });
 
     $('#call-android-methods-not-recommended').on('click', function () {
-        showProgress();
-        callNative("apiNotRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
+        Progress.show();
+        NativeBridge.call("apiNotRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
     });
 
     $('#native-take-a-picture').on('click', function () {
-        callNative("apiTakePicture", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackTakePicture");
+        NativeBridge.call("apiTakePicture", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackTakePicture");
     });
 
     $('#req-microphone').on('click', function () {
-        requirePermission("microphone");
+        Permission.request("microphone");
     });
 
     $('#req-camera').on('click', function () {
-        requirePermission("camera");
+        Permission.request("camera");
     });
 
 });
