@@ -153,7 +153,7 @@ public class CSWebViewClient extends WebViewClient {
                 || WebViewClient.ERROR_UNKNOWN == errorCode
         ) {
             final String[] except = new String[] {
-                    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".ico"
+                    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".ico"
             };
             for (String str : except) {
                 if (failingUrl.endsWith(str)) {

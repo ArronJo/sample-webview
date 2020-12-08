@@ -28,6 +28,14 @@
     <uses-feature android:name="android.hardware.audio.pro" />
     <uses-feature android:name="android.hardware.microphone"/>
 
+    <!-- Screen -->
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:resizeable="true"
+        android:anyDensity="true" />
 
     <!-- Application -->
     <application

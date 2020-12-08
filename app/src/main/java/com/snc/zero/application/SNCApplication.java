@@ -1,8 +1,8 @@
 package com.snc.zero.application;
 
-import android.app.Application;
-
 import com.snc.zero.log.Logger;
+
+import androidx.multidex.MultiDexApplication;
 
 /**
  * Application
@@ -10,7 +10,7 @@ import com.snc.zero.log.Logger;
  * @author mcharima5@gmail.com
  * @since 2018
  */
-public class SNCApplication extends Application {
+public class SNCApplication extends MultiDexApplication {
     private static final String TAG = SNCApplication.class.getSimpleName();
 
     @Override
