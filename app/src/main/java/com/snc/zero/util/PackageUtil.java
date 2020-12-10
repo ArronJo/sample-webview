@@ -34,7 +34,7 @@ public class PackageUtil {
         return packageVersionCode;
     }
 
-    static String getPackageName(Context context) throws PackageManager.NameNotFoundException {
+    public static String getPackageName(Context context) throws PackageManager.NameNotFoundException {
         return getPackageInfo(context).packageName;
     }
 

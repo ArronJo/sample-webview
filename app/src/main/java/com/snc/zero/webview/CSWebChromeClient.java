@@ -24,6 +24,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.gun0912.tedpermission.PermissionListener;
@@ -33,8 +34,10 @@ import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
+import com.snc.zero.util.BitmapUtil;
 import com.snc.zero.util.DateTimeUtil;
 import com.snc.zero.util.StringUtil;
+import com.snc.zero.util.UriUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,16 +69,9 @@ public class CSWebChromeClient extends WebChromeClient {
     private final int VIDEO = 2;
     private Uri[] mediaURIs;
 
-    // For Android < 3.0
-    public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android < 3.0  \n:: uploadMsg[" + uploadMsg + "]");
-
-        openFileChooser(uploadMsg, "");
-    }
-
-    // For Android 3.0+
-    public void openFileChooser(final ValueCallback<Uri> uploadMsg, final String acceptType) {
-        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 3.0+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]");
+    // For Android 4.1+
+    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 4.1+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]  capture[" + capture + "]");
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
@@ -100,13 +96,6 @@ public class CSWebChromeClient extends WebChromeClient {
                 })
                 .setPermissions(permissions.toArray(new String[] {}))
                 .check();
-    }
-
-    // For Android 4.1+
-    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 4.1+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]  capture[" + capture + "]");
-
-        openFileChooser(uploadMsg, acceptType);
     }
 
     // For Android 5.0+
@@ -190,21 +179,21 @@ public class CSWebChromeClient extends WebChromeClient {
                 String fileName = DateTimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss");
 
                 if (type.contains("image/")) {
-                    mediaURIs[IMAGE] = Uri.fromFile(new File(getExternalDir("image"), fileName + ".jpg"));
+                    mediaURIs[IMAGE] = UriUtil.fromFile(context, new File(getExternalDir("image"), fileName + ".jpg"));
 
                     final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[IMAGE]);
                     intentList.add(intent);
                 }
                 if (type.contains("audio/")) {
-                    mediaURIs[AUDIO] = Uri.fromFile(new File(getExternalDir("audio"), fileName + ".m4a"));
+                    mediaURIs[AUDIO] = UriUtil.fromFile(context, new File(getExternalDir("audio"), fileName + ".m4a"));
 
                     final Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[AUDIO]);
                     intentList.add(intent);
                 }
                 if (type.contains("video/")) {
-                    mediaURIs[VIDEO] =  Uri.fromFile(new File(getExternalDir("video"), fileName + ".mp4"));
+                    mediaURIs[VIDEO] =  UriUtil.fromFile(context, new File(getExternalDir("video"), fileName + ".mp4"));
 
                     final Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[VIDEO]);
@@ -306,27 +295,56 @@ public class CSWebChromeClient extends WebChromeClient {
             return;
         }
 
-        if (null != AndroidBridge.getExtraOutput(false)) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
-            Uri uri = AndroidBridge.getExtraOutput(true);
-            AndroidBridge.executeJSFunction(webview, requestCode, uri.toString());
-        } else if (null != data) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
-            String params = null;
-            if ("inline-data".equals(data.getAction())) {
-                Bundle extras = data.getExtras();
-                if (null != extras) {
-                    Bitmap bitmap = (Bitmap) extras.get("data");
-                    if (null != bitmap) {
-                        params = bitmap.toString();
+        try {
+            if (null != AndroidBridge.getExtraOutput(false)) {
+                Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
+                File file = AndroidBridge.getExtraOutput(true);
+                Uri uri = UriUtil.fromFile(webview.getContext(), file);
+                AndroidBridge.executeJSFunction(webview, requestCode, uri.toString());
+
+                showTakePicture(context, file);
+            } else if (null != data) {
+                Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
+                String params = null;
+                Bitmap bitmap = null;
+                if ("inline-data".equals(data.getAction())) {
+                    Bundle extras = data.getExtras();
+                    if (null != extras) {
+                        bitmap = (Bitmap) extras.get("data");
+                        if (null != bitmap) {
+                            params = bitmap.toString();
+                        }
                     }
+                } else if (null != data.getData()) {
+                    Uri uri = data.getData();
+                    params = StringUtil.nvl(uri, "");
                 }
-            } else if (null != data.getData()) {
-                Uri uri = data.getData();
-                params = StringUtil.nvl(uri, "");
+                AndroidBridge.executeJSFunction(webview, requestCode, params);
+
+                if (null != bitmap) {
+                    showTakePicture(context, bitmap);
+                }
             }
-            AndroidBridge.executeJSFunction(webview, requestCode, params);
+
+        } catch (Exception e) {
+            DialogHelper.alert((Activity) context, e.toString());
         }
+    }
+
+    private void showTakePicture(Context context, File file) {
+        showTakePicture(context, BitmapUtil.decodeBitmap(context, file));
+    }
+
+    private void showTakePicture(Context context, Bitmap bitmap) {
+        ImageView iv = new ImageView(context);
+        ViewGroup.LayoutParams params = iv.getLayoutParams();
+        if (null == params) {
+            params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        iv.setLayoutParams(params);
+        iv.setImageBitmap(bitmap);
+
+        DialogHelper.alert((Activity) context, iv);
     }
     //-- [[E N D] Take a picture]
 

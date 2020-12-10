@@ -48,5 +48,4 @@ public class IntentUtil {
             context.startActivity(marketLaunch);
         }
     }
-
 }

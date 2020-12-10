@@ -99,8 +99,8 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(this.activity));
 
         // load url
-        //WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
-        WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 
     @Override
@@ -113,14 +113,14 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_BACK == keyCode) {
-            Logger.i(TAG, "[ACTIVITY] onActivityResult(): WebView isVideoPlayingInFullscreen = " + this.webChromeClient.isVideoPlayingInFullscreen());
+            Logger.i(TAG, "[ACTIVITY] onKeyDown(): WebView isVideoPlayingInFullscreen = " + this.webChromeClient.isVideoPlayingInFullscreen());
             if (this.webChromeClient.isVideoPlayingInFullscreen()) {
                 return false;
             }
 
             // multiple windows go back
             if (null != this.webChromeClient.getNewWebView()) {
-                Logger.i(TAG, "[ACTIVITY] onActivityResult(): NewWebView canGoBack = " + this.webChromeClient.getNewWebView().canGoBack());
+                Logger.i(TAG, "[ACTIVITY] onKeyDown(): NewWebView canGoBack = " + this.webChromeClient.getNewWebView().canGoBack());
                 if (this.webChromeClient.getNewWebView().canGoBack()) {
                     this.webChromeClient.getNewWebView().goBack();
                     return true;
@@ -130,7 +130,7 @@ public class WebViewActivity extends BaseActivity {
                 return true;
             }
 
-            Logger.i(TAG, "[ACTIVITY] onActivityResult(): WebView canGoBack = " + this.webview.canGoBack());
+            Logger.i(TAG, "[ACTIVITY] onKeyDown(): WebView canGoBack = " + this.webview.canGoBack());
             // go back
             if (this.webview.canGoBack()) {
                 this.webview.goBack();

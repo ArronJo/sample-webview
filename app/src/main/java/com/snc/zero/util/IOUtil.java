@@ -2,7 +2,6 @@ package com.snc.zero.util;
 
 import com.snc.zero.log.Logger;
 
-import java.io.Closeable;
 import java.io.InputStream;
 import java.io.OutputStream;
 

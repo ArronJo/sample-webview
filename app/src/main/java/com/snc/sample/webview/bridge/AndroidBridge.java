@@ -15,6 +15,7 @@ import com.snc.zero.reflect.ReflectHelper;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
@@ -39,7 +40,7 @@ public class AndroidBridge {
     private final WebView webView;
 
     private static final Map<String, String> callbackFunctionNames = new HashMap<>();
-    private static Uri extraOutput;
+    private static File extraOutput;
 
     // constructor
     public AndroidBridge(WebView webView) {
@@ -181,17 +182,17 @@ public class AndroidBridge {
         return callbackFunctionNames.remove(String.valueOf(requestCode));
     }
 
-    public static Uri getExtraOutput(boolean pop) {
+    public static File getExtraOutput(boolean pop) {
         if (pop) {
-            Uri uri = extraOutput;
+            File file = extraOutput;
             extraOutput = null;
-            return uri;
+            return file;
         }
         return extraOutput;
     }
 
-    public static void setExtraOutput(Uri uri) {
-        extraOutput = uri;
+    public static void setExtraOutput(File file) {
+        extraOutput = file;
     }
 
     //-- [[E N D] for Native Interface]

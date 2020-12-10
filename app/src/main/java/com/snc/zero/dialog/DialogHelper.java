@@ -1,9 +1,10 @@
 package com.snc.zero.dialog;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.app.AlertDialog;
+import android.view.View;
 
 import com.snc.zero.log.Logger;
 
@@ -29,6 +30,23 @@ public class DialogHelper {
 			builder.setMessage(message);
 			builder.setView(null);
 			builder.setNegativeButton(activity.getResources().getString(resId), listener);
+			builder.setCancelable(true);
+
+			Dialog dialog = builder.show();
+			dialog.setCanceledOnTouchOutside(false);
+
+		} catch (android.view.WindowManager.BadTokenException e) {
+			Logger.e(activity.getClass().getSimpleName(), e);
+		}
+	}
+
+	public static void alert(Activity activity, View view) {
+		try {
+			AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+			builder.setView(view);
+			builder.setNegativeButton(activity.getResources().getString(android.R.string.ok), (dialog, which) -> {
+
+			});
 			builder.setCancelable(true);
 
 			Dialog dialog = builder.show();

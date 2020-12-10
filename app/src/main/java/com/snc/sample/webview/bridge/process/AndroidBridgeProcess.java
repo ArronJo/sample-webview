@@ -14,6 +14,7 @@ import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.util.FileUtil;
 import com.snc.zero.util.IntentUtil;
+import com.snc.zero.util.PackageUtil;
 import com.snc.zero.util.UriUtil;
 
 import org.json.JSONObject;
@@ -22,13 +23,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.content.FileProvider;
+
 /**
  * WebView JavaScript Interface Process
  *
  * @author mcharima5@gmail.com
  * @since 2018
  */
-@SuppressWarnings("InstantiationOfUtilityClass")
+@SuppressWarnings({ "InstantiationOfUtilityClass"})
 public class AndroidBridgeProcess {
     private static final String TAG = AndroidBridgeProcess.class.getSimpleName();
 
@@ -96,13 +99,23 @@ public class AndroidBridgeProcess {
                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
                         try {
                             AndroidBridge.setCallbackJSFunctionName(RequestCode.REQUEST_TAKE_A_PICTURE, callback);
-                            File file = FileUtil.createCameraFile("jpg");
-                            Uri output = UriUtil.fromFile(webview.getContext(), file);
-                            if (!FileUtil.delete(file)) {
-                                Logger.e(TAG, "[WEBVIEW] delete failed...");
+
+                            File file;
+                            Uri output;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                file = FileUtil.createCameraFileInExternalFiles(webview.getContext(), "jpg");
+                                output = FileProvider.getUriForFile(webview.getContext(), PackageUtil.getPackageName(webview.getContext()) + ".fileprovider", file);
+                            } else {
+                                file = FileUtil.createCameraFile("jpg");
+                                output = UriUtil.fromFile(webview.getContext(), file);
+                                if (!FileUtil.delete(file)) {
+                                    Logger.e(TAG, "[WEBVIEW] delete failed...");
+                                }
                             }
-                            AndroidBridge.setExtraOutput(output);
+
+                            AndroidBridge.setExtraOutput(file);
                             IntentUtil.imageCaptureWithExtraOutput(webview.getContext(), RequestCode.REQUEST_TAKE_A_PICTURE, output);
+
                         } catch (Exception e) {
                             if (webview.getContext() instanceof Activity) {
                                 DialogHelper.alert((Activity) webview.getContext(), e.getMessage());

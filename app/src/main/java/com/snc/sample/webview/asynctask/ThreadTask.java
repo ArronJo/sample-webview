@@ -86,7 +86,6 @@ public abstract class ThreadTask<Params, Progress, Result> implements Runnable {
             return;
         }
 
-        @SuppressWarnings("unchecked")
         Message message = getHandler().obtainMessage(MESSAGE_POST_RESULT,
                 new ThreadTaskResult<>(this, result));
         message.sendToTarget();
