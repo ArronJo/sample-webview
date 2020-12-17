@@ -106,9 +106,8 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(this.activity));
 
         // load url
-        //WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
-        WebViewHelper.loadUrl(this.webview, "https://t1.kakaocdn.net/kakao_biz_common/public/docs/카카오톡스토어_서비스소개서_20181105.pdf");
     }
 
     @Override
