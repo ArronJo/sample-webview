@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import java.io.File;
 import java.net.URISyntaxException;
 
 /**
@@ -47,5 +48,12 @@ public class IntentUtil {
             marketLaunch.setData(Uri.parse("market://details?id=" + intent.getPackage()));
             context.startActivity(marketLaunch);
         }
+    }
+
+    public static void addGalleryPic(Context context, File file) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.parse("file://" + file);
+        mediaScanIntent.setData(contentUri);
+        context.sendBroadcast(mediaScanIntent);
     }
 }

@@ -13,6 +13,7 @@ import com.snc.zero.log.Logger;
 import com.snc.zero.media.ImageProvider;
 import com.snc.zero.util.BitmapUtil;
 import com.snc.zero.util.FileUtil;
+import com.snc.zero.util.IntentUtil;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.util.UriUtil;
 
@@ -46,6 +47,8 @@ public class AndroidBridgeProcessActivityResult {
                 try {
                     if (FileUtil.isFilesDir(webview.getContext(), documentFile)) {
                         uri = ImageProvider.insert(webview.getContext(), documentFile);
+                    } else {
+                        IntentUtil.addGalleryPic(webview.getContext(), documentFile);
                     }
                 } catch (FileNotFoundException e) {
                     Logger.e(TAG, e);
