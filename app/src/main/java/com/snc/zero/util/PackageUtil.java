@@ -14,8 +14,7 @@ import android.os.Build;
 public class PackageUtil {
 
     public static String getApplicationName(Context context) throws PackageManager.NameNotFoundException {
-        PackageInfo info = getPackageInfo(context);
-        return info.applicationInfo.loadLabel(context.getPackageManager()).toString();
+        return getPackageInfo(context).applicationInfo.loadLabel(context.getPackageManager()).toString();
     }
 
     public static String getPackageVersionName(Context context) throws PackageManager.NameNotFoundException {
@@ -23,12 +22,11 @@ public class PackageUtil {
     }
 
     public static int getPackageVersionCode(Context context) throws PackageManager.NameNotFoundException {
-        int packageVersionCode;
         PackageInfo info = getPackageInfo(context);
+        int packageVersionCode;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             packageVersionCode = (int) info.getLongVersionCode();
         } else {
-            // Deprecated, @see #getLongVersionCode()
             packageVersionCode = info.versionCode;
         }
         return packageVersionCode;

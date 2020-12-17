@@ -21,6 +21,7 @@ public class BitmapUtil {
                 ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), UriUtil.fromFile(context, file));
                 return ImageDecoder.decodeBitmap(source);
             } else {
+                //noinspection deprecation
                 return MediaStore.Images.Media.getBitmap(context.getContentResolver(), UriUtil.fromFile(context, file));
             }
         } catch (PackageManager.NameNotFoundException | IOException e) {

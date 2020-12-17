@@ -12,6 +12,7 @@ import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
+import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.FileUtil;
 import com.snc.zero.util.IntentUtil;
 import com.snc.zero.util.PackageUtil;
@@ -31,7 +32,7 @@ import androidx.core.content.FileProvider;
  * @author mcharima5@gmail.com
  * @since 2018
  */
-@SuppressWarnings({ "InstantiationOfUtilityClass"})
+@SuppressWarnings({"InstantiationOfUtilityClass", "unused", "RedundantSuppression"})
 public class AndroidBridgeProcess {
     private static final String TAG = AndroidBridgeProcess.class.getSimpleName();
 
@@ -100,17 +101,22 @@ public class AndroidBridgeProcess {
                         try {
                             AndroidBridge.setCallbackJSFunctionName(RequestCode.REQUEST_TAKE_A_PICTURE, callback);
 
-                            File file;
+                            File storageDir = EnvUtil.getMediaDir(webview.getContext(), "image");
+                            File storageFile = new File(storageDir, FileUtil.newFilename("jpg"));
+                            File file = FileUtil.createFile(storageFile);
+                            if (null == file) {
+                                throw new NullPointerException();
+                            }
+
                             Uri output;
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                file = FileUtil.createCameraFileInExternalFiles(webview.getContext(), "jpg");
                                 output = FileProvider.getUriForFile(webview.getContext(), PackageUtil.getPackageName(webview.getContext()) + ".fileprovider", file);
                             } else {
-                                file = FileUtil.createCameraFile("jpg");
                                 output = UriUtil.fromFile(webview.getContext(), file);
-                                if (!FileUtil.delete(file)) {
-                                    Logger.e(TAG, "[WEBVIEW] delete failed...");
-                                }
+                            }
+
+                            if (!FileUtil.delete(file)) {
+                                Logger.e(TAG, "[WEBVIEW] delete failed...");
                             }
 
                             AndroidBridge.setExtraOutput(file);

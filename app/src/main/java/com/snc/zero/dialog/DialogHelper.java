@@ -3,8 +3,12 @@ package com.snc.zero.dialog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.snc.zero.log.Logger;
 
@@ -55,6 +59,18 @@ public class DialogHelper {
 		} catch (android.view.WindowManager.BadTokenException e) {
 			Logger.e(activity.getClass().getSimpleName(), e);
 		}
+	}
+
+	public static void alert(Context context, Bitmap bitmap) {
+		ImageView iv = new ImageView(context);
+		ViewGroup.LayoutParams params = iv.getLayoutParams();
+		if (null == params) {
+			params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		}
+		iv.setLayoutParams(params);
+		iv.setImageBitmap(bitmap);
+
+		DialogHelper.alert((Activity) context, iv);
 	}
 
 }

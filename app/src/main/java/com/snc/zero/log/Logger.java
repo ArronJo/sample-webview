@@ -8,6 +8,7 @@ import android.util.Log;
  * @author mcharima5@gmail.com
  * @since 2018
  */
+@SuppressWarnings({"unused", "RedundantSuppression"})
 public class Logger {
     private static final String PREFIX = "";
 

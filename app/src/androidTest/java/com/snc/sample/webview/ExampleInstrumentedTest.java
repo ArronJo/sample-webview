@@ -19,6 +19,7 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
         // Context of the app under test.
+        //noinspection deprecation
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("com.snc.sample.webview", appContext.getPackageName());

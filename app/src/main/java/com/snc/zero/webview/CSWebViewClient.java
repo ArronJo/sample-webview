@@ -125,7 +125,8 @@ public class CSWebViewClient extends WebViewClient {
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         Logger.e(TAG, "[WEBVIEW] onReceivedError(): url[" + view.getUrl() + "],  errorCode[" + errorCode + "],  description[" + description + "],  failingUrl[" + failingUrl + "]");
 
-        onReceivedError(view, errorCode, description, failingUrl, false);
+        boolean forwardErrorPage = ERROR_BAD_URL == errorCode || ERROR_FILE == errorCode;
+        onReceivedError(view, errorCode, description, failingUrl, forwardErrorPage);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -133,7 +134,10 @@ public class CSWebViewClient extends WebViewClient {
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         Logger.e(TAG, "[WEBVIEW] onReceivedError(VERSION=M): url[" + view.getUrl() + "],  errorCode[" + error.getErrorCode() + "],  description[" + error.getDescription() + "]");
 
-        onReceivedError(view, error.getErrorCode(), error.getDescription().toString(), request.getUrl().toString(), false);
+        int errorCode = error.getErrorCode();
+        String description = error.getDescription().toString();
+        boolean forwardErrorPage = ERROR_BAD_URL == errorCode || ERROR_FILE == errorCode;
+        onReceivedError(view, errorCode, description, request.getUrl().toString(), forwardErrorPage);
     }
 
     private void onReceivedError(WebView view, int errorCode, String description, String failingUrl, boolean forwardErrorPage) {

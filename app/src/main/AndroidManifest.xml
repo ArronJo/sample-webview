@@ -38,6 +38,7 @@
         android:anyDensity="true" />
 
     <!-- Application -->
+    <!-- android:requestLegacyExternalStorage="true" -->
     <application
         android:name="com.snc.zero.application.SNCApplication"
         android:icon="@mipmap/ic_launcher"
@@ -48,7 +49,6 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
 

@@ -1,18 +1,11 @@
 package com.snc.zero.webview;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
 import android.os.Message;
-import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -24,24 +17,17 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.snc.sample.webview.R;
-import com.snc.sample.webview.bridge.AndroidBridge;
-import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
-import com.snc.zero.util.BitmapUtil;
-import com.snc.zero.util.DateTimeUtil;
 import com.snc.zero.util.StringUtil;
-import com.snc.zero.util.UriUtil;
+import com.snc.zero.webview.listener.FileChooserListener;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,22 +40,20 @@ public class CSWebChromeClient extends WebChromeClient {
     private static final String TAG = CSWebChromeClient.class.getSimpleName();
 
     private final Context context;
+    private FileChooserListener fileChooserListener;
 
     // constructor
     public CSWebChromeClient(Context context) {
         this.context = context;
     }
 
+    public void setFileChooserListener(FileChooserListener listener) {
+        this.fileChooserListener = listener;
+    }
+
     //++ [[START] File Chooser]
-    private ValueCallback<Uri> filePathCallbackNormal;
-    private ValueCallback<Uri[]> filePathCallbackLollipop;
-
-    private final int IMAGE = 0;
-    private final int AUDIO = 1;
-    private final int VIDEO = 2;
-    private Uri[] mediaURIs;
-
     // For Android 4.1+
+    @SuppressWarnings({"unused", "RedundantSuppression"})
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
         Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 4.1+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]  capture[" + capture + "]");
 
@@ -84,9 +68,10 @@ public class CSWebChromeClient extends WebChromeClient {
                     @Override
                     public void onPermissionGranted() {
                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
-                        filePathCallbackNormal = uploadMsg;
 
-                        openIntentChooser(acceptType);
+                        if (null != fileChooserListener) {
+                            fileChooserListener.onOpenFileChooserNormal(null, uploadMsg, acceptType);
+                        }
                     }
 
                     @Override
@@ -113,21 +98,16 @@ public class CSWebChromeClient extends WebChromeClient {
                     @Override
                     public void onPermissionGranted() {
                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
-                        if (null != filePathCallbackLollipop) {
-                            filePathCallbackLollipop.onReceiveValue(null);
+
+                        String[] acceptType;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            acceptType = fileChooserParams.getAcceptTypes();
+                        } else  {
+                            acceptType = new String[] { "" };
                         }
 
-                        filePathCallbackLollipop = filePathCallback;
-
-                        try {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                openIntentChooser(fileChooserParams.getAcceptTypes());
-                            } else  {
-                                openIntentChooser("");
-                            }
-                        } catch (Exception e) {
-                            DialogHelper.alert((Activity) context, e.getMessage());
-                            filePathCallbackLollipop = null;
+                        if (null != fileChooserListener) {
+                            fileChooserListener.onOpenFileChooserLollipop(webView, filePathCallback, acceptType);
                         }
                     }
 
@@ -140,213 +120,7 @@ public class CSWebChromeClient extends WebChromeClient {
                 .check();
         return true;
     }
-
-    private void openIntentChooser(String[] acceptTypes) {
-        String acceptType = "";
-
-        for (String type : acceptTypes) {
-            if (StringUtil.isEmpty(type)) {
-                continue;
-            }
-            if (!type.startsWith("image/") && !type.startsWith("audio/") && !type.startsWith("video/") && !type.startsWith("application/")) {
-                continue;
-            }
-
-            if (StringUtil.isEmpty(acceptType)) {
-                acceptType += type;
-            } else {
-                acceptType += "," + type;
-            }
-        }
-
-        openIntentChooser(acceptType);
-    }
-
-    private void openIntentChooser(String acceptType) {
-        String type = acceptType;
-
-        if (type.isEmpty() || "*/*".equalsIgnoreCase(acceptType)) {
-            type = "image/*|audio/*|video/*";
-        }
-
-        try {
-            mediaURIs = new Uri[3];
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-                List<Intent> intentList = new ArrayList<>();
-
-                String fileName = DateTimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss");
-
-                if (type.contains("image/")) {
-                    mediaURIs[IMAGE] = UriUtil.fromFile(context, new File(getExternalDir("image"), fileName + ".jpg"));
-
-                    final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[IMAGE]);
-                    intentList.add(intent);
-                }
-                if (type.contains("audio/")) {
-                    mediaURIs[AUDIO] = UriUtil.fromFile(context, new File(getExternalDir("audio"), fileName + ".m4a"));
-
-                    final Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[AUDIO]);
-                    intentList.add(intent);
-                }
-                if (type.contains("video/")) {
-                    mediaURIs[VIDEO] =  UriUtil.fromFile(context, new File(getExternalDir("video"), fileName + ".mp4"));
-
-                    final Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaURIs[VIDEO]);
-                    intentList.add(intent);
-                }
-
-                // Intent Chooser
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("*/*");
-
-                Intent chooserIntent = Intent.createChooser(intent, "Chooser");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[] { }));
-                ((Activity) context).startActivityForResult(chooserIntent, RequestCode.REQUEST_FILE_CHOOSER_LOLLIPOP);
-
-            } else {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                ((Activity) context).startActivityForResult(Intent.createChooser(intent, "File Chooser"), RequestCode.REQUEST_FILE_CHOOSER_NORMAL);
-            }
-
-        } catch (Exception e) {
-            Logger.e(TAG, e);
-            DialogHelper.alert((Activity) context, e.getMessage());
-        }
-    }
-
-    private File getExternalDir(String type) {
-        File dir = null;
-
-        if ("image".equalsIgnoreCase(type) || "video".equalsIgnoreCase(type)) {
-            dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
-        }
-        else if ("audio".equalsIgnoreCase(type)) {
-            dir = new File(Environment.getExternalStorageDirectory(), "Voice Recorder");
-        }
-        return dir;
-    }
-
-    public void onActivityResultFileChooserNormal(int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserNormal(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
-
-        if (null == filePathCallbackNormal) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultNormal(): filePathCallbackNormal is null !!!");
-            return;
-        }
-
-        Uri result = (null == data || resultCode != Activity.RESULT_OK) ? null : data.getData();
-        filePathCallbackNormal.onReceiveValue(result);
-        filePathCallbackNormal = null;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public void onActivityResultFileChooserLollipop(int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserLollipop(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
-
-        if (null == filePathCallbackLollipop) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultLollipop(): filePathCallbackLollipop is null !!!");
-            return;
-        }
-
-        try {
-            if (null != data) {
-                filePathCallbackLollipop.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
-            } else {
-                List<Uri> results = new ArrayList<>();
-
-                if (null != mediaURIs) {
-                    if (null != mediaURIs[IMAGE] && new File(mediaURIs[IMAGE].getPath()).exists()) {
-                        results.add(mediaURIs[IMAGE]);
-                    }
-                    if (null != mediaURIs[AUDIO] && new File(mediaURIs[AUDIO].getPath()).exists()) {
-                        results.add(mediaURIs[AUDIO]);
-                    }
-                    if (null != mediaURIs[VIDEO] && new File(mediaURIs[VIDEO].getPath()).exists()) {
-                        results.add(mediaURIs[VIDEO]);
-                    }
-                }
-
-                filePathCallbackLollipop.onReceiveValue(results.toArray(new Uri[]{}));
-            }
-
-        } catch (Exception e) {
-            Logger.e(TAG, e);
-        } finally {
-            filePathCallbackLollipop = null;
-            mediaURIs = null;
-        }
-    }
     //-- [[E N D] File Chooser]
-
-
-    //++ [[START] Take a picture]
-    public void onActivityResultTakePicture(WebView webview, int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
-        if (Activity.RESULT_OK != resultCode) {
-            return;
-        }
-
-        try {
-            if (null != AndroidBridge.getExtraOutput(false)) {
-                Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
-                File file = AndroidBridge.getExtraOutput(true);
-                Uri uri = UriUtil.fromFile(webview.getContext(), file);
-                AndroidBridge.executeJSFunction(webview, requestCode, uri.toString());
-
-                showTakePicture(context, file);
-            } else if (null != data) {
-                Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
-                String params = null;
-                Bitmap bitmap = null;
-                if ("inline-data".equals(data.getAction())) {
-                    Bundle extras = data.getExtras();
-                    if (null != extras) {
-                        bitmap = (Bitmap) extras.get("data");
-                        if (null != bitmap) {
-                            params = bitmap.toString();
-                        }
-                    }
-                } else if (null != data.getData()) {
-                    Uri uri = data.getData();
-                    params = StringUtil.nvl(uri, "");
-                }
-                AndroidBridge.executeJSFunction(webview, requestCode, params);
-
-                if (null != bitmap) {
-                    showTakePicture(context, bitmap);
-                }
-            }
-
-        } catch (Exception e) {
-            DialogHelper.alert((Activity) context, e.toString());
-        }
-    }
-
-    private void showTakePicture(Context context, File file) {
-        showTakePicture(context, BitmapUtil.decodeBitmap(context, file));
-    }
-
-    private void showTakePicture(Context context, Bitmap bitmap) {
-        ImageView iv = new ImageView(context);
-        ViewGroup.LayoutParams params = iv.getLayoutParams();
-        if (null == params) {
-            params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        iv.setLayoutParams(params);
-        iv.setImageBitmap(bitmap);
-
-        DialogHelper.alert((Activity) context, iv);
-    }
-    //-- [[E N D] Take a picture]
 
 
     //++ [[START] Geolocation, Record Audio]

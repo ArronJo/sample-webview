@@ -6,6 +6,7 @@ This project is a sample for developing android applications using webview.
 # Release Note
 |    Date    |      Comment      |
 |------------|-------------------|
+| 2020-12-17 | MediaStore and DownloadManager have been added for Android 10. |
 | 2020-11-16 | The version of targetSdkVersion has been changed.<br> [targetSdkVersion 28(9.0) -> 30(11.0)] |
 | 2020-07-15 | Added file download function in webview. (setDownloadListener()) |
 | 2019-08-02 | Added support for the "audio / video recording" feature. |

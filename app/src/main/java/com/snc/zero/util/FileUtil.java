@@ -1,9 +1,10 @@
 package com.snc.zero.util;
 
 import android.content.Context;
-import android.os.Environment;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,9 +17,15 @@ import java.util.Locale;
  * @since 2018
  */
 public class FileUtil {
-    //private static final String TAG = FileUtil.class.getSimpleName();
 
-    private static boolean mkdirs(File dir) {
+    private static boolean mkdirs(File file) {
+        if (null == file) {
+            return false;
+        }
+        File dir = file;
+        if (!dir.isDirectory()) {
+            dir = file.getParentFile();
+        }
         if (null == dir) {
             return false;
         }
@@ -28,6 +35,7 @@ public class FileUtil {
         return dir.mkdirs();
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean delete(File file) {
         if (null == file || !file.exists()) {
             return false;
@@ -35,37 +43,50 @@ public class FileUtil {
         return file.delete();
     }
 
+    public static boolean exists(File file) {
+        return file.exists();
+    }
+
     public static String newFilename(String extension) {
         String name = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         return name + "."  + extension;
     }
 
-    public static File createCameraFile(String extension) throws IOException {
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "/Camera/");
-        if (!mkdirs(storageDir)) {
-            throw new IOException("mkdirs failed...!!!!! " + storageDir);
+    public static File createFile(File file) throws IOException {
+        if (!mkdirs(file)) {
+            throw new IOException("mkdirs failed...!!!!! " + file);
         }
-
-        String fileName = newFilename(extension);
-        File newFile = new File(storageDir, fileName);
-        if (newFile.createNewFile()) {
-            return newFile;
+        if (exists(file)) {
+            if (!delete(file)) {
+                throw new IOException("delete failed...!!!!! " + file);
+            }
+        }
+        if (file.createNewFile()) {
+            return file;
         }
         return null;
     }
 
-    public static File createCameraFileInExternalFiles(Context context, String extension) throws IOException {
-        File storageDir = new File(context.getExternalFilesDir(null), "/Camera/");
-        if (!mkdirs(storageDir)) {
-            throw new IOException("mkdirs failed...!!!!! " + storageDir);
+    public static void write(FileInputStream fin, FileOutputStream fos) throws IOException {
+        try {
+            byte[] buff = new byte[1024 * 4];	// 1MB = 1048576 = 1024 * 1024, 10KB = 10240 = 10 * 1024
+            while (true) {
+                int len = fin.read(buff);
+                if (-1 == len) {
+                    break;
+                }
+                fos.write(buff, 0, len);
+            }
         }
+        finally {
+            IOUtil.closeQuietly(fin);
+            IOUtil.closeQuietly(fos);
+        }
+    }
 
-        String fileName = newFilename(extension);
-        File newFile = new File(storageDir, fileName);
-        if (newFile.createNewFile()) {
-            return newFile;
-        }
-        return null;
+    public static boolean isFilesDir(Context context, File file) {
+        File f = EnvUtil.getExternalFilesDir(context);
+        return file.getAbsolutePath().startsWith(f.getAbsolutePath());
     }
 
 }

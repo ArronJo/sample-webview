@@ -14,7 +14,8 @@ import android.widget.Toast;
 import com.snc.sample.webview.BuildConfig;
 import com.snc.sample.webview.R;
 import com.snc.sample.webview.bridge.AndroidBridge;
-import com.snc.sample.webview.download.CSDownloadListener;
+import com.snc.sample.webview.bridge.process.AndroidBridgeProcessActivityResult;
+import com.snc.zero.webview.CSDownloadListener;
 import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.activity.BaseActivity;
 import com.snc.zero.dialog.DialogHelper;
@@ -24,6 +25,7 @@ import com.snc.zero.util.PackageUtil;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.webview.CSWebChromeClient;
 import com.snc.zero.webview.CSWebViewClient;
+import com.snc.zero.webview.CSFileChooserListener;
 import com.snc.zero.webview.WebViewHelper;
 
 /**
@@ -38,6 +40,7 @@ public class WebViewActivity extends BaseActivity {
     private Activity activity;
     private WebView webview;
     private CSWebChromeClient webChromeClient;
+    private CSFileChooserListener webviewFileChooser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,11 @@ public class WebViewActivity extends BaseActivity {
 
         // set webChromeClient
         this.webChromeClient = new CSWebChromeClient(webview.getContext());
-        this.webview.setWebChromeClient(webChromeClient);
+        this.webview.setWebChromeClient(this.webChromeClient);
+
+        // set fileChooser
+        this.webviewFileChooser = new CSFileChooserListener(webview.getContext());
+        this.webChromeClient.setFileChooserListener(this.webviewFileChooser);
 
         // add interface
         this.webview.addJavascriptInterface(new AndroidBridge(webview), "AndroidBridge");
@@ -99,8 +106,9 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(this.activity));
 
         // load url
-        WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        WebViewHelper.loadUrl(this.webview, "https://t1.kakaocdn.net/kakao_biz_common/public/docs/카카오톡스토어_서비스소개서_20181105.pdf");
     }
 
     @Override
@@ -162,18 +170,18 @@ public class WebViewActivity extends BaseActivity {
         //++ [[START] File Chooser]
         if (RequestCode.REQUEST_FILE_CHOOSER_NORMAL == requestCode) {
             Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_NORMAL");
-            this.webChromeClient.onActivityResultFileChooserNormal(requestCode, resultCode, data);
+            this.webviewFileChooser.onActivityResultFileChooserNormal(requestCode, resultCode, data);
         }
         else if (RequestCode.REQUEST_FILE_CHOOSER_LOLLIPOP == requestCode) {
             Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_LOLLIPOP");
-            this.webChromeClient.onActivityResultFileChooserLollipop(requestCode, resultCode, data);
+            this.webviewFileChooser.onActivityResultFileChooserLollipop(requestCode, resultCode, data);
         }
         //-- [[E N D] File Chooser]
 
         //++ [[START] Take a picture]
-        else if (RequestCode.REQUEST_TAKE_A_PICTURE == requestCode) {
+        if (RequestCode.REQUEST_TAKE_A_PICTURE == requestCode) {
             Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_TAKE_A_PICTURE");
-            this.webChromeClient.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
+            AndroidBridgeProcessActivityResult.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
         }
         //++ [[E N D] Take a picture]
 
