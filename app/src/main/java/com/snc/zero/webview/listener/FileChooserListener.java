@@ -5,7 +5,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
 /**
- * WebView File Chooser Listener
+ * File Chooser Listener
  *
  * @author mcharima5@gmail.com
  * @since 2020

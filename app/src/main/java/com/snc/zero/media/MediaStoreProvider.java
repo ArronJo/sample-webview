@@ -35,9 +35,7 @@ public class MediaStoreProvider {
             FileInputStream fis = new FileInputStream(file);
             FileOutputStream fos = new FileOutputStream(fileDesc.getFileDescriptor());
             try {
-                if (!FileUtil.write(fis, fos)) {
-                    return null;
-                }
+                FileUtil.write(fis, fos);
             } catch (IOException e) {
                 return null;
             }

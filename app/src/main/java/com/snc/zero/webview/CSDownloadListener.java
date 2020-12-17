@@ -15,7 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * WebView JavaScript Interface Bridge
+ * WebView Download Listener
  *
  * @author mcharima5@gmail.com
  * @since 2020
