@@ -161,12 +161,16 @@ public class CSFileChooserListener implements FileChooserListener {
     public void onActivityResultFileChooserNormal(int requestCode, int resultCode, Intent data) {
         Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserNormal(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
 
+        if (Activity.RESULT_OK != resultCode) {
+            return;
+        }
+
         if (null == filePathCallbackNormal) {
             Logger.i(TAG, "[WEBVIEW] onActivityResultNormal(): filePathCallbackNormal is null !!!");
             return;
         }
 
-        Uri result = (null == data || resultCode != Activity.RESULT_OK) ? null : data.getData();
+        Uri result = null == data ? null : data.getData();
         filePathCallbackNormal.onReceiveValue(result);
         filePathCallbackNormal = null;
     }
@@ -174,6 +178,10 @@ public class CSFileChooserListener implements FileChooserListener {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResultFileChooserLollipop(int requestCode, int resultCode, Intent data) {
         Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserLollipop(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+
+        if (Activity.RESULT_OK != resultCode) {
+            return;
+        }
 
         if (null == filePathCallbackLollipop) {
             Logger.i(TAG, "[WEBVIEW] onActivityResultLollipop(): filePathCallbackLollipop is null !!!");

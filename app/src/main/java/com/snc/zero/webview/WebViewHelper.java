@@ -69,12 +69,23 @@ public class WebViewHelper {
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
         settings.setAppCacheEnabled(false);
-        settings.setAllowFileAccess(true);
-        settings.setAllowContentAccess(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            settings.setAllowFileAccess(false);
+            settings.setAllowContentAccess(false);
+        } else {
+            settings.setAllowFileAccess(true);
+            settings.setAllowContentAccess(true);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            settings.setAllowFileAccessFromFileURLs(false);
+            settings.setAllowUniversalAccessFromFileURLs(false);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             settings.setAllowFileAccessFromFileURLs(true);
             settings.setAllowUniversalAccessFromFileURLs(true);
         }

@@ -17,7 +17,7 @@ public class BitmapUtil {
 
     public static Bitmap decodeBitmap(Context context, File file) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), UriUtil.fromFile(context, file));
                 return ImageDecoder.decodeBitmap(source);
             } else {

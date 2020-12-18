@@ -102,14 +102,14 @@ public class AndroidBridgeProcess {
                             AndroidBridge.setCallbackJSFunctionName(RequestCode.REQUEST_TAKE_A_PICTURE, callback);
 
                             File storageDir = EnvUtil.getMediaDir(webview.getContext(), "image");
-                            File storageFile = new File(storageDir, FileUtil.newFilename("jpg"));
-                            File file = FileUtil.createFile(storageFile);
+                            String filename = FileUtil.newFilename("jpg");
+                            File file = FileUtil.createFile(storageDir, filename);
                             if (null == file) {
                                 throw new NullPointerException();
                             }
 
                             Uri output;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                 output = FileProvider.getUriForFile(webview.getContext(), PackageUtil.getPackageName(webview.getContext()) + ".fileprovider", file);
                             } else {
                                 output = UriUtil.fromFile(webview.getContext(), file);

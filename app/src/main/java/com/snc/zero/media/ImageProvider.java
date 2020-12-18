@@ -23,10 +23,8 @@ public class ImageProvider extends MediaStoreProvider {
     private static final String TAG = ImageProvider.class.getSimpleName();
 
     public static Uri insert(Context context, File file) throws FileNotFoundException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (!FileUtil.isFilesDir(context, file)) {
-                return null;
-            }
+        if (!FileUtil.isFilesDir(context, file)) {
+            return null;
         }
 
         ContentValues values = new ContentValues();

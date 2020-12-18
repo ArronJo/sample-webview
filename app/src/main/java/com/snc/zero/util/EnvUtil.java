@@ -1,7 +1,6 @@
 package com.snc.zero.util;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
@@ -14,28 +13,12 @@ import java.io.File;
  */
 public class EnvUtil {
 
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    @Deprecated
-    private static File getExternalStorageDir() {
-        return Environment.getExternalStorageDirectory();	// Deprecated in API 29
-    }
-
-    //@Deprecated
-    //private static File getExternalStoragePublicDir(String type) {
-    //    return Environment.getExternalStoragePublicDirectory(type);	// Deprecated in API 29
-    //}
-
     public static File getExternalFilesDir(Context context) {
         return context.getExternalFilesDir(null);
     }
 
     public static File getExternalDir(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return EnvUtil.getExternalFilesDir(context);
-        } else {
-            //noinspection deprecation
-            return EnvUtil.getExternalStorageDir();
-        }
+        return EnvUtil.getExternalFilesDir(context);
     }
 
     public static File getMediaDir(Context context, String type) {
@@ -50,7 +33,4 @@ public class EnvUtil {
         return null;
     }
 
-    //public static File getDownloadDir(Context context) {
-    //    return new File(new File(getExternalDir(context), Environment.DIRECTORY_DOWNLOADS), "Camera");
-    //}
 }

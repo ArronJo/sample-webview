@@ -2,11 +2,11 @@ package com.snc.zero.webview;
 
 import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -14,10 +14,14 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.snc.sample.webview.BuildConfig;
 import com.snc.zero.log.Logger;
 import com.snc.zero.util.IntentUtil;
 
 import java.net.URISyntaxException;
+
+import androidx.annotation.RequiresApi;
+import androidx.webkit.WebViewAssetLoader;
 
 /**
  * Custom WebView Client
@@ -27,6 +31,44 @@ import java.net.URISyntaxException;
  */
 public class CSWebViewClient extends WebViewClient {
     private static final String TAG = CSWebViewClient.class.getSimpleName();
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private WebViewAssetLoader assetLoader;
+
+    public CSWebViewClient(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            this.assetLoader = new WebViewAssetLoader.Builder()
+                    .setDomain(BuildConfig.ASSET_BASE_URL)
+                    .addPathHandler("/res/", new WebViewAssetLoader.ResourcesPathHandler(context))
+                    .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(context))
+                    .build();
+        }
+    }
+
+    @Override
+    @Deprecated
+    @SuppressWarnings({"unused", "RedundantSuppression"})   // use the old one for compatibility with all API levels.
+    public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+        Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 20 below):  url[" + url + "]");
+        return super.shouldInterceptRequest(view, url);
+    }
+
+    @Override
+    @RequiresApi(21)
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 21 after):  url[" + request.getUrl() + "]");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return this.assetLoader.shouldInterceptRequest(request.getUrl());
+        }
+        return null;    //return super.shouldInterceptRequest(view, request);
+    }
+
+    @Override
+    public void onLoadResource(WebView view, final String url) {
+        Logger.d(TAG, "[WEBVIEW] onLoadResource():  url[" + url + "]");
+        super.onLoadResource(view, url);
+    }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {

@@ -18,14 +18,7 @@ import java.util.Locale;
  */
 public class FileUtil {
 
-    private static boolean mkdirs(File file) {
-        if (null == file) {
-            return false;
-        }
-        File dir = file;
-        if (!dir.isDirectory()) {
-            dir = file.getParentFile();
-        }
+    private static boolean mkdirs(File dir) {
         if (null == dir) {
             return false;
         }
@@ -52,9 +45,13 @@ public class FileUtil {
         return name + "."  + extension;
     }
 
-    public static File createFile(File file) throws IOException {
-        if (!mkdirs(file)) {
-            throw new IOException("mkdirs failed...!!!!! " + file);
+    public static File createFile(File dir, String...pathAndFilename) throws IOException {
+        File file = dir;
+        for (String path : pathAndFilename) {
+            file = new File(file, path);
+        }
+        if (!mkdirs(file.getParentFile())) {
+            throw new IOException("mkdirs failed...!!!!! " + dir);
         }
         if (exists(file)) {
             if (!delete(file)) {

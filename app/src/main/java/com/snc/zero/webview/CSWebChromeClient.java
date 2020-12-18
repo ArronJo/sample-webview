@@ -379,7 +379,7 @@ public class CSWebChromeClient extends WebChromeClient {
         CSWebChromeClient webChromeClient = new CSWebChromeClient(view.getContext());
         this.newWebView.setWebChromeClient(webChromeClient);
 
-        CSWebViewClient webviewClient = new CSWebViewClient();
+        CSWebViewClient webviewClient = new CSWebViewClient(view.getContext());
         this.newWebView.setWebViewClient(webviewClient);
 
         scrollX = view.getScrollX();

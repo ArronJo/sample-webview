@@ -88,7 +88,7 @@ public class WebViewActivity extends BaseActivity {
         }
 
         // set webViewClient
-        CSWebViewClient webviewClient = new CSWebViewClient();
+        CSWebViewClient webviewClient = new CSWebViewClient(webview.getContext());
         this.webview.setWebViewClient(webviewClient);
 
         // set webChromeClient
@@ -106,7 +106,14 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(this.activity));
 
         // load url
-        WebViewHelper.loadUrl(this.webview, "file:///android_asset/www/docs/sample/sample.html");
+        String baseUrl;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //baseUrl = "https://appassets.androidplatform.net/assets";
+            baseUrl = "https://" + BuildConfig.ASSET_BASE_URL + "/assets";
+        } else {
+            baseUrl = "file:///android_asset";
+        }
+        WebViewHelper.loadUrl(this.webview, baseUrl + "/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 
