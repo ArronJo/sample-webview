@@ -17,12 +17,8 @@ public class EnvUtil {
         return context.getExternalFilesDir(null);
     }
 
-    public static File getExternalDir(Context context) {
-        return EnvUtil.getExternalFilesDir(context);
-    }
-
     public static File getMediaDir(Context context, String type) {
-        File storageDir = getExternalDir(context);
+        File storageDir = getExternalFilesDir(context);
 
         if ("image".equalsIgnoreCase(type) || "video".equalsIgnoreCase(type)) {
             return new File(new File(storageDir, Environment.DIRECTORY_DCIM), "Camera");

@@ -54,7 +54,7 @@ public class AndroidBridgeProcessActivityResult {
                     Logger.e(TAG, e);
                 }
 
-                AndroidBridge.executeJSFunction(webview, requestCode, StringUtil.nvl(uri, ""));
+                AndroidBridge.callJSFunction(webview, AndroidBridge.getCallbackJSFunctionName(requestCode), StringUtil.nvl(uri, ""));
             }
             else if (null != data) {
                 Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
@@ -73,7 +73,7 @@ public class AndroidBridgeProcessActivityResult {
                     params = StringUtil.nvl(uri, "");
                 }
 
-                AndroidBridge.executeJSFunction(webview, requestCode, params);
+                AndroidBridge.callJSFunction(webview, AndroidBridge.getCallbackJSFunctionName(requestCode), params);
 
                 if (null != bitmap) {
                     DialogHelper.alert(webview.getContext(), bitmap);

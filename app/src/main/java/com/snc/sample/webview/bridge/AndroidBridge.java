@@ -12,6 +12,7 @@ import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.json.JSONHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.reflect.ReflectHelper;
+import com.snc.zero.util.StringUtil;
 
 import org.json.JSONObject;
 
@@ -65,27 +66,6 @@ public class AndroidBridge {
         return false;
     }
 
-    private JSONObject parse(String urlString) throws IOException {
-        Uri uri = Uri.parse(urlString);
-        Logger.i(TAG, "[WEBVIEW] callNativeMethod: parse() : uri = " + uri);
-
-        if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
-            throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
-        }
-        if (!HOST_COMMAND.equals(uri.getHost())) {
-            throw new IOException("\"" + uri.getHost() + "\" host is not supported.");
-        }
-
-        String query = uri.getEncodedQuery();
-        try {
-            query = new String(Base64.decode(query, Base64.DEFAULT));
-            query = URLDecoder.decode(query, "utf-8");
-            return new JSONObject(query);
-        } catch (Exception e) {
-            throw new IOException("\"" + query + "\" is not JSONObject.");
-        }
-    }
-
     private boolean executeProcess(final WebView webview, final JSONObject jsonObject) {
         final String command = JSONHelper.getString(jsonObject, "command", "");
         final JSONObject args = JSONHelper.getJSONObject(jsonObject, "args", new JSONObject());
@@ -108,6 +88,27 @@ public class AndroidBridge {
             Logger.e(TAG, e);
         }
         return false;
+    }
+
+    private JSONObject parse(String urlString) throws IOException {
+        Uri uri = Uri.parse(urlString);
+        Logger.i(TAG, "[WEBVIEW] callNativeMethod: parse() : uri = " + uri);
+
+        if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
+            throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
+        }
+        if (!HOST_COMMAND.equals(uri.getHost())) {
+            throw new IOException("\"" + uri.getHost() + "\" host is not supported.");
+        }
+
+        String query = uri.getEncodedQuery();
+        try {
+            query = new String(Base64.decode(query, Base64.DEFAULT));
+            query = URLDecoder.decode(query, "utf-8");
+            return new JSONObject(query);
+        } catch (Exception e) {
+            throw new IOException("\"" + query + "\" is not JSONObject.");
+        }
     }
 
     //-- [E N D] call Web --> Native
@@ -163,22 +164,13 @@ public class AndroidBridge {
     //-- [E N D] call Native --> Web
 
 
-    //++ [[START] for Native Interface]
-
-    public static void executeJSFunction(WebView webView, int requestCode, String data) {
-        String callbackJSFunction = getCallbackJSFunctionName(requestCode);
-        if (null == callbackJSFunction || callbackJSFunction.isEmpty()) {
-            Logger.e(TAG, "[WEBVIEW] Error: The executeJSFunction information is unknown.");
-            return;
-        }
-        AndroidBridge.callJSFunction(webView, callbackJSFunction, data);
-    }
+    //++ [[START] for JS Callback]
 
     public static void setCallbackJSFunctionName(int requestCode, String functionName) {
         callbackFunctionNames.put(String.valueOf(requestCode), functionName);
     }
 
-    private static String getCallbackJSFunctionName(int requestCode) {
+    public static String getCallbackJSFunctionName(int requestCode) {
         return callbackFunctionNames.remove(String.valueOf(requestCode));
     }
 
@@ -195,6 +187,6 @@ public class AndroidBridge {
         extraOutput = file;
     }
 
-    //-- [[E N D] for Native Interface]
+    //-- [[E N D] for JS Callback]
 
 }
