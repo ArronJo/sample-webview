@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 
-import com.snc.zero.log.Logger;
 import com.snc.zero.mimetype.MimeType;
 import com.snc.zero.util.FileUtil;
 
@@ -48,12 +47,6 @@ public class ImageProvider extends MediaStoreProvider {
                 contentResolver.update(item1, values1, null, null);
             }
         });
-
-        if (null != item) {
-            if (!file.delete()) {
-                Logger.e(TAG, "delete failed...");
-            }
-        }
 
         return item;
     }

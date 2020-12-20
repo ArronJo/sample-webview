@@ -10,6 +10,12 @@ android {
         versionName "1.0"
         multiDexEnabled true
         //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        //++ for Android 11 (API 30)
+        buildConfigField "String", "ASSET_BASE_DOMAIN", "\"snc.com\""
+        buildConfigField "String", "ASSET_PATH", "\"/assets/\""
+        buildConfigField "String", "RES_PATH", "\"/res/\""
+        //--
     }
     signingConfigs {
         storeFile {
@@ -27,13 +33,9 @@ android {
             //signingConfig signingConfigs.storeFile
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-            buildConfigField "String", "ASSET_BASE_URL", "\"snc.com\""
         }
         debug {
             //signingConfig signingConfigs.storeFile
-
-            buildConfigField "String", "ASSET_BASE_URL", "\"snc.com\""
         }
     }
     //flavorDimensions "version"

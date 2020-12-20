@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.snc.sample.webview.BuildConfig;
 import com.snc.zero.log.Logger;
 
 import java.util.ArrayList;
@@ -26,8 +27,13 @@ import java.util.Map;
 public class WebViewHelper {
     private static final String TAG = WebViewHelper.class.getSimpleName();
 
+    private static final String SCHEME_HTTP = "http://";
+    private static final String SCHEME_HTTPS = "https://";
     private static final String SCHEME_FILE = "file://";
     private static final String SCHEME_ASSET = "file:///android_asset";
+    private static final String SCHEME_ASSET_API30 = SCHEME_HTTPS + BuildConfig.ASSET_BASE_DOMAIN + BuildConfig.ASSET_PATH;
+    private static final String SCHEME_RES = "file:///android_res";
+    private static final String SCHEME_RES_API30 = SCHEME_HTTPS + BuildConfig.ASSET_BASE_DOMAIN + BuildConfig.RES_PATH;
 
     public static WebView addWebView(Context context, ViewGroup parentView) {
         WebView webView = newWebView(context);
@@ -95,7 +101,14 @@ public class WebViewHelper {
         final Map<String, String> extraHeaders = new HashMap<>();
         extraHeaders.put("Platform", "A");
 
-        if (uriString.startsWith(SCHEME_FILE) && !uriString.startsWith(SCHEME_ASSET)) {
+        if (uriString.startsWith(SCHEME_HTTP) || uriString.startsWith(SCHEME_HTTPS)
+                || uriString.startsWith(SCHEME_ASSET) || uriString.startsWith(SCHEME_ASSET_API30)) {
+            webView.loadUrl(uriString, extraHeaders);
+        }
+        //else if (uriString.startsWith(SCHEME_RES) || uriString.startsWith(SCHEME_RES_API30)) {
+        //    //TODO::
+        //}
+        else if (uriString.startsWith(SCHEME_FILE)) {
             List<String> permissions = new ArrayList<>();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 // Dangerous Permission
@@ -117,9 +130,22 @@ public class WebViewHelper {
                     })
                     .setPermissions(permissions.toArray(new String[] {}))
                     .check();
-        } else {
-            webView.loadUrl(uriString, extraHeaders);
         }
+    }
+
+    public static String getLocalBaseUrl(String type) {
+        if ("assets".equals(type)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                return SCHEME_ASSET_API30;
+            }
+            return SCHEME_ASSET;
+        } else if ("res".equals(type)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                return SCHEME_RES_API30;
+            }
+            return SCHEME_RES;
+        }
+        return "";
     }
 
 }

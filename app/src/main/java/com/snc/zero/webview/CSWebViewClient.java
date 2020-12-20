@@ -38,9 +38,9 @@ public class CSWebViewClient extends WebViewClient {
     public CSWebViewClient(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             this.assetLoader = new WebViewAssetLoader.Builder()
-                    .setDomain(BuildConfig.ASSET_BASE_URL)
-                    .addPathHandler("/res/", new WebViewAssetLoader.ResourcesPathHandler(context))
-                    .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(context))
+                    .setDomain(BuildConfig.ASSET_BASE_DOMAIN)
+                    .addPathHandler(BuildConfig.RES_PATH, new WebViewAssetLoader.ResourcesPathHandler(context))
+                    .addPathHandler(BuildConfig.ASSET_PATH, new WebViewAssetLoader.AssetsPathHandler(context))
                     .build();
         }
     }
@@ -70,9 +70,10 @@ public class CSWebViewClient extends WebViewClient {
         super.onLoadResource(view, url);
     }
 
+    @Deprecated
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Logger.i(TAG, "[WEBVIEW] shouldOverrideUrlLoading() 1: " + url);
+        Logger.i(TAG, "[WEBVIEW] shouldOverrideUrlLoading() API 23 below: " + url);
 
         if (url.startsWith("http://") || url.startsWith("https://")) {
             view.loadUrl(url);
@@ -84,7 +85,7 @@ public class CSWebViewClient extends WebViewClient {
     @TargetApi(Build.VERSION_CODES.N)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        Logger.i(TAG, "[WEBVIEW] shouldOverrideUrlLoading() 2: " + request.getUrl());
+        Logger.i(TAG, "[WEBVIEW] shouldOverrideUrlLoading() API 24 after: " + request.getUrl());
 
         String url = Uri.decode(request.getUrl().toString());
 

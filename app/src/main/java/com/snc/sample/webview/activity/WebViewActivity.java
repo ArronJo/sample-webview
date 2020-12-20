@@ -15,7 +15,6 @@ import com.snc.sample.webview.BuildConfig;
 import com.snc.sample.webview.R;
 import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.sample.webview.bridge.process.AndroidBridgeProcessActivityResult;
-import com.snc.zero.webview.CSDownloadListener;
 import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.activity.BaseActivity;
 import com.snc.zero.dialog.DialogHelper;
@@ -23,9 +22,10 @@ import com.snc.zero.keyevent.BackKeyShutdown;
 import com.snc.zero.log.Logger;
 import com.snc.zero.util.PackageUtil;
 import com.snc.zero.util.StringUtil;
+import com.snc.zero.webview.CSDownloadListener;
+import com.snc.zero.webview.CSFileChooserListener;
 import com.snc.zero.webview.CSWebChromeClient;
 import com.snc.zero.webview.CSWebViewClient;
-import com.snc.zero.webview.CSFileChooserListener;
 import com.snc.zero.webview.WebViewHelper;
 
 /**
@@ -106,14 +106,12 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(this.activity));
 
         // load url
-        String baseUrl;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            //baseUrl = "https://appassets.androidplatform.net/assets";
-            baseUrl = "https://" + BuildConfig.ASSET_BASE_URL + "/assets";
-        } else {
-            baseUrl = "file:///android_asset";
-        }
-        WebViewHelper.loadUrl(this.webview, baseUrl + "/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
+
+        WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
+        //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/test/test.html");
+        //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/require/main.html");
+
         //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 

@@ -47,6 +47,12 @@ public class AndroidBridgeProcessActivityResult {
                 try {
                     if (FileUtil.isFilesDir(webview.getContext(), documentFile)) {
                         uri = ImageProvider.insert(webview.getContext(), documentFile);
+
+                        if (null != uri) {
+                            if (!documentFile.delete()) {
+                                Logger.e(TAG, "delete failed...");
+                            }
+                        }
                     } else {
                         IntentUtil.addGalleryPic(webview.getContext(), documentFile);
                     }

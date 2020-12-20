@@ -161,12 +161,14 @@ public class CSFileChooserListener implements FileChooserListener {
     public void onActivityResultFileChooserNormal(int requestCode, int resultCode, Intent data) {
         Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserNormal(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
 
-        if (Activity.RESULT_OK != resultCode) {
+        if (null == filePathCallbackNormal) {
+            Logger.i(TAG, "[WEBVIEW] onActivityResultNormal(): filePathCallbackNormal is null !!!");
             return;
         }
 
-        if (null == filePathCallbackNormal) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultNormal(): filePathCallbackNormal is null !!!");
+        if (Activity.RESULT_OK != resultCode) {
+            filePathCallbackNormal.onReceiveValue(null);
+            filePathCallbackNormal = null;
             return;
         }
 
@@ -179,12 +181,14 @@ public class CSFileChooserListener implements FileChooserListener {
     public void onActivityResultFileChooserLollipop(int requestCode, int resultCode, Intent data) {
         Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserLollipop(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
 
-        if (Activity.RESULT_OK != resultCode) {
+        if (null == filePathCallbackLollipop) {
+            Logger.i(TAG, "[WEBVIEW] onActivityResultLollipop(): filePathCallbackLollipop is null !!!");
             return;
         }
 
-        if (null == filePathCallbackLollipop) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultLollipop(): filePathCallbackLollipop is null !!!");
+        if (Activity.RESULT_OK != resultCode) {
+            filePathCallbackLollipop.onReceiveValue(null);
+            filePathCallbackLollipop = null;
             return;
         }
 

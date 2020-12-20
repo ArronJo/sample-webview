@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import androidx.core.content.FileProvider;
 
 import java.io.File;
+
+import androidx.core.content.FileProvider;
 
 /**
  * Uri Utilities

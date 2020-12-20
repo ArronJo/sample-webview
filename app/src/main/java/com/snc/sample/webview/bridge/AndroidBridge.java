@@ -12,7 +12,6 @@ import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.json.JSONHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.reflect.ReflectHelper;
-import com.snc.zero.util.StringUtil;
 
 import org.json.JSONObject;
 

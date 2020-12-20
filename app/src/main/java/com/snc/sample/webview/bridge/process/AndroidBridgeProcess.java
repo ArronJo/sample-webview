@@ -108,12 +108,7 @@ public class AndroidBridgeProcess {
                                 throw new NullPointerException();
                             }
 
-                            Uri output;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                output = FileProvider.getUriForFile(webview.getContext(), PackageUtil.getPackageName(webview.getContext()) + ".fileprovider", file);
-                            } else {
-                                output = UriUtil.fromFile(webview.getContext(), file);
-                            }
+                            Uri output = UriUtil.fromFile(webview.getContext(), file);
 
                             if (!FileUtil.delete(file)) {
                                 Logger.e(TAG, "[WEBVIEW] delete failed...");

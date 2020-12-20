@@ -1,5 +1,6 @@
 package com.snc.zero.download;
 
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +12,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
 
+import com.snc.zero.dialog.DialogHelper;
+import com.snc.zero.log.Logger;
 import com.snc.zero.mimetype.MimeType;
 
 /**
@@ -20,25 +23,31 @@ import com.snc.zero.mimetype.MimeType;
  * @since 2020
  */
 public class CSDownloadManager {
+    private static final String TAG = CSDownloadManager.class.getSimpleName();
 
     private long mDownloadId;
 
     public void download(Context context, String url) {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            request.allowScanningByMediaScanner();
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        try {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            }
+
+            int lastIdx = url.lastIndexOf("/");
+            String fileName = url.substring(lastIdx);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+            request.setMimeType(MimeType.getMimeFromFileName(fileName));
+
+            registerDownloadReceiver(context);
+
+            DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            mDownloadId = manager.enqueue(request);
+        } catch (Exception e) {
+            Logger.e(TAG, e);
+            DialogHelper.alert((Activity) context, e.toString());
         }
-
-        int lastIdx = url.lastIndexOf("/");
-        String fileName = url.substring(lastIdx);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-        request.setMimeType(MimeType.getMimeFromFileName(fileName));
-
-        registerDownloadReceiver(context);
-
-        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        mDownloadId = manager.enqueue(request);
     }
 
     private void registerDownloadReceiver(Context context) {
