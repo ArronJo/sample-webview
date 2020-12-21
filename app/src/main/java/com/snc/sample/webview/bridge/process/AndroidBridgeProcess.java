@@ -15,7 +15,6 @@ import com.snc.zero.log.Logger;
 import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.FileUtil;
 import com.snc.zero.util.IntentUtil;
-import com.snc.zero.util.PackageUtil;
 import com.snc.zero.util.UriUtil;
 
 import org.json.JSONObject;
@@ -23,8 +22,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.core.content.FileProvider;
 
 /**
  * WebView JavaScript Interface Process

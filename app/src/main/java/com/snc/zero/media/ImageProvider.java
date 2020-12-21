@@ -19,7 +19,6 @@ import java.io.FileNotFoundException;
  * @since 2020
  */
 public class ImageProvider extends MediaStoreProvider {
-    private static final String TAG = ImageProvider.class.getSimpleName();
 
     public static Uri insert(Context context, File file) throws FileNotFoundException {
         if (!FileUtil.isFilesDir(context, file)) {
@@ -40,14 +39,12 @@ public class ImageProvider extends MediaStoreProvider {
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         }
 
-        Uri item = insert(context, uri, values, file, (contentResolver, values1, item1) -> {
+        return insert(context, uri, values, file, (contentResolver, values1, item1) -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 values1.clear();
                 values1.put(MediaStore.Images.Media.IS_PENDING, 0);
                 contentResolver.update(item1, values1, null, null);
             }
         });
-
-        return item;
     }
 }

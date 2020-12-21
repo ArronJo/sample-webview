@@ -11,8 +11,6 @@ import com.snc.zero.log.Logger;
 
 import java.io.File;
 
-import androidx.annotation.NonNull;
-
 public class BitmapUtil {
     private static final String TAG = BitmapUtil.class.getSimpleName();
 
@@ -23,16 +21,13 @@ public class BitmapUtil {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), uri);
-                return ImageDecoder.decodeBitmap(source, new ImageDecoder.OnHeaderDecodedListener() {
-                    @Override
-                    public void onHeaderDecoded(@NonNull ImageDecoder decoder, @NonNull ImageDecoder.ImageInfo info, @NonNull ImageDecoder.Source source) {
-                        if (maxImageWidth <= 0) {
-                            return;
-                        }
-
-                        int sampleSize = getSampleSize(info.getSize().getWidth(), info.getSize().getHeight(), maxImageWidth);
-                        decoder.setTargetSampleSize(sampleSize);
+                return ImageDecoder.decodeBitmap(source, (decoder, info, source1) -> {
+                    if (maxImageWidth <= 0) {
+                        return;
                     }
+
+                    int sampleSize = getSampleSize(info.getSize().getWidth(), info.getSize().getHeight(), maxImageWidth);
+                    decoder.setTargetSampleSize(sampleSize);
                 });
             } else {
                 //noinspection deprecation
