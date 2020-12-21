@@ -106,12 +106,8 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(this.activity));
 
         // load url
-        //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
-
-        WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
-        //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/test/test.html");
-        //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/require/main.html");
-
+        WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
         //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 

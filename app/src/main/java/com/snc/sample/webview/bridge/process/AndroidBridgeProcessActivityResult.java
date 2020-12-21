@@ -42,7 +42,7 @@ public class AndroidBridgeProcessActivityResult {
                 File documentFile = AndroidBridge.getExtraOutput(true);
                 Uri uri = UriUtil.fromFile(webview.getContext(), documentFile);
 
-                DialogHelper.alert(webview.getContext(), BitmapUtil.decodeBitmap(webview.getContext(), documentFile));
+                DialogHelper.alert(webview.getContext(), BitmapUtil.decodeBitmap(webview.getContext(), documentFile, 2048));
 
                 try {
                     if (FileUtil.isFilesDir(webview.getContext(), documentFile)) {
