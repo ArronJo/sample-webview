@@ -12,7 +12,7 @@ import android.util.Log;
 public class Logger {
     private static final String PREFIX = "";
 
-    public static void d(String tag, Object msg) {
+    public static void d(String tag, Object...msg) {
         try {
             Log.d(tag, getMessage(msg));
         } catch (Exception e) {
@@ -20,7 +20,7 @@ public class Logger {
         }
     }
 
-    public static void i(String tag, Object msg) {
+    public static void i(String tag, Object...msg) {
         try {
             Log.i(tag, getMessage(msg));
         } catch (Exception e) {
@@ -28,7 +28,7 @@ public class Logger {
         }
     }
 
-    public static void v(String tag, Object msg) {
+    public static void v(String tag, Object...msg) {
         try {
             Log.v(tag, getMessage(msg));
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class Logger {
         }
     }
 
-    public static void w(String tag, Object msg) {
+    public static void w(String tag, Object...msg) {
         try {
             Log.w(tag, getMessage(msg));
         } catch (Exception e) {
@@ -44,7 +44,7 @@ public class Logger {
         }
     }
 
-    public static void e(String tag, Object msg) {
+    public static void e(String tag, Object...msg) {
         try {
             Log.e(tag, getMessage(msg));
         } catch (Exception e) {
@@ -66,6 +66,15 @@ public class Logger {
             return PREFIX + msg;
         }
         return msg.toString();
+    }
+
+    private static String getMessage(Object...msg) {
+        StringBuilder sb = new StringBuilder();
+        for (Object o : msg) {
+            sb.append(getMessage(o)).append('\n');
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 
 }

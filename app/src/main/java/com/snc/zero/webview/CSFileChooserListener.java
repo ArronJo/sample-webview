@@ -149,7 +149,7 @@ public class CSFileChooserListener implements FileChooserListener {
 
         } catch (Exception e) {
             Logger.e(TAG, e);
-            DialogHelper.alert((Activity) context, e.getMessage());
+            DialogHelper.alert((Activity) context, e.toString());
         }
     }
 

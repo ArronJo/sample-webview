@@ -76,7 +76,7 @@ public class WebViewHelper {
         settings.setDisplayZoomControls(false);
         settings.setAppCacheEnabled(false);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= 30) {  // Build.VERSION_CODES.R
             settings.setAllowFileAccess(false);
             settings.setAllowContentAccess(false);
         } else {
@@ -88,10 +88,8 @@ public class WebViewHelper {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            settings.setAllowFileAccessFromFileURLs(false);
-            settings.setAllowUniversalAccessFromFileURLs(false);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             settings.setAllowFileAccessFromFileURLs(true);
             settings.setAllowUniversalAccessFromFileURLs(true);
         }
@@ -135,12 +133,13 @@ public class WebViewHelper {
 
     public static String getLocalBaseUrl(String type) {
         if ("assets".equals(type)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
                 return SCHEME_ASSET_API30;
             }
             return SCHEME_ASSET;
-        } else if ("res".equals(type)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        }
+        else if ("res".equals(type)) {
+            if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
                 return SCHEME_RES_API30;
             }
             return SCHEME_RES;

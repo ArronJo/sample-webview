@@ -1,5 +1,11 @@
 package com.snc.sample.webview.requetcode;
 
+/**
+ * Request Code
+ *
+ * @author mcharima5@gmail.com
+ * @since 2018
+ */
 public class RequestCode {
     // mask
     private static final int REQUEST_CODE_MASK = 0x0000FFFF;

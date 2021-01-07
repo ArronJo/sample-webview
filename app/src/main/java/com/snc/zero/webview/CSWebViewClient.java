@@ -32,11 +32,10 @@ import androidx.webkit.WebViewAssetLoader;
 public class CSWebViewClient extends WebViewClient {
     private static final String TAG = CSWebViewClient.class.getSimpleName();
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    private WebViewAssetLoader assetLoader;
+    private final WebViewAssetLoader assetLoader;
 
     public CSWebViewClient(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
             this.assetLoader = new WebViewAssetLoader.Builder()
                     .setDomain(BuildConfig.ASSET_BASE_DOMAIN)
                     .addPathHandler(BuildConfig.RES_PATH, new WebViewAssetLoader.ResourcesPathHandler(context))
@@ -50,6 +49,10 @@ public class CSWebViewClient extends WebViewClient {
     @SuppressWarnings({"unused", "RedundantSuppression"})   // use the old one for compatibility with all API levels.
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 20 below):  url[" + url + "]");
+
+        if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
+            return this.assetLoader.shouldInterceptRequest(Uri.parse(url));
+        }
         return super.shouldInterceptRequest(view, url);
     }
 
@@ -58,7 +61,7 @@ public class CSWebViewClient extends WebViewClient {
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 21 after):  url[" + request.getUrl() + "]");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
             return this.assetLoader.shouldInterceptRequest(request.getUrl());
         }
         return null;    //return super.shouldInterceptRequest(view, request);

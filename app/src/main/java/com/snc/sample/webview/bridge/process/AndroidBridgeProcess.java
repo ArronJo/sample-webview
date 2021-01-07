@@ -116,7 +116,7 @@ public class AndroidBridgeProcess {
 
                         } catch (Exception e) {
                             if (webview.getContext() instanceof Activity) {
-                                DialogHelper.alert((Activity) webview.getContext(), e.getMessage());
+                                DialogHelper.alert((Activity) webview.getContext(), e.toString());
                             }
                             Logger.e(TAG, e);
                         }

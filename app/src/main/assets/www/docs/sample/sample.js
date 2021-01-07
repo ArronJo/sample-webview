@@ -19,28 +19,6 @@ function callbackTakePicture(data) {
     console.log("callbackTakePicture(): data = " + data);
 }
 
-// request permission
-function requirePermission (device) {
-    var audioSource = "";
-    var videoSource = "";
-
-    var constraints = {};
-
-    if ("microphone" == device) {
-        constraints.audio = {deviceId: audioSource ? {exact: audioSource} : undefined};
-    } else if ("camera" == device) {
-        constraints.video = {deviceId: videoSource ? {exact: videoSource} : undefined};
-    }
-
-    navigator.mediaDevices.getUserMedia(constraints)
-    .then(function next(error) {
-        console.log('then...');
-    })
-    .catch(function handleError(error) {
-        console.error('Error: ', error);
-    });
-}
-
 
 /////////////////////////////////////////////////
 // Immediately
@@ -58,7 +36,9 @@ function requirePermission (device) {
         entries[0].target.classList.add('big');
     });
 
-    ro.observe(window.video);
+    if (ro && "function" === typeof ro.observe ) {
+        ro.observe(window.video);
+    }
 })();
 
 
@@ -83,11 +63,48 @@ $(document).ready(function() {
     });
 
     $('#req-microphone').on('click', function () {
-        Permission.request("microphone");
+        navigator.mediaDevices.getUserMedia("microphone")
+        .then(function (mediaStream) {
+            console.log('request: then...', mediaStream);
+
+            var video = $('#media-device-video')[0];
+            if (video) {
+                video.srcObject = mediaStream;
+                video.onloadedmetadata = function(e) {
+                    video.play();
+                };
+            }
+        })
+        .catch(function (err) {
+            console.error('request: error: ' + err.toString(), err);
+        });
     });
 
     $('#req-camera').on('click', function () {
-        Permission.request("camera");
+        var constraints = navigator.mediaDevices.getSupportedConstraints();
+        console.log(constraints);
+
+        navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+                facingMode: { exact: "environment" },
+                zoom: true,
+            },
+        })
+        .then(function (mediaStream) {
+            console.log('request: then...', mediaStream);
+
+            var video = $('#media-device-video')[0];
+            if (video) {
+                video.srcObject = mediaStream;
+                video.onloadedmetadata = function(e) {
+                    video.play();
+                };
+            }
+        })
+        .catch(function (err) {
+            console.error('request: error: ' + err.toString(), err);
+        });
     });
 
 });

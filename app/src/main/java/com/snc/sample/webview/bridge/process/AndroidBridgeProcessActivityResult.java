@@ -12,7 +12,7 @@ import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.media.ImageProvider;
 import com.snc.zero.util.BitmapUtil;
-import com.snc.zero.util.FileUtil;
+import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.IntentUtil;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.util.UriUtil;
@@ -42,10 +42,11 @@ public class AndroidBridgeProcessActivityResult {
                 File documentFile = AndroidBridge.getExtraOutput(true);
                 Uri uri = UriUtil.fromFile(webview.getContext(), documentFile);
 
-                DialogHelper.alert(webview.getContext(), BitmapUtil.decodeBitmap(webview.getContext(), documentFile, 2048));
+                Bitmap bitmap = BitmapUtil.decodeBitmap(webview.getContext(), documentFile, 2048);
+                DialogHelper.alert(webview.getContext(), bitmap);
 
                 try {
-                    if (FileUtil.isFilesDir(webview.getContext(), documentFile)) {
+                    if (EnvUtil.isFilesDir(webview.getContext(), documentFile)) {
                         uri = ImageProvider.insert(webview.getContext(), documentFile);
 
                         if (null != uri) {

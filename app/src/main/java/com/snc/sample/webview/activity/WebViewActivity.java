@@ -1,7 +1,6 @@
 package com.snc.sample.webview.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -37,7 +36,6 @@ import com.snc.zero.webview.WebViewHelper;
 public class WebViewActivity extends BaseActivity {
     private static final String TAG = WebViewActivity.class.getSimpleName();
 
-    private Activity activity;
     private WebView webview;
     private CSWebChromeClient webChromeClient;
     private CSFileChooserListener webviewFileChooser;
@@ -46,8 +44,6 @@ public class WebViewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        this.activity = this;
 
         init();
 
@@ -88,25 +84,26 @@ public class WebViewActivity extends BaseActivity {
         }
 
         // set webViewClient
-        CSWebViewClient webviewClient = new CSWebViewClient(webview.getContext());
+        CSWebViewClient webviewClient = new CSWebViewClient(getContext());
         this.webview.setWebViewClient(webviewClient);
 
         // set webChromeClient
-        this.webChromeClient = new CSWebChromeClient(webview.getContext());
+        this.webChromeClient = new CSWebChromeClient(getContext());
         this.webview.setWebChromeClient(this.webChromeClient);
 
         // set fileChooser
-        this.webviewFileChooser = new CSFileChooserListener(webview.getContext());
+        this.webviewFileChooser = new CSFileChooserListener(getContext());
         this.webChromeClient.setFileChooserListener(this.webviewFileChooser);
 
         // add interface
         this.webview.addJavascriptInterface(new AndroidBridge(webview), "AndroidBridge");
 
         // add download listener
-        this.webview.setDownloadListener(new CSDownloadListener(this.activity));
+        this.webview.setDownloadListener(new CSDownloadListener(getActivity()));
 
         // load url
         WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
         //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
         //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }

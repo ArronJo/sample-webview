@@ -83,7 +83,7 @@ public class AndroidBridge {
             ReflectHelper.invoke(process, method, webview, args, callback);
             return true;
         } catch (Exception e) {
-            DialogHelper.alert((Activity) webview.getContext(), e.getMessage());
+            DialogHelper.alert((Activity) webview.getContext(), e.toString());
             Logger.e(TAG, e);
         }
         return false;

@@ -1,7 +1,5 @@
 package com.snc.zero.util;
 
-import android.content.Context;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -79,11 +77,6 @@ public class FileUtil {
             IOUtil.closeQuietly(fin);
             IOUtil.closeQuietly(fos);
         }
-    }
-
-    public static boolean isFilesDir(Context context, File file) {
-        File f = EnvUtil.getExternalFilesDir(context);
-        return file.getAbsolutePath().startsWith(f.getAbsolutePath());
     }
 
 }

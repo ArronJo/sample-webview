@@ -123,7 +123,7 @@ public class CSWebChromeClient extends WebChromeClient {
     //-- [[E N D] File Chooser]
 
 
-    //++ [[START] Geolocation, Record Audio]
+    //++ [[START] Geolocation, Record Video/Audio]
     @Override
     public void onPermissionRequest(final PermissionRequest request) {
         Logger.i(TAG, "[WEBVIEW] onPermissionRequest: request[" + request + "]");
@@ -151,7 +151,7 @@ public class CSWebChromeClient extends WebChromeClient {
                                 })
                                 .setPermissions(new String[] {
                                         // Dangerous Permission
-                                        Manifest.permission.RECORD_AUDIO
+                                        Manifest.permission.RECORD_AUDIO,
                                 })
                                 .check();
                         return;
@@ -174,7 +174,8 @@ public class CSWebChromeClient extends WebChromeClient {
                                 })
                                 .setPermissions(new String[] {
                                         // Dangerous Permission
-                                        Manifest.permission.CAMERA
+                                        Manifest.permission.CAMERA,
+                                        Manifest.permission.RECORD_AUDIO,
                                 })
                                 .check();
                         return;
@@ -190,7 +191,7 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, "[WEBVIEW] onPermissionRequestCanceled: request[" + request + "]");
         super.onPermissionRequestCanceled(request);
     }
-    //-- [[E N D] Geolocation, Record Audio]
+    //-- [[E N D] Geolocation, Record Video/Audio]
 
 
     //++ [[START] Geolocation]

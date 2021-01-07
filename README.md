@@ -6,6 +6,7 @@ This project is a sample for developing android applications using webview.
 # Release Note
 |    Date    |      Comment      |
 |------------|-------------------|
+| 2021-01-07 | Refactoring. |
 | 2020-12-19 | Migrating apps to Android 11 (API 30). |
 | 2020-12-17 | MediaStore and DownloadManager have been added for Android 10 (API 29). |
 | 2020-11-16 | The version of targetSdkVersion has been changed.<br> [targetSdkVersion 28(9.0) -> 29(10.0)] |

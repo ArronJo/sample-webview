@@ -3,6 +3,8 @@ package com.snc.zero.util;
 import android.content.Context;
 import android.os.Environment;
 
+import com.snc.sample.webview.BuildConfig;
+
 import java.io.File;
 
 /**
@@ -14,6 +16,9 @@ import java.io.File;
 public class EnvUtil {
 
     public static File getExternalFilesDir(Context context) {
+        if (BuildConfig.FEATURE_EXTERNAL_STORAGE_DIR) {
+            return Environment.getExternalStorageDirectory();
+        }
         return context.getExternalFilesDir(null);
     }
 
@@ -29,4 +34,8 @@ public class EnvUtil {
         return null;
     }
 
+    public static boolean isFilesDir(Context context, File file) {
+        File dir = context.getExternalFilesDir(null);
+        return file.getAbsolutePath().startsWith(dir.getAbsolutePath());
+    }
 }

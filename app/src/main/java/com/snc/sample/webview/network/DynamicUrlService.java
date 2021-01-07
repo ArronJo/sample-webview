@@ -13,7 +13,6 @@ import retrofit2.http.Url;
  */
 public interface DynamicUrlService {
 
-    @SuppressWarnings({"unused", "RedundantSuppression"})
     @GET
     Call<ResponseBody> get(@Url String url);
 

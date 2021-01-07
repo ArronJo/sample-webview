@@ -16,6 +16,7 @@ import androidx.core.content.FileProvider;
  * @since 2018
  */
 public class UriUtil {
+    //private static final String TAG = UriUtil.class.getSimpleName();
 
     public static Uri fromFile(Context context, File file) throws PackageManager.NameNotFoundException {
         final Uri newUri;

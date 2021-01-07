@@ -7,7 +7,6 @@ import android.os.Build;
 import android.provider.MediaStore;
 
 import com.snc.zero.mimetype.MimeType;
-import com.snc.zero.util.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,10 +20,6 @@ import java.io.FileNotFoundException;
 public class ImageProvider extends MediaStoreProvider {
 
     public static Uri insert(Context context, File file) throws FileNotFoundException {
-        if (!FileUtil.isFilesDir(context, file)) {
-            return null;
-        }
-
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME, file.getName());
         values.put(MediaStore.Images.Media.MIME_TYPE, MimeType.getMimeFromFileName(file.getName()));

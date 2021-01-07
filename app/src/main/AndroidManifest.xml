@@ -8,7 +8,10 @@
 
     <!-- External Storage -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"
+        tools:ignore="ScopedStorage" />
 
     <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA" />
@@ -39,6 +42,7 @@
 
     <!-- Application -->
     <!-- android:requestLegacyExternalStorage="true" -->
+    <!-- android:preserveLegacyExternalStorage="true" -->
     <application
         android:name="com.snc.zero.application.SNCApplication"
         android:icon="@mipmap/ic_launcher"
@@ -55,6 +59,7 @@
         <!-- Activity -->
         <activity
             android:name="com.snc.sample.webview.activity.WebViewActivity"
+            android:launchMode="singleTop"
             android:configChanges="keyboardHidden|orientation|screenLayout|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -6,7 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * IO 유틸리티
+ * IO Utilities
+ *
  * @author Aaron Jo.
  * @since 2016
  */
