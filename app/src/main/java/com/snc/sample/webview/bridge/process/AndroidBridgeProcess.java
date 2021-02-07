@@ -127,7 +127,7 @@ public class AndroidBridgeProcess {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
-                .setPermissions(permissions.toArray(new String[] {}))
+                .setPermissions(permissions)
                 .check();
     }
 

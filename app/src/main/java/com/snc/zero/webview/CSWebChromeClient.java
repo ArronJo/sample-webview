@@ -79,7 +79,7 @@ public class CSWebChromeClient extends WebChromeClient {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
-                .setPermissions(permissions.toArray(new String[] {}))
+                .setPermissions(permissions)
                 .check();
     }
 
@@ -116,7 +116,7 @@ public class CSWebChromeClient extends WebChromeClient {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
-                .setPermissions(permissions.toArray(new String[] {}))
+                .setPermissions(permissions)
                 .check();
         return true;
     }

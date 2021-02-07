@@ -60,7 +60,7 @@ public class CSDownloadManager {
                         DialogHelper.toast(context, "Permission denied !!!");
                     }
                 })
-                .setPermissions(permissions.toArray(new String[] {}))
+                .setPermissions(permissions)
                 .check();
     }
 
