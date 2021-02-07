@@ -14,7 +14,7 @@ public class RPermission {
         return new RPermission(context);
     }
 
-    private Context context;
+    private final Context context;
     private String[] permissions;
     private PermissionListener listener;
 

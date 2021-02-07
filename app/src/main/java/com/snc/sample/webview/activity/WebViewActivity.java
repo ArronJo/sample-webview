@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 import com.snc.sample.webview.BuildConfig;
 import com.snc.sample.webview.R;
@@ -104,7 +103,6 @@ public class WebViewActivity extends BaseActivity {
         // load url
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
-        //WebViewHelper.loadUrl(this.webview, "https://oswebqa.onsure.co.kr/HOME/pdf/NationTxpyNo.pdf");
         //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
         WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }

@@ -40,11 +40,7 @@ public class RetrofitDynamicUrlClient {
         call.enqueue(new Callback<T>() {
             @Override
             public void onResponse(@NotNull Call<T> call, @NotNull Response<T> response) {
-                if (null == response) {
-                    Logger.i(TAG, "[Retrofit] ", "onResponse() = response is null.");
-                } else {
-                    Logger.i(TAG, "[Retrofit] ", "onResponse() = response code is " + response.code());
-                }
+                Logger.i(TAG, "[Retrofit] ", "onResponse() = response code is " + response.code());
 
                 if (null != listener) {
                     listener.onResponse(call, response);

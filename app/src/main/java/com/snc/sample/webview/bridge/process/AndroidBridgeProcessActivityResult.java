@@ -13,7 +13,6 @@ import com.snc.zero.log.Logger;
 import com.snc.zero.media.ImageProvider;
 import com.snc.zero.util.BitmapUtil;
 import com.snc.zero.util.EnvUtil;
-import com.snc.zero.util.IntentUtil;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.util.UriUtil;
 

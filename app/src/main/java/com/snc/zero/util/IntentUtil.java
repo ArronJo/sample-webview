@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import java.io.File;
 import java.net.URISyntaxException;
-
-import retrofit2.http.DELETE;
 
 /**
  * Android Intent Utilities
@@ -53,32 +49,4 @@ public class IntentUtil {
         }
     }
 
-    private static MediaScannerConnection scanner;
-
-    public static void addGalleryPic(Context context, File file) {
-        MediaScannerConnection.MediaScannerConnectionClient client = new MediaScannerConnection.MediaScannerConnectionClient() {
-            @Override
-            public void onMediaScannerConnected() {
-                if (null == scanner) {
-                    return;
-                }
-                scanner.scanFile(file.getAbsolutePath(), null);
-            }
-
-            @Override
-            public void onScanCompleted(String path, Uri uri) {
-
-            }
-        };
-
-        if (null == scanner) {
-            scanner = new MediaScannerConnection(context, client);
-        }
-        scanner.connect();
-
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri contentUri = Uri.parse("file://" + file);
-        mediaScanIntent.setData(contentUri);
-        context.sendBroadcast(mediaScanIntent);
-    }
 }
