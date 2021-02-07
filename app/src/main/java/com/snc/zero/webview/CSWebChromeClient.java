@@ -19,11 +19,11 @@ import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.snc.zero.permission.PermissionListener;
 import com.snc.sample.webview.R;
 import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
+import com.snc.zero.permission.RPermission;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.webview.listener.FileChooserListener;
 
@@ -63,7 +63,7 @@ public class CSWebChromeClient extends WebChromeClient {
             permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
 
-        TedPermission.with(this.context)
+        RPermission.with(this.context)
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -93,7 +93,7 @@ public class CSWebChromeClient extends WebChromeClient {
             permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
 
-        TedPermission.with(this.context)
+        RPermission.with(this.context)
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -135,7 +135,7 @@ public class CSWebChromeClient extends WebChromeClient {
             for (String permission : request.getResources()) {
                 switch (permission) {
                     case PermissionRequest.RESOURCE_AUDIO_CAPTURE: {
-                        TedPermission.with(this.context)
+                        RPermission.with(this.context)
                                 .setPermissionListener(new PermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
@@ -158,7 +158,7 @@ public class CSWebChromeClient extends WebChromeClient {
                     }
 
                     case PermissionRequest.RESOURCE_VIDEO_CAPTURE: {
-                        TedPermission.with(this.context)
+                        RPermission.with(this.context)
                                 .setPermissionListener(new PermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
@@ -205,7 +205,7 @@ public class CSWebChromeClient extends WebChromeClient {
     public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
         Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
 
-        TedPermission.with(this.context)
+        RPermission.with(this.context)
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {

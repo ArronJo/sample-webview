@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.snc.sample.webview.BuildConfig;
 import com.snc.zero.log.Logger;
+import com.snc.zero.permission.PermissionListener;
+import com.snc.zero.permission.RPermission;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,15 +74,13 @@ public class WebViewHelper {
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
-        settings.setAppCacheEnabled(false);
 
-        if (Build.VERSION.SDK_INT >= 30) {  // Build.VERSION_CODES.R
-            settings.setAllowFileAccess(false);
-            settings.setAllowContentAccess(false);
-        } else {
-            settings.setAllowFileAccess(true);
-            settings.setAllowContentAccess(true);
+        if (Build.VERSION.SDK_INT < 30) {  // Build.VERSION_CODES.R
+            settings.setAppCacheEnabled(false);
         }
+
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -113,7 +111,7 @@ public class WebViewHelper {
                 permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
             }
 
-            TedPermission.with(webView.getContext())
+            RPermission.with(webView.getContext())
                     .setPermissionListener(new PermissionListener() {
                         @Override
                         public void onPermissionGranted() {

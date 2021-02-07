@@ -26,7 +26,28 @@ This project is a sample for developing android applications using webview.
 <input type="file" accept="*/*" />
 ```
 
-2. Geolocation
+2. Camera
+```code
+<script>
+navigator.mediaDevices.getUserMedia({
+    video: {
+        facingMode: { exact: "environment" },
+        zoom: true,
+    },
+})
+.then(function (mediaStream) {
+    var video = $('#media-device-video')[0];
+    if (video) {
+        video.srcObject = mediaStream;
+        video.onloadedmetadata = function(e) {
+            video.play();
+        };
+    }
+})
+</script>
+```
+
+3. Geolocation
 ```code
 <script>
 navigator.geolocation.watchPosition(function(Position) {
@@ -35,7 +56,7 @@ navigator.geolocation.watchPosition(function(Position) {
 </script>
 ```
 
-3. Full-screen video playback
+4. Full-screen video playback
 ```code
 <video width="100%" height="100%" controls>
     <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
@@ -44,7 +65,7 @@ navigator.geolocation.watchPosition(function(Position) {
 </video>
 ```
 
-4. Native Interface
+5. Native Interface
 ```code
 <script>
 function callNative(command, args, callback) {

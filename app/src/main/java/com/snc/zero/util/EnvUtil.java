@@ -15,9 +15,14 @@ import java.io.File;
  */
 public class EnvUtil {
 
+    @Deprecated
+    public static File getExternalStorageDirectory() {
+        return Environment.getExternalStorageDirectory();
+    }
+
     public static File getExternalFilesDir(Context context) {
         if (BuildConfig.FEATURE_EXTERNAL_STORAGE_DIR) {
-            return Environment.getExternalStorageDirectory();
+            return getExternalStorageDirectory();
         }
         return context.getExternalFilesDir(null);
     }

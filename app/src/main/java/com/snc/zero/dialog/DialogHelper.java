@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.snc.zero.log.Logger;
 
@@ -72,5 +73,21 @@ public class DialogHelper {
 
 		DialogHelper.alert((Activity) context, iv);
 	}
+
+	public static void toast(Context context, String message) {
+		try {
+			if (context instanceof Activity) {
+				if (((Activity) context).isFinishing()) {
+					return;
+				}
+			}
+			Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+			toast.show();
+
+		} catch (Exception e) {
+			Logger.w(context.getClass().getSimpleName(), e);
+		}
+	}
+
 
 }

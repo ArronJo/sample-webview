@@ -6,12 +6,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.webkit.WebView;
 
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.sample.webview.requetcode.RequestCode;
 import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
+import com.snc.zero.permission.PermissionListener;
+import com.snc.zero.permission.RPermission;
 import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.FileUtil;
 import com.snc.zero.util.IntentUtil;
@@ -90,7 +90,7 @@ public class AndroidBridgeProcess {
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         // check permission
-        TedPermission.with(webview.getContext())
+        RPermission.with(webview.getContext())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {

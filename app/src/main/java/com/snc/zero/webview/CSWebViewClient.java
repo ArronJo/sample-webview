@@ -167,6 +167,7 @@ public class CSWebViewClient extends WebViewClient {
         super.onReceivedHttpError(view, request, errorResponse);
     }
 
+    @Deprecated
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         Logger.e(TAG, "[WEBVIEW] onReceivedError(): url[" + view.getUrl() + "],  errorCode[" + errorCode + "],  description[" + description + "],  failingUrl[" + failingUrl + "]");

@@ -4,11 +4,9 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
-        classpath 'io.fabric.tools:gradle:1.28.1'
+        classpath 'com.android.tools.build:gradle:4.1.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,6 +18,12 @@ allprojects {
         google()
         jcenter()
     }
+
+    // Note: Some input files use or override a deprecated API.
+    // Note: Recompile with -Xlint:deprecation for details.
+    //tasks.withType(JavaCompile) {
+    //    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    //}
 }
 
 task clean(type: Delete) {

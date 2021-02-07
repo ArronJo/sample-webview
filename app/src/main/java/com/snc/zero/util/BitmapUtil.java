@@ -54,7 +54,7 @@ public class BitmapUtil {
                 bfo.inSampleSize = getSampleSize(bfo.outWidth, bfo.outHeight, maxImageWidth);
             }
             bfo.inJustDecodeBounds = false;
-            bfo.inDither = true;
+            //bfo.inDither = true;  // deprecated
             return BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, bfo);
             //||
             //return MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);

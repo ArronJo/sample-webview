@@ -9,7 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-        //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         //++ for Android 10 (API 29)
         buildConfigField "boolean", "FEATURE_EXTERNAL_STORAGE_DIR", "false"
@@ -37,19 +37,26 @@ android {
     buildTypes {
         release {
             //signingConfig signingConfigs.storeFile
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             //signingConfig signingConfigs.storeFile
         }
     }
-    //flavorDimensions "version"
+    flavorDimensions "version"
     productFlavors {
-
+        free {
+            dimension "version"
+            manifestPlaceholders = [ applicationLabel: "@string/app_name" ]
+        }
     }
     sourceSets {
-
+        main {
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['src/main/assets']
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

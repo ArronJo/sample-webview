@@ -102,10 +102,11 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(getActivity()));
 
         // load url
-        WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
+        //WebViewHelper.loadUrl(this.webview, "https://oswebqa.onsure.co.kr/HOME/pdf/NationTxpyNo.pdf");
         //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
-        //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 
     @Override
@@ -143,7 +144,7 @@ public class WebViewActivity extends BaseActivity {
             }
 
             if (BackKeyShutdown.isFirstBackKeyPress(keyCode, event)) {
-                Toast.makeText(getContext(), getString(R.string.one_more_press_back_button), Toast.LENGTH_SHORT).show();
+                DialogHelper.toast(getContext(), getString(R.string.one_more_press_back_button));
                 return true;
             }
         }

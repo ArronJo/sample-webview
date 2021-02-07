@@ -11,13 +11,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.widget.Toast;
 
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.mimetype.MimeType;
+import com.snc.zero.permission.PermissionListener;
+import com.snc.zero.permission.RPermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +34,18 @@ public class CSDownloadManager {
 
     public void download(Context context, String urlString) {
         List<String> permissions = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // android:maxSdkVersion="28"
         }
-        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (RPermission.isGranted(context, permissions.toArray(new String[] {}))) {
+            downloadIt(context, urlString);
+            return;
+        }
 
         // check permission
-        TedPermission.with(context)
+        RPermission.with(context)
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -52,6 +56,8 @@ public class CSDownloadManager {
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
                         Logger.e(TAG, "[CSDownloadManager] onPermissionDenied()..." + deniedPermissions.toString());
+
+                        DialogHelper.toast(context, "Permission denied !!!");
                     }
                 })
                 .setPermissions(permissions.toArray(new String[] {}))
@@ -61,7 +67,7 @@ public class CSDownloadManager {
     private void downloadIt(Context context, String urlString) {
         try {
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlString));
-            request.allowScanningByMediaScanner();
+            //request.allowScanningByMediaScanner();    // Deprecated
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
             int lastIdx = urlString.lastIndexOf("/");
@@ -101,9 +107,9 @@ public class CSDownloadManager {
                             int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
                             int status = cursor.getInt(columnIndex);
                             if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                                Toast.makeText(context, "download success", Toast.LENGTH_SHORT).show();
+                                DialogHelper.toast(context, "download success");
                             } else if (status == DownloadManager.STATUS_FAILED) {
-                                Toast.makeText(context, "download failed", Toast.LENGTH_SHORT).show();
+                                DialogHelper.toast(context, "download failed");
                             }
 
                             unregisterDownloadReceiver(context, this);
