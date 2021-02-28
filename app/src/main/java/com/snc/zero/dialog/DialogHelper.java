@@ -21,73 +21,72 @@ import com.snc.zero.log.Logger;
  */
 public class DialogHelper {
 
-	public static void alert(Activity activity, String message) {
-		alert(activity, "", message, android.R.string.ok,
-				(dialog, which) -> {
+    public static void alert(Activity activity, String message) {
+        alert(activity, "", message, android.R.string.ok,
+                (dialog, which) -> {
 
-				});
-	}
+                });
+    }
 
-	public static void alert(Activity activity, String title, String message, int resId, DialogInterface.OnClickListener listener) {
-		try {
-			AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-			builder.setTitle(title);
-			builder.setMessage(message);
-			builder.setView(null);
-			builder.setNegativeButton(activity.getResources().getString(resId), listener);
-			builder.setCancelable(true);
+    public static void alert(Activity activity, String title, String message, int resId, DialogInterface.OnClickListener listener) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(title);
+            builder.setMessage(message);
+            builder.setView(null);
+            builder.setNegativeButton(activity.getResources().getString(resId), listener);
+            builder.setCancelable(true);
 
-			Dialog dialog = builder.show();
-			dialog.setCanceledOnTouchOutside(false);
+            Dialog dialog = builder.show();
+            dialog.setCanceledOnTouchOutside(false);
 
-		} catch (android.view.WindowManager.BadTokenException e) {
-			Logger.e(activity.getClass().getSimpleName(), e);
-		}
-	}
+        } catch (android.view.WindowManager.BadTokenException e) {
+            Logger.e(activity.getClass().getSimpleName(), e);
+        }
+    }
 
-	public static void alert(Activity activity, View view) {
-		try {
-			AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-			builder.setView(view);
-			builder.setNegativeButton(activity.getResources().getString(android.R.string.ok), (dialog, which) -> {
+    public static void alert(Activity activity, View view) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setView(view);
+            builder.setNegativeButton(activity.getResources().getString(android.R.string.ok), (dialog, which) -> {
 
-			});
-			builder.setCancelable(true);
+            });
+            builder.setCancelable(true);
 
-			Dialog dialog = builder.show();
-			dialog.setCanceledOnTouchOutside(false);
+            Dialog dialog = builder.show();
+            dialog.setCanceledOnTouchOutside(false);
 
-		} catch (android.view.WindowManager.BadTokenException e) {
-			Logger.e(activity.getClass().getSimpleName(), e);
-		}
-	}
+        } catch (android.view.WindowManager.BadTokenException e) {
+            Logger.e(activity.getClass().getSimpleName(), e);
+        }
+    }
 
-	public static void alert(Context context, Bitmap bitmap) {
-		ImageView iv = new ImageView(context);
-		ViewGroup.LayoutParams params = iv.getLayoutParams();
-		if (null == params) {
-			params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-		}
-		iv.setLayoutParams(params);
-		iv.setImageBitmap(bitmap);
+    public static void alert(Context context, Bitmap bitmap) {
+        ImageView iv = new ImageView(context);
+        ViewGroup.LayoutParams params = iv.getLayoutParams();
+        if (null == params) {
+            params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        iv.setLayoutParams(params);
+        iv.setImageBitmap(bitmap);
 
-		DialogHelper.alert((Activity) context, iv);
-	}
+        DialogHelper.alert((Activity) context, iv);
+    }
 
-	public static void toast(Context context, String message) {
-		try {
-			if (context instanceof Activity) {
-				if (((Activity) context).isFinishing()) {
-					return;
-				}
-			}
-			Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-			toast.show();
+    public static void toast(Context context, String message) {
+        try {
+            if (context instanceof Activity) {
+                if (((Activity) context).isFinishing()) {
+                    return;
+                }
+            }
+            Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            toast.show();
 
-		} catch (Exception e) {
-			Logger.w(context.getClass().getSimpleName(), e);
-		}
-	}
-
+        } catch (Exception e) {
+            Logger.w(context.getClass().getSimpleName(), e);
+        }
+    }
 
 }

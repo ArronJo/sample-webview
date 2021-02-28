@@ -1,7 +1,6 @@
 package com.snc.zero.download;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,7 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 
-import com.snc.zero.dialog.DialogHelper;
+import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.log.Logger;
 import com.snc.zero.mimetype.MimeType;
 import com.snc.zero.permission.PermissionListener;
@@ -57,7 +56,9 @@ public class CSDownloadManager {
                     public void onPermissionDenied(List<String> deniedPermissions) {
                         Logger.e(TAG, "[CSDownloadManager] onPermissionDenied()..." + deniedPermissions.toString());
 
-                        DialogHelper.toast(context, "Permission denied !!!");
+                        DialogBuilder.with(context)
+                                .setMessage("Permission denied !!!")
+                                .toast();
                     }
                 })
                 .setPermissions(permissions)
@@ -82,7 +83,10 @@ public class CSDownloadManager {
 
         } catch (Exception e) {
             Logger.e(TAG, e);
-            DialogHelper.alert((Activity) context, e.toString());
+
+            DialogBuilder.with(context)
+                    .setMessage(e.toString())
+                    .show();
         }
     }
 
@@ -107,9 +111,13 @@ public class CSDownloadManager {
                             int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
                             int status = cursor.getInt(columnIndex);
                             if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                                DialogHelper.toast(context, "download success");
+                                DialogBuilder.with(context)
+                                        .setMessage("download success")
+                                        .toast();
                             } else if (status == DownloadManager.STATUS_FAILED) {
-                                DialogHelper.toast(context, "download failed");
+                                DialogBuilder.with(context)
+                                        .setMessage("download failed")
+                                        .toast();
                             }
 
                             unregisterDownloadReceiver(context, this);

@@ -1,8 +1,9 @@
-package com.snc.zero.webview;
+package com.snc.sample.webview.webview;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -12,6 +13,7 @@ import com.snc.sample.webview.BuildConfig;
 import com.snc.zero.log.Logger;
 import com.snc.zero.permission.PermissionListener;
 import com.snc.zero.permission.RPermission;
+import com.snc.zero.util.PackageUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,6 +93,40 @@ public class WebViewHelper {
             settings.setAllowFileAccessFromFileURLs(true);
             settings.setAllowUniversalAccessFromFileURLs(true);
         }
+
+        settings.setUserAgentString(makeUserAgent(webView));
+    }
+
+    public static String makeUserAgent(WebView webView) {
+        String ua = webView.getSettings().getUserAgentString();
+        try {
+            if (!ua.endsWith(" ")) {
+                ua += " ";
+            }
+            ua += PackageUtil.getApplicationName(webView.getContext());
+            ua += "/" + PackageUtil.getPackageVersionName(webView.getContext());
+            ua += "." + PackageUtil.getPackageVersionCode(webView.getContext());
+            return ua;
+        } catch (PackageManager.NameNotFoundException e) {
+            Logger.e(TAG, e);
+        }
+        return ua;
+    }
+
+    public static String getLocalBaseUrl(String type) {
+        if ("assets".equals(type)) {
+            if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
+                return SCHEME_ASSET_API30;
+            }
+            return SCHEME_ASSET;
+        }
+        else if ("res".equals(type)) {
+            if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
+                return SCHEME_RES_API30;
+            }
+            return SCHEME_RES;
+        }
+        return "";
     }
 
     public static void loadUrl(final WebView webView, final String uriString) {
@@ -101,9 +137,6 @@ public class WebViewHelper {
                 || uriString.startsWith(SCHEME_ASSET) || uriString.startsWith(SCHEME_ASSET_API30)) {
             webView.loadUrl(uriString, extraHeaders);
         }
-        //else if (uriString.startsWith(SCHEME_RES) || uriString.startsWith(SCHEME_RES_API30)) {
-        //    //TODO::
-        //}
         else if (uriString.startsWith(SCHEME_FILE)) {
             List<String> permissions = new ArrayList<>();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -127,22 +160,6 @@ public class WebViewHelper {
                     .setPermissions(permissions)
                     .check();
         }
-    }
-
-    public static String getLocalBaseUrl(String type) {
-        if ("assets".equals(type)) {
-            if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
-                return SCHEME_ASSET_API30;
-            }
-            return SCHEME_ASSET;
-        }
-        else if ("res".equals(type)) {
-            if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
-                return SCHEME_RES_API30;
-            }
-            return SCHEME_RES;
-        }
-        return "";
     }
 
 }

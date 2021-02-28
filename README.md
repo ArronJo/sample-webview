@@ -36,7 +36,7 @@ navigator.mediaDevices.getUserMedia({
     },
 })
 .then(function (mediaStream) {
-    var video = $('#media-device-video')[0];
+    var video = document.querySelector('#media-device-video');
     if (video) {
         video.srcObject = mediaStream;
         video.onloadedmetadata = function(e) {

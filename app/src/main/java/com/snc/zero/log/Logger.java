@@ -10,7 +10,11 @@ import android.util.Log;
  */
 @SuppressWarnings({"unused", "RedundantSuppression"})
 public class Logger {
-    private static final String PREFIX = "";
+    private static String sPrefix = "";
+
+    public static void setPrefix(String prefix) {
+        sPrefix = prefix;
+    }
 
     public static void d(String tag, Object...msg) {
         try {
@@ -56,18 +60,6 @@ public class Logger {
         System.out.println(getMessage(msg));
     }
 
-    private static String getMessage(Object msg) {
-        if (null == msg) {
-            return "";
-        }
-        if (msg instanceof Throwable) {
-            return Log.getStackTraceString((Throwable) msg);
-        } else if (msg instanceof String) {
-            return PREFIX + msg;
-        }
-        return msg.toString();
-    }
-
     private static String getMessage(Object...msg) {
         StringBuilder sb = new StringBuilder();
         for (Object o : msg) {
@@ -75,6 +67,16 @@ public class Logger {
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
+    }
+
+    private static String getMessage(Object msg) {
+        if (null == msg) {
+            return "";
+        }
+        if (msg instanceof Throwable) {
+            return Log.getStackTraceString((Throwable) msg);
+        }
+        return sPrefix + msg.toString();
     }
 
 }

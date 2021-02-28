@@ -31,6 +31,9 @@
     <uses-feature android:name="android.hardware.audio.pro" />
     <uses-feature android:name="android.hardware.microphone"/>
 
+    <!-- Get Package Info -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
     <!-- Screen -->
     <supports-screens
         android:smallScreens="true"

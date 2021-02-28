@@ -67,7 +67,7 @@ $(document).ready(function() {
         .then(function (mediaStream) {
             console.log('request: then...', mediaStream);
 
-            var video = $('#media-device-video')[0];
+            var video = document.querySelector('#media-device-video');
             if (video) {
                 video.srcObject = mediaStream;
                 video.onloadedmetadata = function(e) {
@@ -94,7 +94,7 @@ $(document).ready(function() {
         .then(function (mediaStream) {
             console.log('request: then...', mediaStream);
 
-            var video = $('#media-device-video')[0];
+            var video = document.querySelector('#media-device-video');
             if (video) {
                 video.srcObject = mediaStream;
                 video.onloadedmetadata = function(e) {

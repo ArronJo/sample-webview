@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.AndroidBridge;
-import com.snc.zero.dialog.DialogHelper;
+import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.log.Logger;
 import com.snc.zero.media.ImageProvider;
 import com.snc.zero.util.BitmapUtil;
@@ -42,7 +42,9 @@ public class AndroidBridgeProcessActivityResult {
                 Uri uri = UriUtil.fromFile(webview.getContext(), documentFile);
 
                 Bitmap bitmap = BitmapUtil.decodeBitmap(webview.getContext(), documentFile, 2048);
-                DialogHelper.alert(webview.getContext(), bitmap);
+                DialogBuilder.with(webview.getContext())
+                        .setBitmap(bitmap)
+                        .show();
 
                 try {
                     uri = ImageProvider.insert(webview.getContext(), documentFile);
@@ -79,12 +81,16 @@ public class AndroidBridgeProcessActivityResult {
                 AndroidBridge.callJSFunction(webview, AndroidBridge.getCallbackJSFunctionName(requestCode), params);
 
                 if (null != bitmap) {
-                    DialogHelper.alert(webview.getContext(), bitmap);
+                    DialogBuilder.with(webview.getContext())
+                            .setBitmap(bitmap)
+                            .show();
                 }
             }
 
         } catch (Exception e) {
-            DialogHelper.alert((Activity) webview.getContext(), e.toString());
+            DialogBuilder.with(webview.getContext())
+                    .setMessage(e.toString())
+                    .show();
         }
     }
     //-- [[E N D] Take a picture]

@@ -1,6 +1,5 @@
 package com.snc.sample.webview.bridge;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Base64;
@@ -8,7 +7,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.process.AndroidBridgeProcess;
-import com.snc.zero.dialog.DialogHelper;
+import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.json.JSONHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.reflect.ReflectHelper;
@@ -58,9 +57,10 @@ public class AndroidBridge {
             return executeProcess(this.webView, parse(urlString));
         } catch (Exception e) {
             Logger.e(TAG, e);
-            if (webView.getContext() instanceof Activity) {
-                DialogHelper.alert((Activity) webView.getContext(), e.toString());
-            }
+
+            DialogBuilder.with(webView.getContext())
+                    .setMessage(e.toString())
+                    .show();
         }
         return false;
     }
@@ -83,8 +83,10 @@ public class AndroidBridge {
             ReflectHelper.invoke(process, method, webview, args, callback);
             return true;
         } catch (Exception e) {
-            DialogHelper.alert((Activity) webview.getContext(), e.toString());
             Logger.e(TAG, e);
+            DialogBuilder.with(webView.getContext())
+                    .setMessage(e.toString())
+                    .show();
         }
         return false;
     }

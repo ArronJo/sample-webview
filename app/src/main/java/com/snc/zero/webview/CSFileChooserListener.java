@@ -12,8 +12,8 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.snc.sample.webview.requetcode.RequestCode;
-import com.snc.zero.dialog.DialogHelper;
+import com.snc.zero.dialog.DialogBuilder;
+import com.snc.zero.requetcode.RequestCode;
 import com.snc.zero.log.Logger;
 import com.snc.zero.util.DateTimeUtil;
 import com.snc.zero.util.EnvUtil;
@@ -149,7 +149,10 @@ public class CSFileChooserListener implements FileChooserListener {
 
         } catch (Exception e) {
             Logger.e(TAG, e);
-            DialogHelper.alert((Activity) context, e.toString());
+
+            DialogBuilder.with(context)
+                    .setMessage(e.toString())
+                    .show();
         }
     }
 

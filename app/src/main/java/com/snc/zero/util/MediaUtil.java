@@ -10,6 +10,7 @@ import android.content.Context;
  * @since 2020
  */
 public class MediaUtil {
+
     public static ContentResolver getContentResolver(Context context) {
         return context.getApplicationContext().getContentResolver();
     }

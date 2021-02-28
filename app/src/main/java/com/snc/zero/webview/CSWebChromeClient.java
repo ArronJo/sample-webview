@@ -19,9 +19,10 @@ import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.snc.sample.webview.webview.WebViewHelper;
+import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.permission.PermissionListener;
 import com.snc.sample.webview.R;
-import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.log.Logger;
 import com.snc.zero.permission.RPermission;
 import com.snc.zero.util.StringUtil;
@@ -202,7 +203,7 @@ public class CSWebChromeClient extends WebChromeClient {
     }
 
     @Override
-    public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
+    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
         Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
 
         RPermission.with(this.context)
@@ -233,13 +234,18 @@ public class CSWebChromeClient extends WebChromeClient {
 
     //++ [[START] Javascript Alert]
     @Override
-    public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+    public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
         Logger.i(TAG, "[WEBVIEW] onJsAlert(): url[" + view.getUrl() + "], message[" + message + "], JsResult[" + result + "]");
 
         //++
         // custom dialog
         String title = StringUtil.nvl(Uri.parse(url).getLastPathSegment(), "");
-        DialogHelper.alert((Activity) context, title, message, android.R.string.ok, (dialog, which) -> result.confirm());
+
+        DialogBuilder.with(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> result.confirm())
+                .show();
         return true;
         //||
         // default dialog
@@ -266,12 +272,10 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, "[WEBVIEW] onProgressChanged(): " + progress + "%,  url[" + view.getUrl() + "]");
 
         View v = findProgressBarInTopArea(view);
-        if (progress >= 100) {
-            if (null != v) {
+        if (null != v) {
+            if (progress >= 100) {
                 v.setVisibility(View.GONE);
-            }
-        } else {
-            if (null != v) {
+            } else {
                 ((ProgressBar) v).setProgress(progress);
                 v.setVisibility(View.VISIBLE);
             }

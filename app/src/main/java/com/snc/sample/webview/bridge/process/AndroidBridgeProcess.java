@@ -7,8 +7,8 @@ import android.os.Build;
 import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.AndroidBridge;
-import com.snc.sample.webview.requetcode.RequestCode;
-import com.snc.zero.dialog.DialogHelper;
+import com.snc.zero.dialog.DialogBuilder;
+import com.snc.zero.requetcode.RequestCode;
 import com.snc.zero.log.Logger;
 import com.snc.zero.permission.PermissionListener;
 import com.snc.zero.permission.RPermission;
@@ -115,10 +115,10 @@ public class AndroidBridgeProcess {
                             IntentUtil.imageCaptureWithExtraOutput(webview.getContext(), RequestCode.REQUEST_TAKE_A_PICTURE, output);
 
                         } catch (Exception e) {
-                            if (webview.getContext() instanceof Activity) {
-                                DialogHelper.alert((Activity) webview.getContext(), e.toString());
-                            }
                             Logger.e(TAG, e);
+                            DialogBuilder.with(webview.getContext())
+                                    .setMessage(e.toString())
+                                    .show();
                         }
                     }
 

@@ -13,9 +13,9 @@ import com.snc.sample.webview.BuildConfig;
 import com.snc.sample.webview.R;
 import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.sample.webview.bridge.process.AndroidBridgeProcessActivityResult;
-import com.snc.sample.webview.requetcode.RequestCode;
+import com.snc.zero.dialog.DialogBuilder;
+import com.snc.zero.requetcode.RequestCode;
 import com.snc.zero.activity.BaseActivity;
-import com.snc.zero.dialog.DialogHelper;
 import com.snc.zero.keyevent.BackKeyShutdown;
 import com.snc.zero.log.Logger;
 import com.snc.zero.util.PackageUtil;
@@ -24,7 +24,7 @@ import com.snc.zero.webview.CSDownloadListener;
 import com.snc.zero.webview.CSFileChooserListener;
 import com.snc.zero.webview.CSWebChromeClient;
 import com.snc.zero.webview.CSWebViewClient;
-import com.snc.zero.webview.WebViewHelper;
+import com.snc.sample.webview.webview.WebViewHelper;
 
 /**
  * WebView Activity
@@ -57,8 +57,10 @@ public class WebViewActivity extends BaseActivity {
     private void init() {
         ViewGroup contentView = findViewById(R.id.contentView);
         if (null == contentView) {
-            DialogHelper.alert(this, "The contentView does not exist.");
-            finish();
+            DialogBuilder.with(getActivity())
+                    .setMessage("The contentView does not exist.")
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> finish())
+                    .show();
             return;
         }
 
@@ -104,7 +106,9 @@ public class WebViewActivity extends BaseActivity {
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
         //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
-        WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        //WebViewHelper.loadUrl(this.webview, "https://channel-1st-prototype.vercel.app/my");
+        WebViewHelper.loadUrl(this.webview, "https://channel-1st-prototype.vercel.app/menu");
     }
 
     @Override
@@ -142,7 +146,9 @@ public class WebViewActivity extends BaseActivity {
             }
 
             if (BackKeyShutdown.isFirstBackKeyPress(keyCode, event)) {
-                DialogHelper.toast(getContext(), getString(R.string.one_more_press_back_button));
+                DialogBuilder.with(getContext())
+                        .setMessage(getString(R.string.one_more_press_back_button))
+                        .toast();
                 return true;
             }
         }
