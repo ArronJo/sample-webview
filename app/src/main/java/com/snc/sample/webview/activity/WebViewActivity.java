@@ -106,9 +106,7 @@ public class WebViewActivity extends BaseActivity {
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
         //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
-        //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
-        //WebViewHelper.loadUrl(this.webview, "https://channel-1st-prototype.vercel.app/my");
-        WebViewHelper.loadUrl(this.webview, "https://channel-1st-prototype.vercel.app/menu");
+        WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 
     @Override
