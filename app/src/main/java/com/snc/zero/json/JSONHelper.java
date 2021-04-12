@@ -1,8 +1,7 @@
 package com.snc.zero.json;
 
-import com.snc.zero.log.Logger;
+import android.text.TextUtils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -12,35 +11,34 @@ import org.json.JSONObject;
  * @since 2018
  */
 public class JSONHelper {
-    private static final String TAG = JSONHelper.class.getSimpleName();
+    //private static final String TAG = JSONHelper.class.getSimpleName();
 
     public static String getString(JSONObject jsonObject, String key, String defaultValue) {
-        try {
-            if (hasKey(jsonObject, key)) {
-                return jsonObject.getString(key);
-            }
-        } catch (JSONException e) {
-            Logger.e(TAG, e);
+        if (isNull(jsonObject, key) || !contain(jsonObject, key)) {
+            return defaultValue;
         }
-        return defaultValue;
+        return jsonObject.optString(key, defaultValue);
     }
 
     public static JSONObject getJSONObject(JSONObject jsonObject, String key, JSONObject defaultValue) {
-        try {
-            if (hasKey(jsonObject, key)) {
-                return jsonObject.getJSONObject(key);
-            }
-        } catch (JSONException e) {
-            Logger.e(TAG, e);
+        if (isNull(jsonObject, key) || !contain(jsonObject, key)) {
+            return defaultValue;
         }
-        return defaultValue;
+
+        return jsonObject.optJSONObject(key);
     }
 
-    private static boolean hasKey(JSONObject jsonObject, String key) {
+    private static boolean contain(JSONObject jsonObject, String key) {
         if (null == jsonObject || null == key || key.length() <= 0) {
-            return false;
+            return true;
         }
         return jsonObject.has(key);
     }
 
+    private static boolean isNull(JSONObject jsonObject, String key) {
+        if (null == jsonObject || TextUtils.isEmpty(key)) {
+            return false;
+        }
+        return jsonObject.isNull(key);
+    }
 }
