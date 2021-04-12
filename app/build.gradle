@@ -99,7 +99,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // runtime permission library
-    implementation 'gun0912.ted:tedpermission:2.2.1'
+    implementation 'gun0912.ted:tedpermission:2.2.3'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

@@ -17,7 +17,11 @@ const NativeBridge = {
         if (window.AndroidBridge) {
             AndroidBridge.callNativeMethod("native://callNative?" + query);
         } else if (/iPhone|iPod|iPad/i.test(navigator.userAgent)) {
-            window.location.href = "native://callNative?" + query;
+            if (window.webkit && window.webkit.callbackHandler) {
+                window.webkit.messageHandlers.callbackHandler.postMessage("callNative?" + query);
+            } else {
+                window.location.href = "native://callNative?" + query;
+            }
         } else {
             console.warn("Native calls are not supported.");
             hideProgress();

@@ -35,6 +35,8 @@ import java.util.List;
 public class CSFileChooserListener implements FileChooserListener {
     private static final String TAG = CSFileChooserListener.class.getSimpleName();
 
+    private static final String ALL_TYPE = "image/*|audio/*|video/*";
+
     private final Context context;
 
     private ValueCallback<Uri> filePathCallbackNormal;
@@ -45,9 +47,19 @@ public class CSFileChooserListener implements FileChooserListener {
     private final int VIDEO = 2;
     private Uri[] mediaURIs;
 
+
+    /////////////////////////////////////////////////
+    // Constructor
+    /////////////////////////////////////////////////
+
     public CSFileChooserListener(Context context) {
         this.context = context;
     }
+
+
+    /////////////////////////////////////////////////
+    // Open FileChooser
+    /////////////////////////////////////////////////
 
     @SuppressWarnings({"unused", "RedundantSuppression"})
     @Override
@@ -87,7 +99,6 @@ public class CSFileChooserListener implements FileChooserListener {
         openIntentChooser(acceptType);
     }
 
-    private static final String ALL_TYPE = "image/*|audio/*|video/*";
     private void openIntentChooser(String acceptType) {
         String type = acceptType;
 

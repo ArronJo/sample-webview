@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * (TedPermission Style) Interface
  */
-public interface PermissionListener {
+public interface RPermissionListener {
 
     void onPermissionGranted();
 

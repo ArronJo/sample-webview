@@ -163,7 +163,22 @@ public class CSWebViewClient extends WebViewClient {
 
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-        Logger.e(TAG, "[WEBVIEW] onReceivedHttpError(): url[" + view.getUrl() + "]");
+        String url = view.getUrl();
+
+        StringBuilder buff = new StringBuilder();
+        buff.append("\n  encoding[").append(errorResponse.getEncoding()).append("]  ");
+        buff.append("\n  mimeType[").append(errorResponse.getMimeType()).append("]  ");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            url = request.getUrl().toString();
+
+            buff.append("\n  method[").append(request.getMethod()).append("]  ");
+            buff.append("\n  statusCode[").append(errorResponse.getStatusCode()).append("]  ");
+            buff.append("\n  responseHeaders[").append(errorResponse.getResponseHeaders()).append("]  ");
+            buff.append("\n  reasonPhrase[").append(errorResponse.getReasonPhrase()).append("]  ");
+        }
+
+        Logger.e(TAG, "onReceivedHttpError : url[" + url + "],  errorResponse[" + buff.toString() + "]");
         super.onReceivedHttpError(view, request, errorResponse);
     }
 
@@ -204,7 +219,9 @@ public class CSWebViewClient extends WebViewClient {
                 || WebViewClient.ERROR_UNKNOWN == errorCode
         ) {
             final String[] except = new String[] {
-                    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".ico"
+                    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".ico",
+                    ".eot", ".ttf", ".otf", ".eot", ".woff", ".woff2",
+                    ".pdf",
             };
             for (String str : except) {
                 if (failingUrl.endsWith(str)) {

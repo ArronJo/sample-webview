@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 
 import com.snc.sample.webview.webview.WebViewHelper;
 import com.snc.zero.dialog.DialogBuilder;
-import com.snc.zero.permission.PermissionListener;
+import com.snc.zero.permission.RPermissionListener;
 import com.snc.sample.webview.R;
 import com.snc.zero.log.Logger;
 import com.snc.zero.permission.RPermission;
@@ -48,11 +48,12 @@ public class CSWebChromeClient extends WebChromeClient {
         this.context = context;
     }
 
+
+    //++ [[START] File Chooser]
     public void setFileChooserListener(FileChooserListener listener) {
         this.fileChooserListener = listener;
     }
 
-    //++ [[START] File Chooser]
     // For Android 4.1+
     @SuppressWarnings({"unused", "RedundantSuppression"})
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
@@ -65,7 +66,7 @@ public class CSWebChromeClient extends WebChromeClient {
         }
 
         RPermission.with(this.context)
-                .setPermissionListener(new PermissionListener() {
+                .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
@@ -95,7 +96,7 @@ public class CSWebChromeClient extends WebChromeClient {
         }
 
         RPermission.with(this.context)
-                .setPermissionListener(new PermissionListener() {
+                .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
@@ -137,7 +138,7 @@ public class CSWebChromeClient extends WebChromeClient {
                 switch (permission) {
                     case PermissionRequest.RESOURCE_AUDIO_CAPTURE: {
                         RPermission.with(this.context)
-                                .setPermissionListener(new PermissionListener() {
+                                .setPermissionListener(new RPermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
                                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
@@ -160,7 +161,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
                     case PermissionRequest.RESOURCE_VIDEO_CAPTURE: {
                         RPermission.with(this.context)
-                                .setPermissionListener(new PermissionListener() {
+                                .setPermissionListener(new RPermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
                                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
@@ -207,7 +208,7 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
 
         RPermission.with(this.context)
-                .setPermissionListener(new PermissionListener() {
+                .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
                         Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionGranted() : origin[" + origin + "] callback[" + callback + "]");

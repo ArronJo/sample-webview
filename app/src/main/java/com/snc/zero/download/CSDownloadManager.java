@@ -14,7 +14,7 @@ import android.os.Environment;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.log.Logger;
 import com.snc.zero.mimetype.MimeType;
-import com.snc.zero.permission.PermissionListener;
+import com.snc.zero.permission.RPermissionListener;
 import com.snc.zero.permission.RPermission;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class CSDownloadManager {
 
         // check permission
         RPermission.with(context)
-                .setPermissionListener(new PermissionListener() {
+                .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
                         Logger.i(TAG, "[CSDownloadManager] onPermissionGranted()");

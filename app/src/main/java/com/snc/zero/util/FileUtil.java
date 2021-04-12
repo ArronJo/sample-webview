@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * File Utilities
@@ -39,7 +37,7 @@ public class FileUtil {
     }
 
     public static String newFilename(String extension) {
-        String name = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String name = DateTimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss");
         return name + "."  + extension;
     }
 

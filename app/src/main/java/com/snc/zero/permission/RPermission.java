@@ -16,13 +16,13 @@ public class RPermission {
 
     private final Context context;
     private String[] permissions;
-    private PermissionListener listener;
+    private RPermissionListener listener;
 
     public RPermission(Context context) {
         this.context = context;
     }
 
-    public RPermission setPermissionListener(PermissionListener listener) {
+    public RPermission setPermissionListener(RPermissionListener listener) {
         this.listener = listener;
         return this;
     }

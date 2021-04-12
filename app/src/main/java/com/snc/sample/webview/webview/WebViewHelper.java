@@ -11,7 +11,7 @@ import android.webkit.WebView;
 
 import com.snc.sample.webview.BuildConfig;
 import com.snc.zero.log.Logger;
-import com.snc.zero.permission.PermissionListener;
+import com.snc.zero.permission.RPermissionListener;
 import com.snc.zero.permission.RPermission;
 import com.snc.zero.util.PackageUtil;
 
@@ -100,9 +100,7 @@ public class WebViewHelper {
     public static String makeUserAgent(WebView webView) {
         String ua = webView.getSettings().getUserAgentString();
         try {
-            if (!ua.endsWith(" ")) {
-                ua += " ";
-            }
+            ua += !ua.endsWith(" ") ? " " : "";
             ua += PackageUtil.getApplicationName(webView.getContext());
             ua += "/" + PackageUtil.getPackageVersionName(webView.getContext());
             ua += "." + PackageUtil.getPackageVersionCode(webView.getContext());
@@ -145,7 +143,7 @@ public class WebViewHelper {
             }
 
             RPermission.with(webView.getContext())
-                    .setPermissionListener(new PermissionListener() {
+                    .setPermissionListener(new RPermissionListener() {
                         @Override
                         public void onPermissionGranted() {
                             Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");

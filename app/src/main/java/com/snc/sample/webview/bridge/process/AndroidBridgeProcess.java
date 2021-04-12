@@ -1,7 +1,6 @@
 package com.snc.sample.webview.bridge.process;
 
 import android.Manifest;
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Build;
 import android.webkit.WebView;
@@ -10,7 +9,7 @@ import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.requetcode.RequestCode;
 import com.snc.zero.log.Logger;
-import com.snc.zero.permission.PermissionListener;
+import com.snc.zero.permission.RPermissionListener;
 import com.snc.zero.permission.RPermission;
 import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.FileUtil;
@@ -91,7 +90,7 @@ public class AndroidBridgeProcess {
 
         // check permission
         RPermission.with(webview.getContext())
-                .setPermissionListener(new PermissionListener() {
+                .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
                         Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");

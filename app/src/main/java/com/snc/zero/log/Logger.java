@@ -18,46 +18,42 @@ public class Logger {
 
     public static void d(String tag, Object...msg) {
         try {
-            Log.d(tag, getMessage(msg));
+            Log.d(tag, sPrefix + getMessage(msg));
         } catch (Exception e) {
-            systemOut(getMessage(msg));
+            systemOut(sPrefix + getMessage(msg));
         }
     }
 
     public static void i(String tag, Object...msg) {
         try {
-            Log.i(tag, getMessage(msg));
+            Log.i(tag, sPrefix + getMessage(msg));
         } catch (Exception e) {
-            systemOut(getMessage(msg));
+            systemOut(sPrefix + getMessage(msg));
         }
     }
 
     public static void v(String tag, Object...msg) {
         try {
-            Log.v(tag, getMessage(msg));
+            Log.v(tag, sPrefix + getMessage(msg));
         } catch (Exception e) {
-            systemOut(getMessage(msg));
+            systemOut(sPrefix + getMessage(msg));
         }
     }
 
     public static void w(String tag, Object...msg) {
         try {
-            Log.w(tag, getMessage(msg));
+            Log.w(tag, sPrefix + getMessage(msg));
         } catch (Exception e) {
-            systemOut(getMessage(msg));
+            systemOut(sPrefix + getMessage(msg));
         }
     }
 
     public static void e(String tag, Object...msg) {
         try {
-            Log.e(tag, getMessage(msg));
+            Log.e(tag, sPrefix + getMessage(msg));
         } catch (Exception e) {
-            systemOut(getMessage(msg));
+            systemOut(sPrefix + getMessage(msg));
         }
-    }
-
-    private static void systemOut(String msg) {
-        System.out.println(getMessage(msg));
     }
 
     private static String getMessage(Object...msg) {
@@ -65,7 +61,9 @@ public class Logger {
         for (Object o : msg) {
             sb.append(getMessage(o)).append('\n');
         }
-        sb.deleteCharAt(sb.length() - 1);
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
         return sb.toString();
     }
 
@@ -76,7 +74,11 @@ public class Logger {
         if (msg instanceof Throwable) {
             return Log.getStackTraceString((Throwable) msg);
         }
-        return sPrefix + msg.toString();
+        return msg.toString();
+    }
+
+    private static void systemOut(String msg) {
+        System.out.println(getMessage(msg));
     }
 
 }
