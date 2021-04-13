@@ -14,21 +14,21 @@ public class JSONHelper {
     //private static final String TAG = JSONHelper.class.getSimpleName();
 
     public static String getString(JSONObject jsonObject, String key, String defaultValue) {
-        if (isNull(jsonObject, key) || !contain(jsonObject, key)) {
+        if (isNull(jsonObject, key) || !has(jsonObject, key)) {
             return defaultValue;
         }
         return jsonObject.optString(key, defaultValue);
     }
 
     public static JSONObject getJSONObject(JSONObject jsonObject, String key, JSONObject defaultValue) {
-        if (isNull(jsonObject, key) || !contain(jsonObject, key)) {
+        if (isNull(jsonObject, key) || !has(jsonObject, key)) {
             return defaultValue;
         }
 
         return jsonObject.optJSONObject(key);
     }
 
-    private static boolean contain(JSONObject jsonObject, String key) {
+    private static boolean has(JSONObject jsonObject, String key) {
         if (null == jsonObject || null == key || key.length() <= 0) {
             return true;
         }
