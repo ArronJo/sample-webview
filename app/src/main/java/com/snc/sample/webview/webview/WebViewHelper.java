@@ -129,7 +129,7 @@ public class WebViewHelper {
 
     public static void loadUrl(final WebView webView, final String uriString) {
         final Map<String, String> extraHeaders = new HashMap<>();
-        extraHeaders.put("Platform", "A");
+        //extraHeaders.put("Platform", "A");
 
         if (uriString.startsWith(SCHEME_HTTP) || uriString.startsWith(SCHEME_HTTPS)
                 || uriString.startsWith(SCHEME_ASSET) || uriString.startsWith(SCHEME_ASSET_API30)) {
