@@ -8,7 +8,7 @@ import java.io.OutputStream;
 /**
  * IO Utilities
  *
- * @author Aaron Jo.
+ * @author mcharima5@gmail.com
  * @since 2016
  */
 public class IOUtil {

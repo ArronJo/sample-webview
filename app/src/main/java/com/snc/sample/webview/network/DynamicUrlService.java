@@ -8,7 +8,7 @@ import retrofit2.http.Url;
 /**
  * Dynamic URLs for Requests
  *
- * @author Aaron Jo.
+ * @author mcharima5@gmail.com
  * @since 2020
  */
 public interface DynamicUrlService {

@@ -93,10 +93,11 @@ public class CSWebViewClient extends WebViewClient {
         String url = Uri.decode(request.getUrl().toString());
 
         if (url.startsWith("http://") || url.startsWith("https://")) {
-            //if (request.isRedirect()) {
+            if (request.isRedirect()) {
                 view.loadUrl(request.getUrl().toString());
                 return true;
-            //}
+            }
+            return false;
         }
         intentProcessing(view, request.getUrl().toString());
         return true;

@@ -15,7 +15,7 @@ import retrofit2.Retrofit;
 /**
  * Retrofit Client
  *
- * @author Aaron Jo.
+ * @author mcharima5@gmail.com
  * @since 2020
  */
 public class RetrofitDynamicUrlClient {

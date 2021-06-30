@@ -118,29 +118,41 @@ public class AndroidBridge {
     //++ [START] call Native --> Web
 
     public static void callJSFunction(final WebView webView, String functionName, String... params) {
+        String js = makeJavascript(functionName, params);
+
         final StringBuilder buff = new StringBuilder();
-        buff.append("try { ");
-        // function name
-        buff.append("  ").append(functionName).append("(");
-        // parameters
+        buff.append("(function() {\n");
+        buff.append("  try {\n");
+        buff.append("    ").append(js).append("\n");
+        buff.append("  } catch(e) {\n");
+        buff.append("    return '[JS Error] ' + e.message;\n");
+        buff.append("  }\n");
+        buff.append("})(window);");
+
+        // Run On UIThread
+        webView.post(() -> evaluateJavascript(webView, buff.toString()));
+    }
+
+    public static String makeJavascript(String functionName, String... params) {
+        final StringBuilder buff = new StringBuilder();
+        buff.append(functionName).append("(");
+
         for (int i = 0; i < params.length; i++) {
             Object param = params[i];
+
+            // 데이터 설정
             if (null != param) {
                 buff.append("'").append(param).append("'");
             } else {
                 buff.append("''");
             }
+
             if (i < params.length - 1) {
                 buff.append(", ");
             }
         }
         buff.append("); ");
-        buff.append("} catch(e) { ");
-        buff.append("  console.error(e.message); ");
-        buff.append("}");
-
-        // Run On UIThread
-        webView.post(() -> evaluateJavascript(webView, buff.toString()));
+        return buff.toString();
     }
 
     private static void evaluateJavascript(final WebView webView, final String javascriptString) {
