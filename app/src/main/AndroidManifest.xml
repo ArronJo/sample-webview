@@ -57,8 +57,14 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:usesCleartextTraffic="true"
+        android:extractNativeLibs="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
+
+        <!-- EnableSafeBrowsing -->
+        <meta-data
+            android:name="android.webkit.WebView.EnableSafeBrowsing"
+            android:value="true" />
 
         <!-- Activity -->
         <activity

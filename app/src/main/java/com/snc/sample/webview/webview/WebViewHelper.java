@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -70,28 +71,50 @@ public class WebViewHelper {
     private static void setup(WebView webView) {
         WebSettings settings = webView.getSettings();
 
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        webView.setScrollbarFadingEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            webView.setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_BOUND, true);
+        }
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            settings.setAllowFileAccessFromFileURLs(true);
+            settings.setAllowUniversalAccessFromFileURLs(true);
+        }
+        settings.setBlockNetworkImage(false);
+        settings.setBlockNetworkLoads(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            settings.setSafeBrowsingEnabled(false);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            settings.setDisabledActionModeMenuItems(WebSettings.MENU_ITEM_NONE);
+        }
         settings.setJavaScriptEnabled(true);
-        settings.setGeolocationEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(false);
+        if (Build.VERSION.SDK_INT < 30) {  // Build.VERSION_CODES.R
+            settings.setAppCacheEnabled(false);
+        }
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setDatabaseEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setLoadsImagesAutomatically(true);
+        settings.setLoadWithOverviewMode(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            settings.setOffscreenPreRaster(false);
+        }
+        settings.setSupportMultipleWindows(true);
         settings.setUseWideViewPort(true);
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
-
-        if (Build.VERSION.SDK_INT < 30) {  // Build.VERSION_CODES.R
-            settings.setAppCacheEnabled(false);
-        }
-
-        settings.setAllowFileAccess(true);
-        settings.setAllowContentAccess(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
-
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            settings.setAllowFileAccessFromFileURLs(true);
-            settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setGeolocationEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            settings.setMediaPlaybackRequiresUserGesture(true);    // The default is true. Added in API level 17
         }
 
         settings.setUserAgentString(makeUserAgent(webView));
