@@ -61,9 +61,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
+        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
         RPermission.with(this.context)
                 .setPermissionListener(new RPermissionListener() {
@@ -91,9 +89,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }
+        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
         RPermission.with(this.context)
                 .setPermissionListener(new RPermissionListener() {

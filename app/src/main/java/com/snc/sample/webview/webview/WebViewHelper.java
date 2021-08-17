@@ -79,10 +79,8 @@ public class WebViewHelper {
         }
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            settings.setAllowFileAccessFromFileURLs(true);
-            settings.setAllowUniversalAccessFromFileURLs(true);
-        }
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
         settings.setBlockNetworkImage(false);
         settings.setBlockNetworkLoads(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -160,10 +158,8 @@ public class WebViewHelper {
         }
         else if (uriString.startsWith(SCHEME_FILE)) {
             List<String> permissions = new ArrayList<>();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                // Dangerous Permission
-                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-            }
+            // Dangerous Permission
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
             RPermission.with(webView.getContext())
                     .setPermissionListener(new RPermissionListener() {
