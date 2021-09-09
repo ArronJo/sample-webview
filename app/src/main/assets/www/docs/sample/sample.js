@@ -8,15 +8,15 @@
 
 // response (Native --> Web)
 function callbackNativeResponse(data) {
+    console.log("callbackNativeResponse(): data = " + data);
     alert(data);
     Progress.hide();
-    console.log("callbackNativeResponse(): data = " + data);
 }
 
 // response (Native --> Web)
 function callbackTakePicture(data) {
-    alert(data);
     console.log("callbackTakePicture(): data = " + data);
+    alert(data);
 }
 
 
@@ -51,6 +51,33 @@ $(document).ready(function() {
     $('#call-android-methods-recommended').on('click', function () {
         Progress.show();
         NativeBridge.call("apiRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
+    });
+
+    $('#call-android-methods-recommended-2').on('click', function () {
+        Progress.show();
+        NativeBridge.callToNative(
+            "apiRecommended2",
+            { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } },
+            function(data) {
+                console.log("response..." + JSON.stringify(data));
+                alert(data);
+                Progress.hide();
+            },
+            function(data) {
+                console.log("error..." + data);
+                alert(data);
+                Progress.hide();
+            }
+        );
+    });
+
+    $('#call-android-methods-recommended-3').on('click', function () {
+        Progress.show();
+        NativeBridge.callToNative(
+            "apiRecommended2",
+            { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } },
+            "callbackNativeResponse"
+        );
     });
 
     $('#call-android-methods-not-recommended').on('click', function () {

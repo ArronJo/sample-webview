@@ -6,10 +6,7 @@
 const Progress = {
 
     show : function () {
-        let els = document.querySelectorAll(".anim-progress-layer");
-        Array.prototype.forEach.call(els, function(node) {
-            node.parentNode.removeChild(elem);
-        });
+        this.hide();
 
         var e = document.createElement('div');
         e.className = "anim-progress-layer";
@@ -19,8 +16,12 @@ const Progress = {
     },
 
     hide : function () {
-        var elem = document.getElementsByClassName('anim-progress-layer')[0];
-        elem.parentNode.removeChild(elem);
+        let els = document.querySelectorAll(".anim-progress-layer");
+        Array.prototype.forEach.call(els, function(node) {
+            if (node) {
+                node.parentNode.removeChild(node);
+            }
+        });
     }
 
 };

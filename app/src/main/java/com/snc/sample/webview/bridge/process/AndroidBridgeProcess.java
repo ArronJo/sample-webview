@@ -7,6 +7,7 @@ import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.zero.dialog.DialogBuilder;
+import com.snc.zero.json.JSONHelper;
 import com.snc.zero.requetcode.RequestCode;
 import com.snc.zero.log.Logger;
 import com.snc.zero.permission.RPermissionListener;
@@ -57,6 +58,27 @@ public class AndroidBridgeProcess {
 
             // send result
             AndroidBridge.callJSFunction(webview, callback, result);
+        }).start();
+    }
+
+    public static void apiRecommended2(final WebView webview, final JSONObject args, final String cbId) {
+        Logger.i(TAG, "[WEBVIEW] apiRecommended2(): args[" + args + "], cbId[" + cbId + "]");
+
+        new Thread(() -> {
+
+            // test code...
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                Logger.e(TAG, e);
+            }
+            //--
+
+            JSONObject jsonObject = new JSONObject();
+            JSONHelper.put(jsonObject, "result", "success");
+
+            // send result
+            AndroidBridge.callFromNative(webview, cbId, "00000", jsonObject.toString());
         }).start();
     }
 

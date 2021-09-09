@@ -33,6 +33,7 @@ public class AndroidBridge {
     private static final String SCHEME_BRIDGE = "native";
 
     private static final String HOST_COMMAND = "callNative";
+    private static final String HOST_COMMAND2 = "callToNative";
 
     private static final String SCHEME_JAVASCRIPT = "javascript:";
 
@@ -66,9 +67,11 @@ public class AndroidBridge {
     }
 
     private boolean executeProcess(final WebView webview, final JSONObject jsonObject) {
+        final String hostCommand = JSONHelper.getString(jsonObject, "hostCommand", "");
         final String command = JSONHelper.getString(jsonObject, "command", "");
         final JSONObject args = JSONHelper.getJSONObject(jsonObject, "args", new JSONObject());
         final String callback = JSONHelper.getString(jsonObject, "callback", "");
+        final String cbId = JSONHelper.getString(jsonObject, "cbId", "");
 
         Logger.i(TAG, "[WEBVIEW] callNativeMethod: executeProcess() :  command = " + command + ",  args = " + args + ",  callback = " + callback);
 
@@ -80,7 +83,11 @@ public class AndroidBridge {
         }
 
         try {
-            ReflectHelper.invoke(process, method, webview, args, callback);
+            if (HOST_COMMAND2.equals(hostCommand)) {
+                ReflectHelper.invoke(process, method, webview, args, cbId);
+            } else {
+                ReflectHelper.invoke(process, method, webview, args, callback);
+            }
             return true;
         } catch (Exception e) {
             Logger.e(TAG, e);
@@ -98,7 +105,8 @@ public class AndroidBridge {
         if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
             throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
         }
-        if (!HOST_COMMAND.equals(uri.getHost())) {
+        if (!HOST_COMMAND.equals(uri.getHost())
+            && !HOST_COMMAND2.equals(uri.getHost())) {
             throw new IOException("\"" + uri.getHost() + "\" host is not supported.");
         }
 
@@ -106,7 +114,9 @@ public class AndroidBridge {
         try {
             query = new String(Base64.decode(query, Base64.DEFAULT));
             query = URLDecoder.decode(query, "utf-8");
-            return new JSONObject(query);
+            JSONObject jsonObject = new JSONObject(query);
+            jsonObject.put("hostCommand", uri.getHost());
+            return jsonObject;
         } catch (Exception e) {
             throw new IOException("\"" + query + "\" is not JSONObject.");
         }
@@ -117,26 +127,45 @@ public class AndroidBridge {
 
     //++ [START] call Native --> Web
 
+    public static void callFromNative(WebView webView, String cbId, String resultCode, String jsonString) {
+        String param = "'" + cbId + "', '" + resultCode + "', '" + jsonString + "'";
+
+        String buff = "!(function() {\n" +
+                "  try {\n" +
+                "    NativeBridge.callFromNative(" + param + ");\n" +
+                "  } catch(e) {\n" +
+                "    return '[JS Error] ' + e.message;\n" +
+                "  }\n" +
+                "})(window);";
+        webView.post(() -> evaluateJavascript(webView, buff));
+    }
+
     public static void callJSFunction(final WebView webView, String functionName, String... params) {
-        String js = makeJavascript(functionName, params);
-
-        final StringBuilder buff = new StringBuilder();
-        buff.append("(function() {\n");
-        buff.append("  try {\n");
-        buff.append("    ").append(js).append("\n");
-        buff.append("  } catch(e) {\n");
-        buff.append("    return '[JS Error] ' + e.message;\n");
-        buff.append("  }\n");
-        buff.append("})(window);");
-
-        // Run On UIThread
-        webView.post(() -> evaluateJavascript(webView, buff.toString()));
+        if (functionName.startsWith("function")
+            || functionName.startsWith("(")) {
+            String buff = "!(\n" +
+                    functionName +
+                    ")(" + makeParam(params) + ");";
+            webView.post(() -> evaluateJavascript(webView, buff));
+        } else {
+            String js = makeJavascript(functionName, params);
+            String buff = "!(function() {\n" +
+                    "  try {\n" +
+                    "    " + js + "\n" +
+                    "  } catch(e) {\n" +
+                    "    return '[JS Error] ' + e.message;\n" +
+                    "  }\n" +
+                    "})(window);";
+            webView.post(() -> evaluateJavascript(webView, buff));
+        }
     }
 
     public static String makeJavascript(String functionName, String... params) {
-        final StringBuilder buff = new StringBuilder();
-        buff.append(functionName).append("(");
+        return functionName + "(" + makeParam(params) + ");";
+    }
 
+    public static String makeParam(String... params) {
+        final StringBuilder buff = new StringBuilder();
         for (int i = 0; i < params.length; i++) {
             Object param = params[i];
 
@@ -151,7 +180,6 @@ public class AndroidBridge {
                 buff.append(", ");
             }
         }
-        buff.append("); ");
         return buff.toString();
     }
 
