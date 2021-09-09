@@ -38,7 +38,7 @@ public class CSDownloadManager {
             permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // android:maxSdkVersion="28"
         }
 
-        if (RPermission.isGranted(context, permissions.toArray(new String[] {}))) {
+        if (RPermission.isGranted(permissions.toArray(new String[] {}))) {
             downloadIt(context, urlString);
             return;
         }

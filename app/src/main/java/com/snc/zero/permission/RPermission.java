@@ -2,7 +2,8 @@ package com.snc.zero.permission;
 
 import android.content.Context;
 
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
 
 import java.util.List;
 
@@ -38,11 +39,11 @@ public class RPermission {
     }
 
     public void check() {
-        TedPermission.with(context)
-                .setPermissionListener(new com.gun0912.tedpermission.PermissionListener() {
-
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
+                        //Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
                         if (null != listener) {
                             listener.onPermissionGranted();
                         }
@@ -50,17 +51,19 @@ public class RPermission {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
+                        //Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
                         if (null != listener) {
                             listener.onPermissionDenied(deniedPermissions);
                         }
                     }
                 })
+                //.setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(permissions)
                 .check();
     }
 
-    public static boolean isGranted(Context context, @NonNull String... permissions) {
-        return TedPermission.isGranted(context, permissions);
+    public static boolean isGranted(@NonNull String... permissions) {
+        return TedPermission.isGranted(permissions);
     }
 
 }

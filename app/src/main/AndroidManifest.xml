@@ -71,7 +71,7 @@
             android:name="com.snc.sample.webview.activity.WebViewActivity"
             android:launchMode="singleTop"
             android:configChanges="keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
