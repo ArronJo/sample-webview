@@ -75,7 +75,7 @@ public class CSWebChromeClient extends WebChromeClient {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
@@ -110,7 +110,7 @@ public class CSWebChromeClient extends WebChromeClient {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                     }
                 })
@@ -142,7 +142,7 @@ public class CSWebChromeClient extends WebChromeClient {
                                     }
 
                                     @Override
-                                    public void onPermissionDenied(List<String> deniedPermissions) {
+                                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
                                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.deny();
                                     }
@@ -165,7 +165,7 @@ public class CSWebChromeClient extends WebChromeClient {
                                     }
 
                                     @Override
-                                    public void onPermissionDenied(List<String> deniedPermissions) {
+                                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
                                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.deny();
                                     }
@@ -212,7 +212,7 @@ public class CSWebChromeClient extends WebChromeClient {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
                         Logger.e(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionDenied() : origin[" + origin + "] callback[" + callback + "]");
                         callback.invoke(origin, false, false);
                     }

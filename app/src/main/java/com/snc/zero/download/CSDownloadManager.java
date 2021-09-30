@@ -53,7 +53,7 @@ public class CSDownloadManager {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
                         Logger.e(TAG, "[CSDownloadManager] onPermissionDenied()..." + deniedPermissions.toString());
 
                         DialogBuilder.with(context)

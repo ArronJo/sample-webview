@@ -170,7 +170,7 @@ public class WebViewHelper {
                         }
 
                         @Override
-                        public void onPermissionDenied(List<String> deniedPermissions) {
+                        public void onPermissionDenied(List<String> deniedPermissions, int status) {
                             Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
                         }
                     })
