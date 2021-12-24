@@ -15,7 +15,7 @@
 
     function _pushCallback (successCallback, errorCallback) {
         var _cbId = _createUUID();
-        _callbackMap[cbId] = {
+        _callbackMap[_cbId] = {
             "successCallback": successCallback,
             "errorCallback": errorCallback
         };
