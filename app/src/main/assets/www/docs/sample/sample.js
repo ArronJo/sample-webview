@@ -90,20 +90,16 @@ $(document).ready(function() {
     });
 
     $('#req-microphone').on('click', function () {
-        navigator.mediaDevices.getUserMedia("microphone")
+        //navigator.mediaDevices.getUserMedia("microphone")
+        navigator.mediaDevices.getUserMedia({
+            audio: true
+        })
         .then(function (mediaStream) {
             console.log('request: then...', mediaStream);
-
-            var video = document.querySelector('#media-device-video');
-            if (video) {
-                video.srcObject = mediaStream;
-                video.onloadedmetadata = function(e) {
-                    video.play();
-                };
-            }
         })
         .catch(function (err) {
             console.error('request: error: ' + err.toString(), err);
+            alert(err);
         });
     });
 
@@ -131,6 +127,7 @@ $(document).ready(function() {
         })
         .catch(function (err) {
             console.error('request: error: ' + err.toString(), err);
+            alert(err);
         });
     });
 

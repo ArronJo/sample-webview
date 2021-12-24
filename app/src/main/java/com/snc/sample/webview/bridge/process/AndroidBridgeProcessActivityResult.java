@@ -9,6 +9,7 @@ import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.zero.dialog.DialogBuilder;
+import com.snc.zero.imageprocess.ImageProcess;
 import com.snc.zero.log.Logger;
 import com.snc.zero.media.ImageProvider;
 import com.snc.zero.util.BitmapUtil;
@@ -46,6 +47,7 @@ public class AndroidBridgeProcessActivityResult {
                         .setBitmap(bitmap)
                         .show();
 
+                String base64String = ImageProcess.toBase64String(documentFile);
                 try {
                     uri = ImageProvider.insert(webview.getContext(), documentFile);
                     if (EnvUtil.isFilesDir(webview.getContext(), documentFile)) {
@@ -59,7 +61,7 @@ public class AndroidBridgeProcessActivityResult {
                     Logger.e(TAG, e);
                 }
 
-                AndroidBridge.callJSFunction(webview, AndroidBridge.getCallbackJSFunctionName(requestCode), StringUtil.nvl(uri, ""));
+                AndroidBridge.callJSFunction(webview, AndroidBridge.getCallbackJSFunctionName(requestCode), StringUtil.nvl(uri, ""), base64String);
             }
             else if (null != data) {
                 Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
