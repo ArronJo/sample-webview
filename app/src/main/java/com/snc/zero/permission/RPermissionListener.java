@@ -9,6 +9,8 @@ public interface RPermissionListener {
 
     void onPermissionGranted();
 
-    void onPermissionDenied(List<String> deniedPermissions, int status);
+    void onPermissionDenied(List<String> deniedPermissions);
+
+    void onPermissionRationaleShouldBeShown(List<String> deniedPermissions);
 
 }

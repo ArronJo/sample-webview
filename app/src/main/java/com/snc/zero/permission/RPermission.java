@@ -2,21 +2,19 @@ package com.snc.zero.permission;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
-import com.snc.zero.log.Logger;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class RPermission {
-    private static final String TAG = RPermission.class.getSimpleName();
-
-    public static final int SHOW_REQUEST_RATIONALE = 0;
-    public static final int ALREADY_DENIED_PERMISSION = 1;
+    //private static final String TAG = RPermission.class.getSimpleName();
 
     public static RPermission with(Context context) {
         return new RPermission(context);
@@ -50,7 +48,6 @@ public class RPermission {
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        //Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
                         if (null != listener) {
                             listener.onPermissionGranted();
                         }
@@ -58,14 +55,11 @@ public class RPermission {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        //Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
                         if (null != listener) {
                             if (!shouldShowRequestPermissionRationale(deniedPermissions)) {
-                                Logger.e(TAG, "거부한 적이 있는 권한 거절");
-                                listener.onPermissionDenied(deniedPermissions, ALREADY_DENIED_PERMISSION);
+                                listener.onPermissionDenied(deniedPermissions);
                             } else {
-                                Logger.e(TAG, "처음 거부하는 권한 거절");
-                                listener.onPermissionDenied(deniedPermissions, SHOW_REQUEST_RATIONALE);
+                                listener.onPermissionDenied(deniedPermissions);
                             }
                         }
                     }
@@ -75,8 +69,25 @@ public class RPermission {
                 .check();
     }
 
-    public static boolean isGranted(@NonNull String... permissions) {
-        return TedPermission.isGranted(permissions);
+    public static boolean isGranted(Context context, @NonNull List<String> permissions) {
+        return isGranted(context, permissions.toArray(new String[] {}));
+    }
+
+    public static boolean isGranted(Context context, @NonNull String... permissions) {
+        for (String permission : permissions) {
+            if (isDenied(context, permission)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isGranted(Context context, @NonNull String permission) {
+        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean isDenied(Context context, @NonNull String permission) {
+        return ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED;
     }
 
     public boolean shouldShowRequestPermissionRationale(List<String> needPermissions) {

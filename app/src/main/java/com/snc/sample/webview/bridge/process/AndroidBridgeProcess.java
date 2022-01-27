@@ -142,8 +142,13 @@ public class AndroidBridgeProcess {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
+                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions)

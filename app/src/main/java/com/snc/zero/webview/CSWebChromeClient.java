@@ -75,8 +75,13 @@ public class CSWebChromeClient extends WebChromeClient {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
+                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions)
@@ -110,8 +115,13 @@ public class CSWebChromeClient extends WebChromeClient {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
+                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions)
@@ -142,8 +152,14 @@ public class CSWebChromeClient extends WebChromeClient {
                                     }
 
                                     @Override
-                                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
+                                    public void onPermissionDenied(List<String> deniedPermissions) {
                                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        request.deny();
+                                    }
+
+                                    @Override
+                                    public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
+                                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                                         request.deny();
                                     }
                                 })
@@ -165,8 +181,14 @@ public class CSWebChromeClient extends WebChromeClient {
                                     }
 
                                     @Override
-                                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
+                                    public void onPermissionDenied(List<String> deniedPermissions) {
                                         Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        request.deny();
+                                    }
+
+                                    @Override
+                                    public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
+                                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                                         request.deny();
                                     }
                                 })
@@ -212,8 +234,14 @@ public class CSWebChromeClient extends WebChromeClient {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         Logger.e(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionDenied() : origin[" + origin + "] callback[" + callback + "]");
+                        callback.invoke(origin, false, false);
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
+                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                         callback.invoke(origin, false, false);
                     }
                 })

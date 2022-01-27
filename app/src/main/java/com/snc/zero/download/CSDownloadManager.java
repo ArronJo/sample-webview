@@ -38,7 +38,7 @@ public class CSDownloadManager {
             permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);    // android:maxSdkVersion="28"
         }
 
-        if (RPermission.isGranted(permissions.toArray(new String[] {}))) {
+        if (RPermission.isGranted(context, permissions)) {
             downloadIt(context, urlString);
             return;
         }
@@ -53,12 +53,17 @@ public class CSDownloadManager {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions, int status) {
+                    public void onPermissionDenied(List<String> deniedPermissions) {
                         Logger.e(TAG, "[CSDownloadManager] onPermissionDenied()..." + deniedPermissions.toString());
 
                         DialogBuilder.with(context)
                                 .setMessage("Permission denied !!!")
                                 .toast();
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
+                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
                 .setPermissions(permissions)
