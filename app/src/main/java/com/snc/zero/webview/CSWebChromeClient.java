@@ -64,6 +64,7 @@ public class CSWebChromeClient extends WebChromeClient {
         permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
         RPermission.with(this.context)
+                .setPermissions(permissions)
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -84,7 +85,6 @@ public class CSWebChromeClient extends WebChromeClient {
                         Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
-                .setPermissions(permissions)
                 .check();
     }
 
@@ -97,6 +97,7 @@ public class CSWebChromeClient extends WebChromeClient {
         permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
         RPermission.with(this.context)
+                .setPermissions(permissions)
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -124,7 +125,6 @@ public class CSWebChromeClient extends WebChromeClient {
                         Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
-                .setPermissions(permissions)
                 .check();
         return true;
     }
@@ -144,6 +144,10 @@ public class CSWebChromeClient extends WebChromeClient {
                 switch (permission) {
                     case PermissionRequest.RESOURCE_AUDIO_CAPTURE: {
                         RPermission.with(this.context)
+                                .setPermissions(
+                                        // Dangerous Permission
+                                        Manifest.permission.RECORD_AUDIO
+                                )
                                 .setPermissionListener(new RPermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
@@ -163,16 +167,17 @@ public class CSWebChromeClient extends WebChromeClient {
                                         request.deny();
                                     }
                                 })
-                                .setPermissions(new String[] {
-                                        // Dangerous Permission
-                                        Manifest.permission.RECORD_AUDIO,
-                                })
                                 .check();
                         return;
                     }
 
                     case PermissionRequest.RESOURCE_VIDEO_CAPTURE: {
                         RPermission.with(this.context)
+                                .setPermissions(
+                                        // Dangerous Permission
+                                        Manifest.permission.CAMERA,
+                                        Manifest.permission.RECORD_AUDIO
+                                )
                                 .setPermissionListener(new RPermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
@@ -191,11 +196,6 @@ public class CSWebChromeClient extends WebChromeClient {
                                         Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                                         request.deny();
                                     }
-                                })
-                                .setPermissions(new String[] {
-                                        // Dangerous Permission
-                                        Manifest.permission.CAMERA,
-                                        Manifest.permission.RECORD_AUDIO,
                                 })
                                 .check();
                         return;
@@ -226,6 +226,11 @@ public class CSWebChromeClient extends WebChromeClient {
         Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
 
         RPermission.with(this.context)
+                .setPermissions(
+                        // Dangerous Permission
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                )
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -244,11 +249,6 @@ public class CSWebChromeClient extends WebChromeClient {
                         Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                         callback.invoke(origin, false, false);
                     }
-                })
-                .setPermissions(new String[] {
-                        // Dangerous Permission
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
                 })
                 .check();
 

@@ -45,6 +45,7 @@ public class CSDownloadManager {
 
         // check permission
         RPermission.with(context)
+                .setPermissions(permissions)
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -66,7 +67,6 @@ public class CSDownloadManager {
                         Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
-                .setPermissions(permissions)
                 .check();
     }
 

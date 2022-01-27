@@ -110,6 +110,7 @@ public class AndroidBridgeProcess {
 
         // check permission
         RPermission.with(webview.getContext())
+                .setPermissions(permissions)
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -151,7 +152,6 @@ public class AndroidBridgeProcess {
                         Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                     }
                 })
-                .setPermissions(permissions)
                 .check();
     }
 

@@ -162,6 +162,7 @@ public class WebViewHelper {
             permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
             RPermission.with(webView.getContext())
+                    .setPermissions(permissions)
                     .setPermissionListener(new RPermissionListener() {
                         @Override
                         public void onPermissionGranted() {
@@ -179,7 +180,6 @@ public class WebViewHelper {
                             Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
                         }
                     })
-                    .setPermissions(permissions)
                     .check();
         }
     }

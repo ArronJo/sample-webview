@@ -38,7 +38,7 @@ public class RPermission {
         return this;
     }
 
-    public RPermission setPermissions(String[] permissions) {
+    public RPermission setPermissions(String...permissions) {
         this.permissions = permissions;
         return this;
     }
