@@ -7,11 +7,11 @@
 
 .center { text-align:center; }
 
-.mT5  { margin-top:5px; }
-.mT10 { margin-top:10px; }
-.mT20 { margin-top:20px; }
-.mT30 { margin-top:30px; }
-.mT40 { margin-top:40px; }
-.mT50 { margin-top:50px; }
+.mT5  { margin-top: 5px; }
+.mT10 { margin-top: 10px; }
+.mT20 { margin-top: 20px; }
+.mT30 { margin-top: 30px; }
+.mT40 { margin-top: 40px; }
+.mT50 { margin-top: 50px; }
 
 .word-break { word-break:break-all; white-space:normal; }

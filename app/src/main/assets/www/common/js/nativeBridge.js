@@ -31,40 +31,14 @@
     const NativeBridge = {
 
         // request (Web --> Native)
-        call : function (command, args, callback) {
-            let jsonObject = {
-                command: command,
-                args: args,
-                callback: callback
-            };
-
-            if ("function" == typeof callback) {
-                jsonObject['callback'] = callback.toString();
-            }
-
-            let query = btoa(encodeURIComponent(JSON.stringify(jsonObject)));
-
-            if (window.AndroidBridge) {
-                AndroidBridge.callNativeMethod("native://callNative?" + query);
-            } else if (/iPhone|iPod|iPad/i.test(navigator.userAgent)) {
-                if (window.webkit && window.webkit.callbackHandler) {
-                    window.webkit.messageHandlers.callbackHandler.postMessage("callNative?" + query);
-                } else {
-                    window.location.href = "native://callNative?" + query;
-                }
-            } else {
-                console.warn("Native calls are not supported.");
-                hideProgress();
-            }
-        },
-
-        callToNative: function (command, args, successCallback, errorCallback) {
+        callToNative: function (plugin, method, args, successCallback, errorCallback) {
             var cbId = _pushCallback(successCallback, errorCallback);
 
             let jsonObject = {
-                command: command,
-                args: args,
-                cbId: cbId
+                "plugin": plugin,
+                "method": method,
+                "args": args,
+                "cbId": cbId
             };
 
             let query = btoa(encodeURIComponent(JSON.stringify(jsonObject)));
@@ -83,6 +57,7 @@
             }
         },
 
+        // request (Native --> Web)
         callFromNative: function (cbId, resultCode, jsonString) {
             var cb = _popCallback(cbId);
             if ("00000" == resultCode) {

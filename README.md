@@ -68,33 +68,48 @@ navigator.geolocation.watchPosition(function(Position) {
 5. Native Interface
 ```code
 <script>
-function callNative(command, args, callback) {
-    let jsonObject = {
-        command: command,
-        args: args,
-        callback: callback
-    };
-    
-    let query = btoa(encodeURIComponent(JSON.stringify(jsonObject)));
 
-    if (window.AndroidBridge) {
-        AndroidBridge.callNativeMethod("native://callNative?" + query);
-    } else if (/iPhone|iPod|iPad/i.test(navigator.userAgent)) {
-        if (window.webkit && window.webkit.callbackHandler) {
-            window.webkit.messageHandlers.callbackHandler.postMessage("callNative?" + query);
+const NativeBridge = {
+
+    callToNative: function (plugin, method, args, successCallback, errorCallback) {
+        var cbId = _pushCallback(successCallback, errorCallback);
+
+        let jsonObject = {
+            "plugin": plugin,
+            "method": method,
+            "args": args,
+            "cbId": cbId
+        };
+
+        let query = btoa(encodeURIComponent(JSON.stringify(jsonObject)));
+
+        if (window.AndroidBridge) {
+            AndroidBridge.callNativeMethod("native://callToNative?" + query);
+        } else if (/iPhone|iPod|iPad/i.test(navigator.userAgent)) {
+            if (window.webkit && window.webkit.callbackHandler) {
+                window.webkit.messageHandlers.callbackHandler.postMessage("callToNative?" + query);
+            } else {
+                window.location.href = "native://callToNative?" + query;
+            }
         } else {
-            window.location.href = "native://callNative?" + query;
+            console.warn("Native calls are not supported.");
         }
-    } else {
-        console.warn("Native calls are not supported.");
     }
-}
+};
 
-function callbackNativeResponse(data) {
-    alert(data);
-}
-
-callNative("apiSample", { num:10, str:"string", bool:true }, "callbackNativeResponse");
+NativeBridge.callToNative(
+    "api",
+    "recommended",
+    { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } },
+    function(data) {
+        console.log("response..." + JSON.stringify(data));
+        alert(JSON.stringify(data));
+        Progress.hide();
+    },
+    function(err) {
+        console.error("error..." + err);
+    }
+);
 </script>
 ```
 

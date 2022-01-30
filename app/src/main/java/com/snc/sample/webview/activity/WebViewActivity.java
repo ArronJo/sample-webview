@@ -12,19 +12,19 @@ import android.webkit.WebView;
 import com.snc.sample.webview.BuildConfig;
 import com.snc.sample.webview.R;
 import com.snc.sample.webview.bridge.AndroidBridge;
-import com.snc.sample.webview.bridge.process.AndroidBridgeProcessActivityResult;
-import com.snc.zero.dialog.DialogBuilder;
-import com.snc.zero.requetcode.RequestCode;
+import com.snc.sample.webview.bridge.plugin.PluginCamera;
+import com.snc.sample.webview.webview.WebViewHelper;
 import com.snc.zero.activity.BaseActivity;
+import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.keyevent.BackKeyShutdown;
 import com.snc.zero.log.Logger;
+import com.snc.zero.requetcode.RequestCode;
 import com.snc.zero.util.PackageUtil;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.webview.CSDownloadListener;
 import com.snc.zero.webview.CSFileChooserListener;
 import com.snc.zero.webview.CSWebChromeClient;
 import com.snc.zero.webview.CSWebViewClient;
-import com.snc.sample.webview.webview.WebViewHelper;
 
 /**
  * WebView Activity
@@ -182,7 +182,8 @@ public class WebViewActivity extends BaseActivity {
         //++ [[START] Take a picture]
         if (RequestCode.REQUEST_TAKE_A_PICTURE == requestCode) {
             Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_TAKE_A_PICTURE");
-            AndroidBridgeProcessActivityResult.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
+            PluginCamera.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
+            //AndroidBridgeProcessActivityResult.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
         }
         //++ [[E N D] Take a picture]
 

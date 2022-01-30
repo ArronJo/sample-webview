@@ -3,24 +3,6 @@
  */
 
 /////////////////////////////////////////////////
-// Global
-/////////////////////////////////////////////////
-
-// response (Native --> Web)
-function callbackNativeResponse(data) {
-    console.log("callbackNativeResponse(): data = " + data);
-    alert(data);
-    Progress.hide();
-}
-
-// response (Native --> Web)
-function callbackTakePicture(data) {
-    console.log("callbackTakePicture(): data = " + data);
-    alert(data);
-}
-
-
-/////////////////////////////////////////////////
 // Immediately
 /////////////////////////////////////////////////
 (function() {
@@ -48,45 +30,55 @@ function callbackTakePicture(data) {
 $(document).ready(function() {
     console.info('document.ready ...');
 
-    $('#call-android-methods-recommended').on('click', function () {
+    $('#call-android-methods-recommended-1').on('click', function () {
         Progress.show();
-        NativeBridge.call("apiRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
-    });
 
-    $('#call-android-methods-recommended-2').on('click', function () {
-        Progress.show();
         NativeBridge.callToNative(
-            "apiRecommended2",
+            "api",
+            "recommended",
             { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } },
             function(data) {
                 console.log("response..." + JSON.stringify(data));
-                alert(data);
+                alert(JSON.stringify(data));
                 Progress.hide();
             },
-            function(data) {
-                console.log("error..." + data);
-                alert(data);
+            function(err) {
+                console.error("error..." + err);
+                alert(err);
                 Progress.hide();
             }
         );
     });
 
-    $('#call-android-methods-recommended-3').on('click', function () {
+    $('#call-android-methods-recommended-2').on('click', function () {
         Progress.show();
+
+        // response (Native --> Web)
+        function callbackNativeResponse (data) {
+            console.log("callbackNativeResponse(): data = " + JSON.stringify(data));
+            alert(JSON.stringify(data));
+            Progress.hide();
+        }
+        window['callbackNativeResponse'] = callbackNativeResponse;
+
         NativeBridge.callToNative(
-            "apiRecommended2",
+            "api",
+            "recommended",
             { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } },
             "callbackNativeResponse"
         );
     });
 
-    $('#call-android-methods-not-recommended').on('click', function () {
-        Progress.show();
-        NativeBridge.call("apiNotRecommended", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackNativeResponse");
-    });
-
     $('#native-take-a-picture').on('click', function () {
-        NativeBridge.call("apiTakePicture", { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } }, "callbackTakePicture");
+        NativeBridge.callToNative(
+            "camera",
+            "takePicture",
+            { a:"A", b:1, c:false, d:{ d1:"d1", d2:2 } },
+            function (data) {
+                 console.log("callback : data = " + data);
+                 alert(data);
+             }
+         );
     });
 
     $('#req-microphone').on('click', function () {

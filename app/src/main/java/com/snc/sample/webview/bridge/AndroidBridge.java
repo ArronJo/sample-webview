@@ -6,17 +6,16 @@ import android.util.Base64;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
-import com.snc.sample.webview.bridge.process.AndroidBridgeProcess;
+import com.snc.sample.webview.bridge.plugin.AndroidBridgePlugin;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.json.JSONHelper;
 import com.snc.zero.log.Logger;
-import com.snc.zero.reflect.ReflectHelper;
+import com.snc.zero.util.StringUtil;
 
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +31,8 @@ public class AndroidBridge {
 
     private static final String SCHEME_BRIDGE = "native";
 
-    private static final String HOST_COMMAND = "callNative";
-    private static final String HOST_COMMAND2 = "callToNative";
+    // Web -> Native
+    private static final String HOST_COMMAND = "callToNative";
 
     private static final String SCHEME_JAVASCRIPT = "javascript:";
 
@@ -50,47 +49,29 @@ public class AndroidBridge {
 
     //++ [START] call Web --> Native
 
-    // ex) "native://callNative?" + btoa(encodeURIComponent(JSON.stringify({ command:\"apiSample\", args{max:1,min:1}, callback:\"callbackNativeResponse\" })))
+    // ex) "native://callToNative?" + btoa(encodeURIComponent(JSON.stringify({ command:\"apiSample\", args{max:1,min:1}, callback:\"callbackNativeResponse\" })))
     @JavascriptInterface
     public boolean callNativeMethod(String urlString) {
-        //Logger.i(TAG, "[WEBVIEW] callNativeMethod: " + urlString);
+        Logger.i(TAG, "[WEBVIEW] callNativeMethod: " + urlString);
         try {
-            return executeProcess(this.webView, parse(urlString));
-        } catch (Exception e) {
-            Logger.e(TAG, e);
+            Uri uri = Uri.parse(urlString);
+            JSONObject jsonObject = parse(uri);
+            //jsonObject.put("hostCommand", uri.getHost());
 
-            DialogBuilder.with(webView.getContext())
-                    .setMessage(e.toString())
-                    .show();
-        }
-        return false;
-    }
+            String pluginName = JSONHelper.getString(jsonObject, "plugin", "");
 
-    private boolean executeProcess(final WebView webview, final JSONObject jsonObject) {
-        final String hostCommand = JSONHelper.getString(jsonObject, "hostCommand", "");
-        final String command = JSONHelper.getString(jsonObject, "command", "");
-        final JSONObject args = JSONHelper.getJSONObject(jsonObject, "args", new JSONObject());
-        final String callback = JSONHelper.getString(jsonObject, "callback", "");
-        final String cbId = JSONHelper.getString(jsonObject, "cbId", "");
-
-        Logger.i(TAG, "[WEBVIEW] callNativeMethod: executeProcess() :  command = " + command + ",  args = " + args + ",  callback = " + callback);
-
-        final AndroidBridgeProcess process = AndroidBridgeProcess.getInstance();
-        final Method method = ReflectHelper.getMethod(process, command);
-        if (null == method) {
-            Logger.e(TAG, "[WEBVIEW] method is null");
-            return false;
-        }
-
-        try {
-            if (HOST_COMMAND2.equals(hostCommand)) {
-                ReflectHelper.invoke(process, method, webview, args, cbId);
-            } else {
-                ReflectHelper.invoke(process, method, webview, args, callback);
+            if (StringUtil.isEmpty(pluginName)) {
+                DialogBuilder.with(webView.getContext())
+                        .setMessage("Plugin not exist")
+                        .show();
+                return false;
             }
-            return true;
+
+            return AndroidBridgePlugin.execute(this.webView, jsonObject);
+
         } catch (Exception e) {
             Logger.e(TAG, e);
+
             DialogBuilder.with(webView.getContext())
                     .setMessage(e.toString())
                     .show();
@@ -98,15 +79,13 @@ public class AndroidBridge {
         return false;
     }
 
-    private JSONObject parse(String urlString) throws IOException {
-        Uri uri = Uri.parse(urlString);
+    private JSONObject parse(Uri uri) throws IOException {
         Logger.i(TAG, "[WEBVIEW] callNativeMethod: parse() : uri = " + uri);
 
         if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
             throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
         }
-        if (!HOST_COMMAND.equals(uri.getHost())
-            && !HOST_COMMAND2.equals(uri.getHost())) {
+        if (!HOST_COMMAND.equals(uri.getHost())) {
             throw new IOException("\"" + uri.getHost() + "\" host is not supported.");
         }
 
@@ -114,14 +93,12 @@ public class AndroidBridge {
         try {
             query = new String(Base64.decode(query, Base64.DEFAULT));
             query = URLDecoder.decode(query, "utf-8");
-            JSONObject jsonObject = new JSONObject(query);
-            jsonObject.put("hostCommand", uri.getHost());
-            return jsonObject;
+
+            return new JSONObject(query);
         } catch (Exception e) {
             throw new IOException("\"" + query + "\" is not JSONObject.");
         }
     }
-
     //-- [E N D] call Web --> Native
 
 
@@ -227,7 +204,6 @@ public class AndroidBridge {
     public static void setExtraOutput(File file) {
         extraOutput = file;
     }
-
     //-- [[E N D] for JS Callback]
 
 }

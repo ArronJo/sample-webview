@@ -22,6 +22,8 @@ android {
         buildConfigField "String", "ASSET_PATH", "\"/assets/\""
         buildConfigField "String", "RES_PATH", "\"/res/\""
         //--
+
+        buildConfigField "boolean", "FEATURE_WEBVIEW_BRIDGE_PLUGIN", "true"
     }
     signingConfigs {
         storeFile {
