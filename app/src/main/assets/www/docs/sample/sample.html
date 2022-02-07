@@ -100,9 +100,16 @@
                 <input type="button" id="req-camera" class="btn" value="Camera Permission"/>
             </div>
             <div class="center mT50">
-                <video id="media-device-video" style="width: 80%">
+                <video id="media-device-video" style="width: 80%" autoplay>
                     Your browser does not support the video tag.
                 </video>
+            </div>
+            <div class="center mT50">
+                <img id="captured-img" src="" style="width: 80%; background: #fff;">
+                <canvas id="canvas" style="display:none;"></canvas>
+            </div>
+            <div class="center mT50">
+                <button id="btn-capture" class="btn">Capture</button>
             </div>
         </div>
     </div>

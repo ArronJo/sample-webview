@@ -95,6 +95,7 @@ $(document).ready(function() {
         });
     });
 
+    // https://www.html5rocks.com/en/tutorials/getusermedia/intro/
     $('#req-camera').on('click', function () {
         var constraints = navigator.mediaDevices.getSupportedConstraints();
         console.log(constraints);
@@ -109,11 +110,11 @@ $(document).ready(function() {
         .then(function (mediaStream) {
             console.log('request: then...', mediaStream);
 
-            var video = document.querySelector('#media-device-video');
-            if (video) {
-                video.srcObject = mediaStream;
-                video.onloadedmetadata = function(e) {
-                    video.play();
+            var $video = document.querySelector('#media-device-video');
+            if ($video) {
+                $video.srcObject = mediaStream;
+                $video.onloadedmetadata = function(e) {
+                    $video.play();
                 };
             }
         })
@@ -121,6 +122,30 @@ $(document).ready(function() {
             console.error('request: error: ' + err.toString(), err);
             alert(err);
         });
+    });
+
+
+    var $video = document.querySelector('#media-device-video');
+    var $canvas = document.querySelector('#canvas');
+    var $img = document.querySelector('#captured-img');
+
+    $('#media-device-video').on('click', function() {
+        const $canvas = document.createElement("canvas");
+        $canvas.width = $video.videoWidth;
+        $canvas.height = $video.videoHeight;
+        $canvas.getContext("2d").drawImage($video, 0, 0);
+        // Other browsers will fall back to image/png
+        var src = $canvas.toDataURL("image/webp");
+        $img.src = src;
+    });
+
+    $('#btn-capture').on('click', function() {
+        $canvas.width = $video.videoWidth;
+        $canvas.height = $video.videoHeight;
+        $canvas.getContext("2d").drawImage($video, 0, 0);
+        // Other browsers will fall back to image/png
+        var src = $canvas.toDataURL("image/webp");
+        $img.src = src;
     });
 
 });
