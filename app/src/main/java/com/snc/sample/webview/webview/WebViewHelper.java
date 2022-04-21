@@ -72,6 +72,7 @@ public class WebViewHelper {
         WebSettings settings = webView.getSettings();
 
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setInitialScale(0); //
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -110,11 +111,13 @@ public class WebViewHelper {
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
+        settings.setTextZoom(100);  //
         settings.setGeolocationEnabled(true);
+        settings.setDefaultTextEncodingName("utf-8");   //
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             settings.setMediaPlaybackRequiresUserGesture(true);    // The default is true. Added in API level 17
         }
-
+        settings.setNeedInitialFocus(true); //
         settings.setUserAgentString(makeUserAgent(webView));
     }
 

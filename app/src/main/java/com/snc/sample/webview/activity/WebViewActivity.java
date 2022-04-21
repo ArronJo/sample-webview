@@ -44,13 +44,13 @@ public class WebViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init();
-
         if (BuildConfig.DEBUG) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 WebView.setWebContentsDebuggingEnabled(true);
             }
         }
+
+        init();
     }
 
     @SuppressLint("AddJavascriptInterface")
