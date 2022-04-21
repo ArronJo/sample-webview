@@ -54,6 +54,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
         android:fullBackupContent="@xml/app_backup_rules"
+        android:dataExtractionRules="@xml/app_extraction_rules"
         android:supportsRtl="true"
         android:largeHeap="true"
         android:usesCleartextTraffic="true"

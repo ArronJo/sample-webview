@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+
+    <!--
+      <cloud-backup [disableIfNoEncryptionCapabilities="true|false"]>
+        ...
+        <include domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/>
+        ...
+        <exclude domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/>
+        ...
+      </cloud-backup>
+
+      <device-transfer>
+        ...
+        <include domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/>
+        ...
+        <exclude domain=["file" | "database" | "sharedpref" | "external" | "root"] path="string"/>
+        ...
+      </device-transfer>
+    -->
+
+</data-extraction-rules>
