@@ -18,9 +18,10 @@ android {
         //++ for Android 11 (API 30)
         buildConfigField "boolean", "FEATURE_WEBVIEW_ASSET_LOADER", "true"
 
-        buildConfigField "String", "ASSET_BASE_DOMAIN", "\"snc.com\""
+        buildConfigField "String", "ASSET_BASE_DOMAIN", "\"assets.snc.com\""
         buildConfigField "String", "ASSET_PATH", "\"/assets/\""
         buildConfigField "String", "RES_PATH", "\"/res/\""
+        buildConfigField "String", "INTERNAL_PATH", "\"/public/\""
         //--
 
         buildConfigField "boolean", "FEATURE_WEBVIEW_BRIDGE_PLUGIN", "true"

@@ -6,7 +6,6 @@ import android.util.Base64;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
-import com.snc.sample.webview.bridge.plugin.AndroidBridgePlugin;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.json.JSONHelper;
 import com.snc.zero.log.Logger;

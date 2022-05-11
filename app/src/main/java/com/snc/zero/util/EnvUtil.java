@@ -1,5 +1,6 @@
 package com.snc.zero.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Environment;
 
@@ -25,6 +26,15 @@ public class EnvUtil {
             return getExternalStorageDirectory();
         }
         return context.getExternalFilesDir(null);
+    }
+
+    @SuppressLint("SdCardPath")
+    public static File getInternalFilesDir(Context context, String path) {
+        return new File(context.getFilesDir(), path);
+    }
+
+    public static File getInternalFilesDir(Context context) {
+        return getInternalFilesDir(context, "");
     }
 
     public static File getMediaDir(Context context, String type) {

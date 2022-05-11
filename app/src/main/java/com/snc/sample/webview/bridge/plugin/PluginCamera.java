@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.AndroidBridge;
+import com.snc.sample.webview.bridge.plugin.interfaces.Plugin;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.imageprocess.ImageProcess;
 import com.snc.zero.log.Logger;

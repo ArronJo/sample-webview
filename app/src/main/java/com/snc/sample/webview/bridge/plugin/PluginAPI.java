@@ -3,6 +3,7 @@ package com.snc.sample.webview.bridge.plugin;
 import android.webkit.WebView;
 
 import com.snc.sample.webview.bridge.AndroidBridge;
+import com.snc.sample.webview.bridge.plugin.interfaces.Plugin;
 import com.snc.zero.json.JSONHelper;
 import com.snc.zero.log.Logger;
 

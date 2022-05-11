@@ -1,5 +1,6 @@
 package com.snc.zero.webview;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -16,8 +17,11 @@ import android.webkit.WebViewClient;
 
 import com.snc.sample.webview.BuildConfig;
 import com.snc.zero.log.Logger;
+import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.IntentUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URISyntaxException;
 
 import androidx.annotation.RequiresApi;
@@ -40,6 +44,7 @@ public class CSWebViewClient extends WebViewClient {
                     .setDomain(BuildConfig.ASSET_BASE_DOMAIN)
                     .addPathHandler(BuildConfig.RES_PATH, new WebViewAssetLoader.ResourcesPathHandler(context))
                     .addPathHandler(BuildConfig.ASSET_PATH, new WebViewAssetLoader.AssetsPathHandler(context))
+                    .addPathHandler(BuildConfig.INTERNAL_PATH, new WebViewAssetLoader.InternalStoragePathHandler(context, EnvUtil.getInternalFilesDir(context, "public")))
                     .build();
         }
     }
@@ -64,7 +69,7 @@ public class CSWebViewClient extends WebViewClient {
         if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
             return this.assetLoader.shouldInterceptRequest(request.getUrl());
         }
-        return null;    //return super.shouldInterceptRequest(view, request);
+        return super.shouldInterceptRequest(view, request);
     }
 
     @Override
@@ -94,17 +99,20 @@ public class CSWebViewClient extends WebViewClient {
 
         if (url.startsWith("http://") || url.startsWith("https://")) {
             if (request.isRedirect()) {
-                view.loadUrl(request.getUrl().toString());
+                view.loadUrl(url);
                 return true;
             }
             return false;
         }
-        intentProcessing(view, request.getUrl().toString());
-        return true;
+        return intentProcessing(view, url);
     }
 
     private boolean intentProcessing(WebView view, String urlString) {
         String url = Uri.decode(urlString);
+
+        if (url.startsWith("uploadimage:")) {
+            return false;
+        }
 
         if (url.startsWith("intent:")) {
             try {
@@ -139,6 +147,7 @@ public class CSWebViewClient extends WebViewClient {
         super.onPageFinished(view, url);
     }
 
+    @SuppressLint("WebViewClientOnReceivedSslError")
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Logger.e(TAG, "[WEBVIEW] onReceivedSslError(): url[" + view.getUrl() + "],  handler[" + handler + "],  error[" + error + "]");
@@ -179,7 +188,7 @@ public class CSWebViewClient extends WebViewClient {
             buff.append("\n  reasonPhrase[").append(errorResponse.getReasonPhrase()).append("]  ");
         }
 
-        Logger.e(TAG, "onReceivedHttpError : url[" + url + "],  errorResponse[" + buff.toString() + "]");
+        Logger.e(TAG, "onReceivedHttpError : url[" + url + "],  errorResponse[" + buff + "]");
         super.onReceivedHttpError(view, request, errorResponse);
     }
 

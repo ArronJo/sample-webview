@@ -1,7 +1,10 @@
-package com.snc.sample.webview.bridge.plugin;
+package com.snc.sample.webview.bridge;
 
 import android.webkit.WebView;
 
+import com.snc.sample.webview.bridge.plugin.PluginAPI;
+import com.snc.sample.webview.bridge.plugin.PluginCamera;
+import com.snc.sample.webview.bridge.plugin.interfaces.Plugin;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.json.JSONHelper;
 import com.snc.zero.log.Logger;
@@ -43,10 +46,10 @@ public class AndroidBridgePlugin {
         try {
             Plugin plugin = null;
             if (PLUGIN_API.equals(pluginName)) {
-                plugin = PluginAPI.getInstance();
+                plugin = (Plugin) PluginAPI.getInstance();
             }
             else if (PLUGIN_CAMERA.equals(pluginName)) {
-                plugin = PluginCamera.getInstance();
+                plugin = (Plugin) PluginCamera.getInstance();
             }
 
             if (null == plugin) {
