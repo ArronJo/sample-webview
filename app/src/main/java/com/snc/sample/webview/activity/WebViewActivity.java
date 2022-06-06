@@ -54,6 +54,12 @@ public class WebViewActivity extends BaseActivity {
             }
         }
 
+        if (!new File(EnvUtil.getInternalFilesDir(getContext(), "public"), "202205091737430060.jpg").exists()) {
+            AssetUtil.copyAssetToFile(getContext(),
+                    "www/common/img/202205091737430060.jpg",
+                    EnvUtil.getInternalFilesDir(getContext(), "public"));
+        }
+
         init();
     }
 
@@ -107,11 +113,14 @@ public class WebViewActivity extends BaseActivity {
         this.webview.setDownloadListener(new CSDownloadListener(getActivity()));
 
         // load url
-        WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
+        //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/sample.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/image-provider/image-provider.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
         //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/file/file.html");
         //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/google/google-gtm.html");
+        //WebViewHelper.loadUrl(this.webview, "https://snc-project.firebaseapp.com/docs/image/image.html");
+        WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/image.html");
     }
 
     @Override

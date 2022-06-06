@@ -58,6 +58,7 @@ public class CSWebViewClient extends WebViewClient {
 
         Uri uri = Uri.parse(url);
 
+        // CORS
         if ("uploadimage".equalsIgnoreCase(uri.getScheme())) {
             return executeCustomScheme(view.getContext(), uri);
         }
@@ -75,6 +76,7 @@ public class CSWebViewClient extends WebViewClient {
 
         Uri uri = request.getUrl();
 
+        // CORS
         if ("uploadimage".equalsIgnoreCase(uri.getScheme())) {
             return executeCustomScheme(view.getContext(), uri);
         }
@@ -88,10 +90,10 @@ public class CSWebViewClient extends WebViewClient {
     private WebResourceResponse executeCustomScheme(Context context, Uri uri) {
         try {
             File folder = EnvUtil.getInternalFilesDir(context, uri.getAuthority());
-            //Logger.i(TAG, "shouldInterceptRequest: folder = " + folder);
             File file = new File(folder, uri.getPath());
             if (!file.exists()) {
                 Logger.e(TAG, "[WEBVIEW] executeCustomScheme: not exist file = " + file);
+                return null;
             }
             WebResourceResponse res = new WebResourceResponse(
                     "image/jpeg",
