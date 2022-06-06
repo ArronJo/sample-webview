@@ -73,8 +73,7 @@ public class DialogBuilder {
 		return this;
 	}
 	public DialogBuilder setPositiveButton(int resId, final DialogInterface.OnClickListener listener) {
-		setPositiveButton(activity.getResources().getString(resId), listener);
-		return this;
+		return setPositiveButton(activity.getResources().getString(resId), listener);
 	}
 
 	public DialogBuilder setNegativeButton(CharSequence text, final DialogInterface.OnClickListener listener) {
@@ -83,8 +82,7 @@ public class DialogBuilder {
 		return this;
 	}
 	public DialogBuilder setNegativeButton(int resId, final DialogInterface.OnClickListener listener) {
-		setNegativeButton(activity.getResources().getString(resId), listener);
-		return this;
+		return setNegativeButton(activity.getResources().getString(resId), listener);
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
@@ -94,8 +92,7 @@ public class DialogBuilder {
 		return this;
 	}
 	public DialogBuilder setNeutralButton(int resId, final DialogInterface.OnClickListener listener) {
-		setNeutralButton(activity.getResources().getString(resId), listener);
-		return this;
+		return setNeutralButton(activity.getResources().getString(resId), listener);
 	}
 
 	public void toast() {

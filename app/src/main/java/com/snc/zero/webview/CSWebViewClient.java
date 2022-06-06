@@ -16,6 +16,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.snc.sample.webview.BuildConfig;
+import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.log.Logger;
 import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.IntentUtil;
@@ -55,6 +56,12 @@ public class CSWebViewClient extends WebViewClient {
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 20 below):  url[" + url + "]");
 
+        Uri uri = Uri.parse(url);
+
+        if ("uploadimage".equalsIgnoreCase(uri.getScheme())) {
+            return executeCustomScheme(view.getContext(), uri);
+        }
+
         if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
             return this.assetLoader.shouldInterceptRequest(Uri.parse(url));
         }
@@ -66,10 +73,37 @@ public class CSWebViewClient extends WebViewClient {
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 21 after):  url[" + request.getUrl() + "]");
 
+        Uri uri = request.getUrl();
+
+        if ("uploadimage".equalsIgnoreCase(uri.getScheme())) {
+            return executeCustomScheme(view.getContext(), uri);
+        }
+
         if (BuildConfig.FEATURE_WEBVIEW_ASSET_LOADER) {
             return this.assetLoader.shouldInterceptRequest(request.getUrl());
         }
         return super.shouldInterceptRequest(view, request);
+    }
+
+    private WebResourceResponse executeCustomScheme(Context context, Uri uri) {
+        try {
+            File folder = EnvUtil.getInternalFilesDir(context, uri.getAuthority());
+            //Logger.i(TAG, "shouldInterceptRequest: folder = " + folder);
+            File file = new File(folder, uri.getPath());
+            if (!file.exists()) {
+                Logger.e(TAG, "[WEBVIEW] executeCustomScheme: not exist file = " + file);
+            }
+            WebResourceResponse res = new WebResourceResponse(
+                    "image/jpeg",
+                    "utf-8",
+                    new FileInputStream(file)
+            );
+            Logger.i(TAG, "[WEBVIEW] executeCustomScheme: new WebResourceResponse = " + res);
+            return res;
+        } catch (Exception e) {
+            Logger.e(TAG, "Exception", e);
+        }
+        return null;
     }
 
     @Override
@@ -165,7 +199,11 @@ public class CSWebViewClient extends WebViewClient {
         } else if (SslError.SSL_INVALID == error.getPrimaryError()) {
             handler.proceed();
         } else {
-            handler.proceed();
+            DialogBuilder.with(view.getContext())
+                    .setMessage("ssl certificate invalid.\\nDo you want to proceed?")
+                    .setPositiveButton("yes", (dialog, which) -> handler.proceed())
+                    .setNegativeButton("no", (dialog, which) -> handler.cancel())
+                    .show();
         }
 
         //super.onReceivedSslError(view, handler, error);

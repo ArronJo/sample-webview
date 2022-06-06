@@ -12,7 +12,7 @@ import java.io.OutputStream;
 public class AssetUtil {
     private static final String TAG = AssetUtil.class.getSimpleName();
 
-    public static boolean copyAssetToFile(Context context, String srcAssetsFilePath, File destFolderFile) {
+    public static void copyAssetToFile(Context context, String srcAssetsFilePath, File destFolderFile) {
         InputStream is = null;
         OutputStream os = null;
         try {
@@ -22,19 +22,18 @@ public class AssetUtil {
             if (!destFolderFile.exists()) {
                 if (!destFolderFile.mkdirs()) {
                     Log.e(TAG, "[ERROR]] mkdir faiIed !!!!!  path = " + destFolderFile);
-                    return false;
+                    return;
                 }
             }
 
             File srcAssetsFile = new File(srcAssetsFilePath);
             File destFile = new File(destFolderFile, srcAssetsFile.getName());
             if (destFile.exists()) {
-                return false;
+                return;
             }
             os = new FileOutputStream(destFile);
 
             FileUtil.copyFile(is, os);
-            return true;
         }
         catch (Exception e) {
             Log.e(TAG, "Exception", e);
@@ -43,7 +42,6 @@ public class AssetUtil {
             IOUtil.closeQuietly(is);
             IOUtil.closeQuietly(os);
         }
-        return false;
     }
 
 }

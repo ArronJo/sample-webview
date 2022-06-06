@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.snc.sample.webview">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -70,10 +69,10 @@
         <!-- Activity -->
         <activity
             android:name="com.snc.sample.webview.activity.WebViewActivity"
-            android:launchMode="singleTop"
             android:configChanges="keyboardHidden|orientation|screenLayout|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

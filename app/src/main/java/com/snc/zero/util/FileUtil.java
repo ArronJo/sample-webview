@@ -79,14 +79,11 @@ public class FileUtil {
         }
     }
 
-    public static long copyFile(InputStream input, OutputStream output) throws IOException {
+    public static void copyFile(InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[10240];
-        long count = 0;
         int n;
         while (-1 != (n = input.read(buffer))) {
             output.write(buffer, 0, n);
-            count += n;
         }
-        return count;
     }
 }
