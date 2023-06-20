@@ -95,9 +95,6 @@ public class WebViewHelper {
         }
         settings.setJavaScriptEnabled(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
-        if (Build.VERSION.SDK_INT < 30) {  // Build.VERSION_CODES.R
-            settings.setAppCacheEnabled(false);
-        }
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setDatabaseEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -111,13 +108,13 @@ public class WebViewHelper {
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
-        settings.setTextZoom(100);  //
+        //settings.setTextZoom(100);
         settings.setGeolocationEnabled(true);
-        settings.setDefaultTextEncodingName("utf-8");   //
+        settings.setDefaultTextEncodingName("utf-8");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             settings.setMediaPlaybackRequiresUserGesture(true);    // The default is true. Added in API level 17
         }
-        settings.setNeedInitialFocus(true); //
+        settings.setNeedInitialFocus(true);
         settings.setUserAgentString(makeUserAgent(webView));
     }
 
