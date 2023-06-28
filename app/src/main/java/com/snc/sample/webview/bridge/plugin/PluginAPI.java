@@ -5,9 +5,10 @@ import android.webkit.WebView;
 import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.sample.webview.bridge.plugin.interfaces.Plugin;
 import com.snc.zero.json.JSONHelper;
-import com.snc.zero.log.Logger;
 
 import org.json.JSONObject;
+
+import timber.log.Timber;
 
 /**
  * Plugin
@@ -17,8 +18,6 @@ import org.json.JSONObject;
  */
 @SuppressWarnings({"InstantiationOfUtilityClass", "unused", "RedundantSuppression"})
 public class PluginAPI implements Plugin {
-    private static final String TAG = PluginAPI.class.getSimpleName();
-
     private static final PluginAPI mInstance = new PluginAPI();
     public static PluginAPI getInstance() {
         return mInstance;
@@ -27,7 +26,7 @@ public class PluginAPI implements Plugin {
     /////////////////////////////////////////////////
 
     public static void recommended(final WebView webview, final JSONObject args, final String cbId) {
-        Logger.i(TAG, "[WEBVIEW] recommended : args[" + args + "], cbId[" + cbId + "]");
+        Timber.i("[WEBVIEW] recommended : args[" + args + "], cbId[" + cbId + "]");
 
         new Thread(() -> {
 
@@ -35,7 +34,7 @@ public class PluginAPI implements Plugin {
             try {
                 Thread.sleep(1000);
             } catch (Exception e) {
-                Logger.e(TAG, e);
+                Timber.e(e);
             }
             //--
 

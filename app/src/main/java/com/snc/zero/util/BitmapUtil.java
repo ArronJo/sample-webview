@@ -7,9 +7,9 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 
-import com.snc.zero.log.Logger;
-
 import java.io.File;
+
+import timber.log.Timber;
 
 /**
  * Bitmap Utilities
@@ -28,7 +28,7 @@ public class BitmapUtil {
         try {
             return resizeBitmap(context, uri, true, maxImageWidth);
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
             throw e;
         }
     }

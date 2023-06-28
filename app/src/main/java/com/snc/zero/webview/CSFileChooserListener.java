@@ -14,7 +14,6 @@ import android.webkit.WebView;
 
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.requetcode.RequestCode;
-import com.snc.zero.log.Logger;
 import com.snc.zero.util.DateTimeUtil;
 import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.StringUtil;
@@ -26,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * WebView FileChooser Listener
  *
@@ -33,8 +34,6 @@ import java.util.List;
  * @since 2020
  */
 public class CSFileChooserListener implements FileChooserListener {
-    private static final String TAG = CSFileChooserListener.class.getSimpleName();
-
     private static final String ALL_TYPE = "image/*|audio/*|video/*";
 
     private final Context context;
@@ -159,7 +158,7 @@ public class CSFileChooserListener implements FileChooserListener {
             }
 
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
 
             DialogBuilder.with(context)
                     .setMessage(e.toString())
@@ -173,10 +172,10 @@ public class CSFileChooserListener implements FileChooserListener {
     /////////////////////////////////////////////////
 
     public void onActivityResultFileChooserNormal(int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserNormal(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+        Timber.i("[WEBVIEW] onActivityResultFileChooserNormal(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
 
         if (null == filePathCallbackNormal) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultNormal(): filePathCallbackNormal is null !!!");
+            Timber.i("[WEBVIEW] onActivityResultNormal(): filePathCallbackNormal is null !!!");
             return;
         }
 
@@ -193,10 +192,10 @@ public class CSFileChooserListener implements FileChooserListener {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void onActivityResultFileChooserLollipop(int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, "[WEBVIEW] onActivityResultFileChooserLollipop(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+        Timber.i("[WEBVIEW] onActivityResultFileChooserLollipop(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
 
         if (null == filePathCallbackLollipop) {
-            Logger.i(TAG, "[WEBVIEW] onActivityResultLollipop(): filePathCallbackLollipop is null !!!");
+            Timber.i("[WEBVIEW] onActivityResultLollipop(): filePathCallbackLollipop is null !!!");
             return;
         }
 
@@ -228,7 +227,7 @@ public class CSFileChooserListener implements FileChooserListener {
             }
 
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         } finally {
             filePathCallbackLollipop = null;
             mediaURIs = null;

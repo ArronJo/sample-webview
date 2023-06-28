@@ -12,13 +12,14 @@ import android.os.Build;
 import android.os.Environment;
 
 import com.snc.zero.dialog.DialogBuilder;
-import com.snc.zero.log.Logger;
 import com.snc.zero.mimetype.MimeType;
 import com.snc.zero.permission.RPermissionListener;
 import com.snc.zero.permission.RPermission;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Download Manager
@@ -27,8 +28,6 @@ import java.util.List;
  * @since 2020
  */
 public class CSDownloadManager {
-    private static final String TAG = CSDownloadManager.class.getSimpleName();
-
     private long mDownloadId;
 
     public void download(Context context, String urlString) {
@@ -49,13 +48,13 @@ public class CSDownloadManager {
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Logger.i(TAG, "[CSDownloadManager] onPermissionGranted()");
+                        Timber.i("[CSDownloadManager] onPermissionGranted()");
                         downloadIt(context, urlString);
                     }
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[CSDownloadManager] onPermissionDenied()..." + deniedPermissions.toString());
+                        Timber.w("[CSDownloadManager] onPermissionDenied()...%s", deniedPermissions.toString());
 
                         DialogBuilder.with(context)
                                 .setMessage("Permission denied !!!")
@@ -64,7 +63,7 @@ public class CSDownloadManager {
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                        Timber.w("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                     }
                 })
                 .check();
@@ -87,7 +86,7 @@ public class CSDownloadManager {
             mDownloadId = manager.enqueue(request);
 
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
 
             DialogBuilder.with(context)
                     .setMessage(e.toString())
@@ -132,7 +131,7 @@ public class CSDownloadManager {
             }, intentFilter);
 
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
     }
 

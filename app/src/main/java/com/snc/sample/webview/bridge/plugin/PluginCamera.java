@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebView;
 
@@ -12,7 +13,6 @@ import com.snc.sample.webview.bridge.AndroidBridge;
 import com.snc.sample.webview.bridge.plugin.interfaces.Plugin;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.imageprocess.ImageProcess;
-import com.snc.zero.log.Logger;
 import com.snc.zero.media.ImageProvider;
 import com.snc.zero.permission.RPermission;
 import com.snc.zero.permission.RPermissionListener;
@@ -31,6 +31,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 @SuppressWarnings({"InstantiationOfUtilityClass", "unused", "RedundantSuppression"})
 public class PluginCamera implements Plugin {
     private static final String TAG = PluginCamera.class.getSimpleName();
@@ -44,10 +46,12 @@ public class PluginCamera implements Plugin {
     // Method
 
     public static void takePicture(WebView webview, JSONObject args, String cbId) {
-        Logger.i(TAG, "[WEBVIEW] takePicture : args[" + args + "], cbId[" + cbId + "]");
+        Timber.i("[WEBVIEW] takePicture : args[" + args + "], cbId[" + cbId + "]");
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
-        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         // check permission
@@ -56,7 +60,7 @@ public class PluginCamera implements Plugin {
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
+                        Timber.i("[WEBVIEW] onPermissionGranted()");
                         try {
                             AndroidBridge.setCallbackJSFunctionName(RequestCode.REQUEST_TAKE_A_PICTURE, cbId);
 
@@ -70,14 +74,14 @@ public class PluginCamera implements Plugin {
                             Uri output = UriUtil.fromFile(webview.getContext(), file);
 
                             if (!FileUtil.delete(file)) {
-                                Logger.e(TAG, "[WEBVIEW] delete failed...");
+                                Timber.e("[WEBVIEW] delete failed...");
                             }
 
                             AndroidBridge.setExtraOutput(file);
                             IntentUtil.imageCaptureWithExtraOutput(webview.getContext(), RequestCode.REQUEST_TAKE_A_PICTURE, output);
 
                         } catch (Exception e) {
-                            Logger.e(TAG, e);
+                            Timber.e(e);
                             DialogBuilder.with(webview.getContext())
                                     .setMessage(e.toString())
                                     .show();
@@ -86,12 +90,12 @@ public class PluginCamera implements Plugin {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
+                        Timber.w("[WEBVIEW] onPermissionDenied()...%s", deniedPermissions.toString());
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                        Timber.e("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                     }
                 })
                 .check();
@@ -103,14 +107,14 @@ public class PluginCamera implements Plugin {
 
     //++ [[START] Take a picture]
     public static void onActivityResultTakePicture(WebView webview, int requestCode, int resultCode, Intent data) {
-        Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
+        Timber.i("[WEBVIEW] onActivityResultTakePicture(): requestCode[" + requestCode + "]  resultCode[" + resultCode + "] data[" + data + "]");
         if (Activity.RESULT_OK != resultCode) {
             return;
         }
 
         try {
             if (null != AndroidBridge.getExtraOutput(false)) {
-                Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
+                Timber.i("[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with ExtraOutput)");
                 File documentFile = AndroidBridge.getExtraOutput(true);
                 Uri uri = UriUtil.fromFile(webview.getContext(), documentFile);
 
@@ -125,18 +129,18 @@ public class PluginCamera implements Plugin {
                     if (EnvUtil.isFilesDir(webview.getContext(), documentFile)) {
                         if (null != uri) {
                             if (!documentFile.delete()) {
-                                Logger.e(TAG, "delete failed...");
+                                Timber.e("delete failed...");
                             }
                         }
                     }
                 } catch (FileNotFoundException e) {
-                    Logger.e(TAG, e);
+                    Timber.e(e);
                 }
 
                 AndroidBridge.callJSFunction(webview, AndroidBridge.getCallbackJSFunctionName(requestCode), StringUtil.nvl(uri, ""), base64String);
             }
             else if (null != data) {
-                Logger.i(TAG, "[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
+                Timber.i("[WEBVIEW] onActivityResultTakePicture(): REQUEST_CODE_TAKE_A_PICTURE (with Intent)");
                 String params = null;
                 Bitmap bitmap = null;
                 if ("inline-data".equals(data.getAction())) {

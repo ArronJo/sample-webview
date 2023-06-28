@@ -17,7 +17,6 @@ import android.webkit.WebViewClient;
 
 import com.snc.sample.webview.BuildConfig;
 import com.snc.zero.dialog.DialogBuilder;
-import com.snc.zero.log.Logger;
 import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.IntentUtil;
 
@@ -27,6 +26,7 @@ import java.net.URISyntaxException;
 
 import androidx.annotation.RequiresApi;
 import androidx.webkit.WebViewAssetLoader;
+import timber.log.Timber;
 
 /**
  * Custom WebView Client
@@ -35,8 +35,6 @@ import androidx.webkit.WebViewAssetLoader;
  * @since 2018
  */
 public class CSWebViewClient extends WebViewClient {
-    private static final String TAG = CSWebViewClient.class.getSimpleName();
-
     private final WebViewAssetLoader assetLoader;
 
     public CSWebViewClient(Context context) {
@@ -54,7 +52,7 @@ public class CSWebViewClient extends WebViewClient {
     @Deprecated
     @SuppressWarnings({"unused", "RedundantSuppression"})   // use the old one for compatibility with all API levels.
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 20 below):  url[" + url + "]");
+        Timber.d("[WEBVIEW] shouldInterceptRequest(API 20 below):  url[" + url + "]");
 
         Uri uri = Uri.parse(url);
 
@@ -72,7 +70,7 @@ public class CSWebViewClient extends WebViewClient {
     @Override
     @RequiresApi(21)
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        Logger.d(TAG, "[WEBVIEW] shouldInterceptRequest(API 21 after):  url[" + request.getUrl() + "]");
+        Timber.d("[WEBVIEW] shouldInterceptRequest(API 21 after):  url[" + request.getUrl() + "]");
 
         Uri uri = request.getUrl();
 
@@ -92,7 +90,7 @@ public class CSWebViewClient extends WebViewClient {
             File folder = EnvUtil.getInternalFilesDir(context, uri.getAuthority());
             File file = new File(folder, uri.getPath());
             if (!file.exists()) {
-                Logger.e(TAG, "[WEBVIEW] executeCustomScheme: not exist file = " + file);
+                Timber.e("[WEBVIEW] executeCustomScheme: not exist file = %s", file);
                 return null;
             }
             WebResourceResponse res = new WebResourceResponse(
@@ -100,24 +98,24 @@ public class CSWebViewClient extends WebViewClient {
                     "utf-8",
                     new FileInputStream(file)
             );
-            Logger.i(TAG, "[WEBVIEW] executeCustomScheme: new WebResourceResponse = " + res);
+            Timber.i("[WEBVIEW] executeCustomScheme: new WebResourceResponse = %s", res);
             return res;
         } catch (Exception e) {
-            Logger.e(TAG, "Exception", e);
+            Timber.e(e, "Exception");
         }
         return null;
     }
 
-    @Override
-    public void onLoadResource(WebView view, final String url) {
-        Logger.d(TAG, "[WEBVIEW] onLoadResource():  url[" + url + "]");
-        super.onLoadResource(view, url);
-    }
+    //@Override
+    //public void onLoadResource(WebView view, final String url) {
+    //    Timber.d("[WEBVIEW] onLoadResource():  url[" + url + "]");
+    //    super.onLoadResource(view, url);
+    //}
 
     @Deprecated
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Logger.i(TAG, "[WEBVIEW] shouldOverrideUrlLoading() API 23 below: " + url);
+        Timber.i("[WEBVIEW] shouldOverrideUrlLoading() API 23 below: %s", url);
 
         if (url.startsWith("http://") || url.startsWith("https://")) {
             view.loadUrl(url);
@@ -129,7 +127,7 @@ public class CSWebViewClient extends WebViewClient {
     @TargetApi(Build.VERSION_CODES.N)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        Logger.i(TAG, "[WEBVIEW] shouldOverrideUrlLoading() API 24 after: " + request.getUrl());
+        Timber.i("[WEBVIEW] shouldOverrideUrlLoading() API 24 after: %s", request.getUrl());
 
         String url = Uri.decode(request.getUrl().toString());
 
@@ -155,9 +153,9 @@ public class CSWebViewClient extends WebViewClient {
                 IntentUtil.intentScheme(view.getContext(), url);
                 return true;
             } catch (URISyntaxException e) {
-                Logger.e(TAG, e);
+                Timber.e(e);
             } catch (ActivityNotFoundException e) {
-                Logger.e(TAG, e);
+                Timber.e(e);
             }
         }
 
@@ -165,7 +163,7 @@ public class CSWebViewClient extends WebViewClient {
             IntentUtil.view(view.getContext(), Uri.parse(url));
             return true;
         } catch (ActivityNotFoundException e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
 
         return false;
@@ -173,20 +171,20 @@ public class CSWebViewClient extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        Logger.i(TAG, "[WEBVIEW] onPageStarted(): " + url);
+        Timber.i("[WEBVIEW] onPageStarted(): %s", url);
         super.onPageStarted(view, url, favicon);
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        Logger.i(TAG, "[WEBVIEW] onPageFinished(): " + url);
+        Timber.i("[WEBVIEW] onPageFinished(): %s", url);
         super.onPageFinished(view, url);
     }
 
     @SuppressLint("WebViewClientOnReceivedSslError")
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        Logger.e(TAG, "[WEBVIEW] onReceivedSslError(): url[" + view.getUrl() + "],  handler[" + handler + "],  error[" + error + "]");
+        Timber.e("[WEBVIEW] onReceivedSslError(): url[" + view.getUrl() + "],  handler[" + handler + "],  error[" + error + "]");
 
         if (SslError.SSL_NOTYETVALID == error.getPrimaryError()) {
             handler.proceed();
@@ -228,14 +226,14 @@ public class CSWebViewClient extends WebViewClient {
             buff.append("\n  reasonPhrase[").append(errorResponse.getReasonPhrase()).append("]  ");
         }
 
-        Logger.e(TAG, "onReceivedHttpError : url[" + url + "],  errorResponse[" + buff + "]");
+        Timber.e("onReceivedHttpError : url[" + url + "],  errorResponse[" + buff + "]");
         super.onReceivedHttpError(view, request, errorResponse);
     }
 
     @Deprecated
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-        Logger.e(TAG, "[WEBVIEW] onReceivedError(): url[" + view.getUrl() + "],  errorCode[" + errorCode + "],  description[" + description + "],  failingUrl[" + failingUrl + "]");
+        Timber.e("[WEBVIEW] onReceivedError(): url[" + view.getUrl() + "],  errorCode[" + errorCode + "],  description[" + description + "],  failingUrl[" + failingUrl + "]");
 
         boolean forwardErrorPage = ERROR_BAD_URL == errorCode || ERROR_FILE == errorCode;
         onReceivedError(view, errorCode, description, failingUrl, forwardErrorPage);
@@ -244,7 +242,7 @@ public class CSWebViewClient extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-        Logger.e(TAG, "[WEBVIEW] onReceivedError(VERSION=M): url[" + view.getUrl() + "],  errorCode[" + error.getErrorCode() + "],  description[" + error.getDescription() + "]");
+        Timber.e("[WEBVIEW] onReceivedError(VERSION=M): url[" + view.getUrl() + "],  errorCode[" + error.getErrorCode() + "],  description[" + error.getDescription() + "]");
 
         int errorCode = error.getErrorCode();
         String description = error.getDescription().toString();

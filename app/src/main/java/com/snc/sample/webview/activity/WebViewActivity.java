@@ -17,7 +17,6 @@ import com.snc.sample.webview.webview.WebViewHelper;
 import com.snc.zero.activity.BaseActivity;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.keyevent.BackKeyShutdown;
-import com.snc.zero.log.Logger;
 import com.snc.zero.requetcode.RequestCode;
 import com.snc.zero.util.AssetUtil;
 import com.snc.zero.util.EnvUtil;
@@ -30,6 +29,8 @@ import com.snc.zero.webview.CSWebViewClient;
 
 import java.io.File;
 
+import timber.log.Timber;
+
 /**
  * WebView Activity
  *
@@ -37,8 +38,6 @@ import java.io.File;
  * @since 2018
  */
 public class WebViewActivity extends BaseActivity {
-    private static final String TAG = WebViewActivity.class.getSimpleName();
-
     private WebView webview;
     private CSWebChromeClient webChromeClient;
     private CSFileChooserListener webviewFileChooser;
@@ -91,7 +90,7 @@ public class WebViewActivity extends BaseActivity {
             ua += "." + PackageUtil.getPackageVersionCode(this);
             this.webview.getSettings().setUserAgentString(ua);
         } catch (PackageManager.NameNotFoundException e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
 
         // set webViewClient
@@ -117,7 +116,8 @@ public class WebViewActivity extends BaseActivity {
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/image.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/image-provider/image-provider.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
-        WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
+        WebViewHelper.loadUrl(this.webview, "https://talk.onsure.co.kr/front/v1/jsp/view/chatWindow.jsp");
     }
 
     @Override
@@ -130,14 +130,14 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_BACK == keyCode) {
-            Logger.i(TAG, "[ACTIVITY] onKeyDown(): WebView isVideoPlayingInFullscreen = " + this.webChromeClient.isVideoPlayingInFullscreen());
+            Timber.i("[ACTIVITY] onKeyDown(): WebView isVideoPlayingInFullscreen = %s", this.webChromeClient.isVideoPlayingInFullscreen());
             if (this.webChromeClient.isVideoPlayingInFullscreen()) {
                 return false;
             }
 
             // multiple windows go back
             if (null != this.webChromeClient.getNewWebView()) {
-                Logger.i(TAG, "[ACTIVITY] onKeyDown(): NewWebView canGoBack = " + this.webChromeClient.getNewWebView().canGoBack());
+                Timber.i("[ACTIVITY] onKeyDown(): NewWebView canGoBack = %s", this.webChromeClient.getNewWebView().canGoBack());
                 if (this.webChromeClient.getNewWebView().canGoBack()) {
                     this.webChromeClient.getNewWebView().goBack();
                     return true;
@@ -147,7 +147,7 @@ public class WebViewActivity extends BaseActivity {
                 return true;
             }
 
-            Logger.i(TAG, "[ACTIVITY] onKeyDown(): WebView canGoBack = " + this.webview.canGoBack());
+            Timber.i("[ACTIVITY] onKeyDown(): WebView canGoBack = %s", this.webview.canGoBack());
             // go back
             if (this.webview.canGoBack()) {
                 this.webview.goBack();
@@ -167,9 +167,9 @@ public class WebViewActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (null == data) {
-            Logger.i(TAG, "[ACTIVITY] onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[null]");
+            Timber.i("[ACTIVITY] onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[null]");
         } else {
-            Logger.i(TAG, "[ACTIVITY] onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[" +
+            Timber.i("[ACTIVITY] onActivityResult(): requestCode[" + requestCode + "],  resultCode[" + resultCode + "],  data[" +
                     "\n  action = " + data.getAction() +
                     "\n  scheme = " + data.getScheme() +
                     "\n  data = " + data.getData() +
@@ -180,18 +180,18 @@ public class WebViewActivity extends BaseActivity {
 
         //++ [[START] File Chooser]
         if (RequestCode.REQUEST_FILE_CHOOSER_NORMAL == requestCode) {
-            Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_NORMAL");
+            Timber.i("[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_NORMAL");
             this.webviewFileChooser.onActivityResultFileChooserNormal(requestCode, resultCode, data);
         }
         else if (RequestCode.REQUEST_FILE_CHOOSER_LOLLIPOP == requestCode) {
-            Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_LOLLIPOP");
+            Timber.i("[ACTIVITY] onActivityResult(): REQUEST_FILE_CHOOSER_LOLLIPOP");
             this.webviewFileChooser.onActivityResultFileChooserLollipop(requestCode, resultCode, data);
         }
         //-- [[E N D] File Chooser]
 
         //++ [[START] Take a picture]
         if (RequestCode.REQUEST_TAKE_A_PICTURE == requestCode) {
-            Logger.i(TAG, "[ACTIVITY] onActivityResult(): REQUEST_TAKE_A_PICTURE");
+            Timber.i("[ACTIVITY] onActivityResult(): REQUEST_TAKE_A_PICTURE");
             PluginCamera.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
             //AndroidBridgeProcessActivityResult.onActivityResultTakePicture(this.webview, requestCode, resultCode, data);
         }

@@ -8,7 +8,6 @@ import android.webkit.WebView;
 
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.json.JSONHelper;
-import com.snc.zero.log.Logger;
 import com.snc.zero.util.StringUtil;
 
 import org.json.JSONObject;
@@ -19,6 +18,8 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
  * WebView JavaScript Interface Bridge
  *
@@ -26,8 +27,6 @@ import java.util.Map;
  * @since 2018
  */
 public class AndroidBridge {
-    private static final String TAG = AndroidBridge.class.getSimpleName();
-
     private static final String SCHEME_BRIDGE = "native";
 
     // Web -> Native
@@ -51,7 +50,7 @@ public class AndroidBridge {
     // ex) "native://callToNative?" + btoa(encodeURIComponent(JSON.stringify({ command:\"apiSample\", args{max:1,min:1}, callback:\"callbackNativeResponse\" })))
     @JavascriptInterface
     public boolean callNativeMethod(String urlString) {
-        Logger.i(TAG, "[WEBVIEW] callNativeMethod: " + urlString);
+        Timber.i("[WEBVIEW] callNativeMethod: %s", urlString);
         try {
             Uri uri = Uri.parse(urlString);
             JSONObject jsonObject = parse(uri);
@@ -69,7 +68,7 @@ public class AndroidBridge {
             return AndroidBridgePlugin.execute(this.webView, jsonObject);
 
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
 
             DialogBuilder.with(webView.getContext())
                     .setMessage(e.toString())
@@ -79,7 +78,7 @@ public class AndroidBridge {
     }
 
     private JSONObject parse(Uri uri) throws IOException {
-        Logger.i(TAG, "[WEBVIEW] callNativeMethod: parse() : uri = " + uri);
+        Timber.i("[WEBVIEW] callNativeMethod: parse() : uri = %s", uri);
 
         if (!SCHEME_BRIDGE.equals(uri.getScheme())) {
             throw new IOException("\"" + uri.getScheme() + "\" scheme is not supported.");
@@ -170,7 +169,7 @@ public class AndroidBridge {
 
         // Android 4.4 (KitKat, 19) or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.evaluateJavascript(jsString, value -> Logger.i(TAG, "[WEBVIEW] onReceiveValue: " + value));
+            webView.evaluateJavascript(jsString, value -> Timber.i("[WEBVIEW] onReceiveValue: " + value));
         }
         // Android 4.3 or lower (Jelly Bean, 18)
         else {

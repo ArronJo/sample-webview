@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.snc.zero.log.Logger;
+import timber.log.Timber;
 
 /**
  * Dialog Helper
@@ -41,7 +41,7 @@ public class DialogHelper {
             dialog.setCanceledOnTouchOutside(false);
 
         } catch (android.view.WindowManager.BadTokenException e) {
-            Logger.e(activity.getClass().getSimpleName(), e);
+            Timber.e(e);
         }
     }
 
@@ -58,7 +58,7 @@ public class DialogHelper {
             dialog.setCanceledOnTouchOutside(false);
 
         } catch (android.view.WindowManager.BadTokenException e) {
-            Logger.e(activity.getClass().getSimpleName(), e);
+            Timber.e(e);
         }
     }
 
@@ -85,7 +85,7 @@ public class DialogHelper {
             toast.show();
 
         } catch (Exception e) {
-            Logger.w(context.getClass().getSimpleName(), e);
+            Timber.w(e);
         }
     }
 

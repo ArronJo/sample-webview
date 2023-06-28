@@ -1,9 +1,9 @@
 package com.snc.zero.util;
 
-import com.snc.zero.log.Logger;
-
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import timber.log.Timber;
 
 /**
  * IO Utilities
@@ -12,7 +12,6 @@ import java.io.OutputStream;
  * @since 2016
  */
 public class IOUtil {
-    private static final String TAG = IOUtil.class.getSimpleName();
 
     public static void closeQuietly(InputStream input) {
         try {
@@ -20,7 +19,7 @@ public class IOUtil {
                 input.close();
             }
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
     }
 
@@ -30,14 +29,14 @@ public class IOUtil {
                 output.flush();
             }
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
         try {
             if (null != output) {
                 output.close();
             }
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
     }
 

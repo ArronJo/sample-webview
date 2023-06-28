@@ -23,13 +23,14 @@ import com.snc.sample.webview.webview.WebViewHelper;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.permission.RPermissionListener;
 import com.snc.sample.webview.R;
-import com.snc.zero.log.Logger;
 import com.snc.zero.permission.RPermission;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.webview.listener.FileChooserListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Custom WebChrome Client
@@ -38,8 +39,6 @@ import java.util.List;
  * @since 2018
  */
 public class CSWebChromeClient extends WebChromeClient {
-    private static final String TAG = CSWebChromeClient.class.getSimpleName();
-
     private final Context context;
     private FileChooserListener fileChooserListener;
 
@@ -57,18 +56,20 @@ public class CSWebChromeClient extends WebChromeClient {
     // For Android 4.1+
     @SuppressWarnings({"unused", "RedundantSuppression"})
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 4.1+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]  capture[" + capture + "]");
+        Timber.i("[WEBVIEW] openFileChooser()  For Android 4.1+ \n:: uploadMsg[" + uploadMsg + "]  acceptType[" + acceptType + "]  capture[" + capture + "]");
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
-        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
 
         RPermission.with(this.context)
                 .setPermissions(permissions)
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
+                        Timber.i("[WEBVIEW] onPermissionGranted()");
 
                         if (null != fileChooserListener) {
                             fileChooserListener.onOpenFileChooserNormal(null, uploadMsg, acceptType);
@@ -77,12 +78,12 @@ public class CSWebChromeClient extends WebChromeClient {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
+                        Timber.w("[WEBVIEW] onPermissionDenied()...%s", deniedPermissions.toString());
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                        Timber.w("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                     }
                 })
                 .check();
@@ -90,18 +91,20 @@ public class CSWebChromeClient extends WebChromeClient {
 
     // For Android 5.0+
     public boolean onShowFileChooser(final WebView webView, final ValueCallback<Uri[]> filePathCallback, final WebChromeClient.FileChooserParams fileChooserParams) {
-        Logger.i(TAG, "[WEBVIEW] openFileChooser()  For Android 5.0+ \n:: filePathCallback[" + filePathCallback + "]  fileChooserParams[" + fileChooserParams + "]");
+        Timber.i("[WEBVIEW] openFileChooser()  For Android 5.0+ \n:: filePathCallback[" + filePathCallback + "]  fileChooserParams[" + fileChooserParams + "]");
 
         List<String> permissions = new ArrayList<>();
         permissions.add(Manifest.permission.CAMERA);
-        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
 
         RPermission.with(this.context)
                 .setPermissions(permissions)
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
+                        Timber.i("[WEBVIEW] onPermissionGranted()");
 
                         String[] acceptType;
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -117,12 +120,12 @@ public class CSWebChromeClient extends WebChromeClient {
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
+                        Timber.w("[WEBVIEW] onPermissionDenied()...%s", deniedPermissions.toString());
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                        Timber.w("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                     }
                 })
                 .check();
@@ -134,7 +137,7 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Geolocation, Record Video/Audio]
     @Override
     public void onPermissionRequest(final PermissionRequest request) {
-        Logger.i(TAG, "[WEBVIEW] onPermissionRequest: request[" + request + "]");
+        Timber.i("[WEBVIEW] onPermissionRequest: request[" + request + "]");
 
         // RECORD AUDIO, RECORD VIDEO
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -151,19 +154,19 @@ public class CSWebChromeClient extends WebChromeClient {
                                 .setPermissionListener(new RPermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
-                                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Timber.i("[WEBVIEW] onPermissionGranted() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.grant(request.getResources());
                                     }
 
                                     @Override
                                     public void onPermissionDenied(List<String> deniedPermissions) {
-                                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Timber.w("[WEBVIEW] onPermissionDenied() : android.webkit.resource.AUDIO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.deny();
                                     }
 
                                     @Override
                                     public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                                        Timber.w("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                                         request.deny();
                                     }
                                 })
@@ -181,19 +184,19 @@ public class CSWebChromeClient extends WebChromeClient {
                                 .setPermissionListener(new RPermissionListener() {
                                     @Override
                                     public void onPermissionGranted() {
-                                        Logger.i(TAG, "[WEBVIEW] onPermissionGranted() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Timber.i("[WEBVIEW] onPermissionGranted() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.grant(request.getResources());
                                     }
 
                                     @Override
                                     public void onPermissionDenied(List<String> deniedPermissions) {
-                                        Logger.e(TAG, "[WEBVIEW] onPermissionDenied() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
+                                        Timber.w("[WEBVIEW] onPermissionDenied() : android.webkit.resource.VIDEO_CAPTURE :: origin[" + origin + "] request[" + request + "]");
                                         request.deny();
                                     }
 
                                     @Override
                                     public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                                        Timber.w("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                                         request.deny();
                                     }
                                 })
@@ -208,7 +211,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public void onPermissionRequestCanceled(PermissionRequest request) {
-        Logger.i(TAG, "[WEBVIEW] onPermissionRequestCanceled: request[" + request + "]");
+        Timber.i("[WEBVIEW] onPermissionRequestCanceled: request[" + request + "]");
         super.onPermissionRequestCanceled(request);
     }
     //-- [[E N D] Geolocation, Record Video/Audio]
@@ -217,13 +220,13 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Geolocation]
     @Override
     public void onGeolocationPermissionsHidePrompt() {
-        Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsHidePrompt");
+        Timber.i("[WEBVIEW] onGeolocationPermissionsHidePrompt");
         super.onGeolocationPermissionsHidePrompt();
     }
 
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-        Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
+        Timber.i("[WEBVIEW] onGeolocationPermissionsShowPrompt : origin[" + origin + "] callback[" + callback + "]");
 
         RPermission.with(this.context)
                 .setPermissions(
@@ -234,19 +237,19 @@ public class CSWebChromeClient extends WebChromeClient {
                 .setPermissionListener(new RPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Logger.i(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionGranted() : origin[" + origin + "] callback[" + callback + "]");
+                        Timber.i("[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionGranted() : origin[" + origin + "] callback[" + callback + "]");
                         callback.invoke(origin, true, false);
                     }
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionDenied() : origin[" + origin + "] callback[" + callback + "]");
+                        Timber.w("[WEBVIEW] onGeolocationPermissionsShowPrompt : onPermissionDenied() : origin[" + origin + "] callback[" + callback + "]");
                         callback.invoke(origin, false, false);
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                        Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                        Timber.w("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                         callback.invoke(origin, false, false);
                     }
                 })
@@ -260,7 +263,7 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Javascript Alert]
     @Override
     public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-        Logger.i(TAG, "[WEBVIEW] onJsAlert(): url[" + view.getUrl() + "], message[" + message + "], JsResult[" + result + "]");
+        Timber.i("[WEBVIEW] onJsAlert(): url[" + view.getUrl() + "], message[" + message + "], JsResult[" + result + "]");
 
         //++
         // custom dialog
@@ -283,7 +286,7 @@ public class CSWebChromeClient extends WebChromeClient {
     //++ [[START] Web Console Log]
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        Logger.i(TAG, "[WEBVIEW] " + consoleMessage.messageLevel() + ":CONSOLE] \"" + consoleMessage.message() + "\", source: " + consoleMessage.sourceId() + " (" + consoleMessage.lineNumber() + ")");
+        Timber.i("[WEBVIEW] " + consoleMessage.messageLevel() + ":CONSOLE] \"" + consoleMessage.message() + "\", source: " + consoleMessage.sourceId() + " (" + consoleMessage.lineNumber() + ")");
         return true;    // remove chromium log
         //return super.onConsoleMessage(consoleMessage);
     }
@@ -294,7 +297,7 @@ public class CSWebChromeClient extends WebChromeClient {
     @Override
     public void onProgressChanged(WebView view, int progress) {
         super.onProgressChanged(view, progress);
-        Logger.i(TAG, "[WEBVIEW] onProgressChanged(): " + progress + "%,  url[" + view.getUrl() + "]");
+        Timber.i("[WEBVIEW] onProgressChanged(): %s,  url[%s]", progress, view.getUrl());
 
         View v = findProgressBarInTopArea(view);
         if (null != v) {
@@ -333,7 +336,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
-        Logger.i(TAG, "[WEBVIEW] onShowCustomView() - view[" + view + "], callback[" + callback + "]");
+        Timber.i("[WEBVIEW] onShowCustomView() - view[" + view + "], callback[" + callback + "]");
 
         // background
         if (null == fullscreenContainer) {
@@ -350,7 +353,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
         customViewCallback = callback;
 
-        Logger.i(TAG, "[WEBVIEW] onShowCustomView() - view class name = " + view.getClass().getName());
+        Timber.i("[WEBVIEW] onShowCustomView() - view class name = %s", view.getClass().getName());
 
         // add video view
         fullscreenContainer.addView(view, new ViewGroup.LayoutParams(
@@ -363,7 +366,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public void onHideCustomView() {
-        Logger.i(TAG, "[WEBVIEW] onHideCustomView()");
+        Timber.i("[WEBVIEW] onHideCustomView()");
         super.onHideCustomView();
 
         if (null != fullscreenContainer) {
@@ -401,7 +404,7 @@ public class CSWebChromeClient extends WebChromeClient {
 
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-        Logger.i(TAG, "[WEBVIEW] onCreateWindow():  view[" + view + "]  isDialog[" + isDialog + "]  isUserGesture[" + isUserGesture + "]  resultMsg[" + resultMsg + "]");
+        Timber.i("[WEBVIEW] onCreateWindow():  view[" + view + "]  isDialog[" + isDialog + "]  isUserGesture[" + isUserGesture + "]  resultMsg[" + resultMsg + "]");
 
         this.newWebView = WebViewHelper.addWebView(view.getContext(), view);
         view.bringChildToFront(this.newWebView);
@@ -428,7 +431,7 @@ public class CSWebChromeClient extends WebChromeClient {
     public void onCloseWindow(WebView window) {
         super.onCloseWindow(window);
         this.newWebView = null;
-        Logger.i(TAG, "[WEBVIEW] onCloseWindow()");
+        Timber.i("[WEBVIEW] onCloseWindow()");
     }
     //-- [[E N D] Support Multiple Windows]
 

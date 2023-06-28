@@ -11,7 +11,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.snc.sample.webview.BuildConfig;
-import com.snc.zero.log.Logger;
 import com.snc.zero.permission.RPermissionListener;
 import com.snc.zero.permission.RPermission;
 import com.snc.zero.util.PackageUtil;
@@ -21,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
  * WebView Helper
  *
@@ -28,8 +29,6 @@ import java.util.Map;
  * @since 2018
  */
 public class WebViewHelper {
-    private static final String TAG = WebViewHelper.class.getSimpleName();
-
     private static final String SCHEME_HTTP = "http://";
     private static final String SCHEME_HTTPS = "https://";
     private static final String SCHEME_FILE = "file://";
@@ -127,7 +126,7 @@ public class WebViewHelper {
             ua += "." + PackageUtil.getPackageVersionCode(webView.getContext());
             return ua;
         } catch (PackageManager.NameNotFoundException e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
         return ua;
     }
@@ -158,26 +157,28 @@ public class WebViewHelper {
         }
         else if (uriString.startsWith(SCHEME_FILE)) {
             List<String> permissions = new ArrayList<>();
-            // Dangerous Permission
-            permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                // Dangerous Permission
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
 
             RPermission.with(webView.getContext())
                     .setPermissions(permissions)
                     .setPermissionListener(new RPermissionListener() {
                         @Override
                         public void onPermissionGranted() {
-                            Logger.i(TAG, "[WEBVIEW] onPermissionGranted()");
+                            Timber.i("[WEBVIEW] onPermissionGranted()");
                             webView.loadUrl(uriString, extraHeaders);
                         }
 
                         @Override
                         public void onPermissionDenied(List<String> deniedPermissions) {
-                            Logger.e(TAG, "[WEBVIEW] onPermissionDenied()..." + deniedPermissions.toString());
+                            Timber.w("[WEBVIEW] onPermissionDenied()...%s", deniedPermissions.toString());
                         }
 
                         @Override
                         public void onPermissionRationaleShouldBeShown(List<String> deniedPermissions) {
-                            Logger.e(TAG, "[WEBVIEW] onPermissionRationaleShouldBeShown()..." + deniedPermissions.toString());
+                            Timber.w("[WEBVIEW] onPermissionRationaleShouldBeShown()...%s", deniedPermissions.toString());
                         }
                     })
                     .check();

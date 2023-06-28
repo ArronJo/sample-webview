@@ -7,12 +7,13 @@ import com.snc.sample.webview.bridge.plugin.PluginCamera;
 import com.snc.sample.webview.bridge.plugin.interfaces.Plugin;
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.json.JSONHelper;
-import com.snc.zero.log.Logger;
 import com.snc.zero.reflect.ReflectHelper;
 
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
+
+import timber.log.Timber;
 
 /**
  * WebView JavaScript Interface Process
@@ -21,7 +22,6 @@ import java.lang.reflect.Method;
  * @since 2022
  */
 public class AndroidBridgePlugin {
-    private static final String TAG = AndroidBridgePlugin.class.getSimpleName();
 
     /////////////////////////////////////////////////
     // Plugins
@@ -41,7 +41,7 @@ public class AndroidBridgePlugin {
         final String callback = JSONHelper.getString(jsonObject, "callback", "");
         final String cbId = JSONHelper.getString(jsonObject, "cbId", "");
 
-        Logger.i(TAG, "[WEBVIEW] callNativeMethod: execute() :  plugin = " + pluginName + ", method = " + methodName + ",  args = " + args + ",  callback = " + callback);
+        Timber.i("[WEBVIEW] callNativeMethod: execute() :  plugin = " + pluginName + ", method = " + methodName + ",  args = " + args + ",  callback = " + callback);
 
         try {
             Plugin plugin = null;
@@ -53,13 +53,13 @@ public class AndroidBridgePlugin {
             }
 
             if (null == plugin) {
-                Logger.e(TAG, "[WEBVIEW] plugin is null");
+                Timber.e("[WEBVIEW] plugin is null");
                 throw new Exception("plugin is null");
             }
 
             Method method = ReflectHelper.getMethod(plugin, methodName);
             if (null == method) {
-                Logger.e(TAG, "[WEBVIEW] method is null");
+                Timber.e("[WEBVIEW] method is null");
                 throw new Exception("method is null");
             }
 
@@ -67,7 +67,7 @@ public class AndroidBridgePlugin {
             return true;
 
         } catch (Exception e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
             DialogBuilder.with(webView.getContext())
                     .setMessage(e.toString())
                     .show();

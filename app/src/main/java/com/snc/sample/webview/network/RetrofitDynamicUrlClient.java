@@ -2,8 +2,6 @@ package com.snc.sample.webview.network;
 
 import android.net.Uri;
 
-import com.snc.zero.log.Logger;
-
 import org.jetbrains.annotations.NotNull;
 
 import okhttp3.ResponseBody;
@@ -11,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 /**
  * Retrofit Client
@@ -19,7 +18,6 @@ import retrofit2.Retrofit;
  * @since 2020
  */
 public class RetrofitDynamicUrlClient {
-    private static final String TAG = RetrofitDynamicUrlClient.class.getSimpleName();
 
     public static void get(String urlString, Callback<ResponseBody> listener) {
         Uri uri = Uri.parse(filter(urlString));
@@ -30,7 +28,7 @@ public class RetrofitDynamicUrlClient {
 
         DynamicUrlService service = retrofit.create(DynamicUrlService.class);
 
-        Logger.i(TAG, "[Retrofit GET] ", "Request = " + urlString);
+        Timber.i("[Retrofit GET] Request = %s", urlString);
         Call<ResponseBody> call = service.get(urlString);
 
         callAsync(call, listener);
@@ -40,7 +38,7 @@ public class RetrofitDynamicUrlClient {
         call.enqueue(new Callback<T>() {
             @Override
             public void onResponse(@NotNull Call<T> call, @NotNull Response<T> response) {
-                Logger.i(TAG, "[Retrofit] ", "onResponse() = response code is " + response.code());
+                Timber.i("[Retrofit] onResponse() = response code is %s", response.code());
 
                 if (null != listener) {
                     listener.onResponse(call, response);
@@ -49,7 +47,7 @@ public class RetrofitDynamicUrlClient {
 
             @Override
             public void onFailure(@NotNull Call<T> call, @NotNull Throwable t) {
-                Logger.e(TAG, "[Retrofit] ", "onFailure() = " + t);
+                Timber.e(t);
 
                 if (null != listener) {
                     listener.onFailure(call, t);

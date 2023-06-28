@@ -2,10 +2,10 @@ package com.snc.zero.json;
 
 import android.text.TextUtils;
 
-import com.snc.zero.log.Logger;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import timber.log.Timber;
 
 /**
  * JSONObject Helper
@@ -14,7 +14,6 @@ import org.json.JSONObject;
  * @since 2018
  */
 public class JSONHelper {
-    private static final String TAG = JSONHelper.class.getSimpleName();
 
     public static String getString(JSONObject jsonObject, String key, String defaultValue) {
         if (isNull(jsonObject, key) || !has(jsonObject, key)) {
@@ -35,7 +34,7 @@ public class JSONHelper {
         try {
             jsonObject.put(key, value);
         } catch (JSONException e) {
-            Logger.e(TAG, e);
+            Timber.e(e);
         }
     }
 

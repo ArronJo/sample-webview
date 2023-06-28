@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.snc.zero.log.Logger;
 import com.snc.zero.util.StringUtil;
+
+import timber.log.Timber;
 
 /**
  * Dialog Helper
@@ -21,8 +22,6 @@ import com.snc.zero.util.StringUtil;
  * @since 2019
  */
 public class DialogBuilder {
-	private static final String TAG = DialogBuilder.class.getSimpleName();
-
 	public static DialogBuilder with(Context context) {
 		return new DialogBuilder((Activity) context);
 	}
@@ -101,14 +100,14 @@ public class DialogBuilder {
 			toast.show();
 
 		} catch (Exception e) {
-			Logger.w(TAG, e);
+			Timber.w(e);
 		}
 	}
 
 	public void show() {
 		try {
 			if (activity.isFinishing()) {
-				Logger.e(TAG, "activity is finished.");
+				Timber.e("activity is finished.");
 				return;
 			}
 
@@ -153,7 +152,7 @@ public class DialogBuilder {
 			dialog.setCanceledOnTouchOutside(false);
 
 		} catch (android.view.WindowManager.BadTokenException e) {
-			Logger.e(activity.getClass().getSimpleName(), e);
+			Timber.e(e);
 		}
 	}
 
