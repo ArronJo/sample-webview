@@ -39,7 +39,7 @@ public class FileUtil {
     }
 
     public static String newFilename(String extension) {
-        String name = DateTimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss");
+        String name = DateTimeFormat.format(new Date(), "yyyyMMdd_HHmmss");
         return name + "."  + extension;
     }
 

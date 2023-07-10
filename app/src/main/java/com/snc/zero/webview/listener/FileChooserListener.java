@@ -16,6 +16,6 @@ public interface FileChooserListener {
     void onOpenFileChooserNormal(WebView webView, ValueCallback<Uri> filePathCallback, String acceptType);
 
     @SuppressWarnings({"unused", "RedundantSuppression"})
-    void onOpenFileChooserLollipop(WebView webView, ValueCallback<Uri[]> filePathCallback, String[] acceptType);
+    void onOpenFileChooserLollipop(WebView webView, ValueCallback<Uri[]> filePathCallback, String[] acceptTypes);
 
 }

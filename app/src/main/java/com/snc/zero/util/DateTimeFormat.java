@@ -10,9 +10,9 @@ import java.util.Locale;
  * @author mcharima5@gmail.com
  * @since 2018
  */
-public class DateTimeUtil {
+public class DateTimeFormat {
 
-    public static String formatDate(Date date, String pattern) {
+    public static String format(Date date, String pattern) {
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, Locale.getDefault());
         return formatter.format(date);
     }

@@ -14,7 +14,7 @@ import android.webkit.WebView;
 
 import com.snc.zero.dialog.DialogBuilder;
 import com.snc.zero.requetcode.RequestCode;
-import com.snc.zero.util.DateTimeUtil;
+import com.snc.zero.util.DateTimeFormat;
 import com.snc.zero.util.EnvUtil;
 import com.snc.zero.util.StringUtil;
 import com.snc.zero.util.UriUtil;
@@ -69,9 +69,9 @@ public class CSFileChooserListener implements FileChooserListener {
 
     @SuppressWarnings({"unused", "RedundantSuppression"})
     @Override
-    public void onOpenFileChooserLollipop(WebView webView, ValueCallback<Uri[]> filePathCallback, String[] acceptType) {
+    public void onOpenFileChooserLollipop(WebView webView, ValueCallback<Uri[]> filePathCallback, String[] acceptTypes) {
         this.filePathCallbackLollipop = filePathCallback;
-        openIntentChooser(acceptType);
+        openIntentChooser(acceptTypes);
     }
 
     private void openIntentChooser(String[] acceptTypes) {
@@ -101,7 +101,7 @@ public class CSFileChooserListener implements FileChooserListener {
     private void openIntentChooser(String acceptType) {
         String type = acceptType;
 
-        if (type.isEmpty() || "*/*".equalsIgnoreCase(acceptType)) {
+        if (type.isEmpty() || "*/*".equalsIgnoreCase(type)) {
             type = ALL_TYPE;
         }
 
@@ -111,7 +111,7 @@ public class CSFileChooserListener implements FileChooserListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 List<Intent> intentList = new ArrayList<>();
 
-                String fileName = DateTimeUtil.formatDate(new Date(), "yyyyMMdd_HHmmss");
+                String fileName = DateTimeFormat.format(new Date(), "yyyyMMdd_HHmmss");
 
                 if (type.contains("image/")) {
                     mediaURIs[IMAGE] = UriUtil.fromFile(context, new File(EnvUtil.getMediaDir(context, "image"), fileName + ".jpg"));

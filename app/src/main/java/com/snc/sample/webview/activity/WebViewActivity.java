@@ -116,8 +116,7 @@ public class WebViewActivity extends BaseActivity {
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/sample/image.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/image-provider/image-provider.html");
         //WebViewHelper.loadUrl(this.webview, WebViewHelper.getLocalBaseUrl("assets") + "/www/docs/qrcode-reader/index.html");
-        //WebViewHelper.loadUrl(this.webview, "https://www.google.com");
-        WebViewHelper.loadUrl(this.webview, "https://talk.onsure.co.kr/front/v1/jsp/view/chatWindow.jsp");
+        WebViewHelper.loadUrl(this.webview, "https://www.google.com");
     }
 
     @Override
